@@ -39,7 +39,7 @@ module.exports = class AuthService {
     static async #validateUser(signInData = {}) {
         try {
             const { email, password } = signInData;
-            const user = this.#userService.findUserByEmail(email);
+            const user = await this.#userService.findUserByEmail(email);
             const comparePassword = await compare(password, user.password);
             if (user && comparePassword) {
                 return user;
