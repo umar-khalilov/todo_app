@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             Role.belongsToMany(models.User, {
                 through: 'users_roles',
                 foreignKey: 'roleId',
+                as: 'users',
             });
         }
     }
@@ -14,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     Role.init(
         {
             role: {
-                defaultValue: 'user',
                 allowNull: false,
+                unique: true,
                 type: DataTypes.ENUM('admin', 'user'),
             },
         },
