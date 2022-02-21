@@ -1,12 +1,8 @@
-module.exports.handlerError = async (err, req, res, next) => {
-    console.error(`ERROR caught: ->>>>>${err}`);
-    if (res.headersSent) {
-        return;
+module.exports.handlerError = (err, req, res, next) => {
+    console.error(`ERROR caught: ->>>>> ${err}`);
+    if (err.message || err.status) {
+        res.status(err.status).send(err.message);
+    } else {
+        res.status(500).send('Server Error');
     }
-    const status = err.status || 500;
-    const message = err.message || 'Server error';
-    res.status(status).send({
-        errors: err,
-        message: message,
-    });
 };

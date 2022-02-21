@@ -5,9 +5,9 @@ module.exports = class UserService {
     static #userRepository = User;
     static #roleRepository = Role;
 
-    static async findUserByEmail(email = '') {
+    static async findUserByEmail(email = '', next) {
         try {
-            return await this.#userRepository.findOne({
+            const foundUser = await this.#userRepository.findOne({
                 where: { email },
                 include: [
                     {
@@ -17,8 +17,12 @@ module.exports = class UserService {
                     },
                 ],
             });
+            if (!foundUser) {
+                next(new UserNotFoundError('User with this email not found'));
+            }
+            return foundUser;
         } catch (err) {
-            throw new UserNotFoundError('User with this email not found');
+            next(err);
         }
     }
 
@@ -26,7 +30,7 @@ module.exports = class UserService {
         try {
             const createdUser = await this.#userRepository.create(data);
             const createdRole = await this.#roleRepository.findOne({
-                where: { role: data.role },
+                where: { role: 'user' },
             });
             createdUser.addRole(createdRole);
             createdRole.addUser(createdUser);

@@ -1,13 +1,11 @@
 require('dotenv').config();
 const { compare, hash, genSalt } = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const { sign } = require('jsonwebtoken');
 const UserService = require('./UserService');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserAlreadyExistError = require('../errors/UserAlreadyExist');
 
 module.exports = class AuthService {
-    static #userService = UserService;
-
     static async #generateToken(user = {}) {
         const {
             env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
@@ -16,10 +14,10 @@ module.exports = class AuthService {
         const payload = {
             id: user.id,
             email: user.email,
-            role: user.role,
+            role: user.roles.map((elem) => elem),
         };
         return {
-            token: await jwt.sign(
+            token: await sign(
                 payload,
                 REFRESH_TOKEN_SECRET,
                 {
@@ -39,7 +37,7 @@ module.exports = class AuthService {
     static async #validateUser(signInData = {}) {
         try {
             const { email, password } = signInData;
-            const user = await this.#userService.findUserByEmail(email);
+            const user = await UserService.findUserByEmail(email);
             const comparePassword = await compare(password, user.password);
             if (user && comparePassword) {
                 return user;
@@ -49,7 +47,7 @@ module.exports = class AuthService {
         }
     }
 
-    static async signIn(signInData, next) {
+    static async signIn(signInData = {}, next) {
         try {
             const signedUser = await this.#validateUser(signInData);
             return await this.#generateToken(signedUser);
@@ -60,7 +58,7 @@ module.exports = class AuthService {
 
     static async signUp(signUpData, next) {
         const { email, password } = signUpData;
-        const candidate = await this.#userService.findUserByEmail(email);
+        const candidate = await UserService.findUserByEmail(email, next);
         if (candidate) {
             throw new UserAlreadyExistError();
         }
@@ -68,7 +66,7 @@ module.exports = class AuthService {
         const { SALT_ROUNDS } = process.env;
         const salt = await genSalt(+SALT_ROUNDS);
         const passwordHash = await hash(password, salt);
-        const createdUser = await this.#userService.createUser(
+        const createdUser = await UserService.createUser(
             {
                 ...signUpData,
                 password: passwordHash,

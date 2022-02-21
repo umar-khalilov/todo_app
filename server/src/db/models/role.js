@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
                 through: 'users_roles',
                 foreignKey: 'roleId',
                 as: 'users',
+                timestamps: false,
             });
         }
     }

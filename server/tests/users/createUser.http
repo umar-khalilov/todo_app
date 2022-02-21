@@ -1,0 +1,13 @@
+POST http://localhost:3001/api/auth/sign-up
+Content-Type: application/json
+
+{
+  "name": "Umar",
+  "surname": "Khalilov",
+  "email": "test6@gmail.com",
+  "birthday": "12-12-1993",
+  "isMale": true,
+  "password": "123Admin"
+}
+
+###
