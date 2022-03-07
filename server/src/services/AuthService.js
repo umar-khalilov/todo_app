@@ -11,26 +11,17 @@ module.exports = class AuthService {
             env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
         } = process;
 
+        const { id, email, roles } = user;
         const payload = {
-            id: user.id,
-            email: user.email,
-            role: user.roles.map(elem => elem),
+            id,
+            email,
+            roles,
         };
         return {
-            token: await sign(
-                payload,
-                REFRESH_TOKEN_SECRET,
-                {
-                    algorithm: 'RS256',
-                    expiresIn: REFRESH_TOKEN_TIME,
-                },
-                (err, token) => {
-                    if (err) {
-                        throw new Error(err);
-                    }
-                    return token;
-                }
-            ),
+            token: await sign(payload, REFRESH_TOKEN_SECRET, {
+                algorithm: 'HS384',
+                expiresIn: REFRESH_TOKEN_TIME,
+            }),
         };
     }
 
@@ -60,7 +51,7 @@ module.exports = class AuthService {
         const { email, password } = signUpData;
         const candidate = await UserService.findUserByEmail(email, next);
         if (candidate) {
-            throw new UserAlreadyExistError();
+            next(new UserAlreadyExistError());
         }
 
         const { SALT_ROUNDS } = process.env;
@@ -73,6 +64,7 @@ module.exports = class AuthService {
             },
             next
         );
+
         return await this.#generateToken(createdUser);
     }
 };

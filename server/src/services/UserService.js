@@ -5,22 +5,24 @@ module.exports = class UserService {
     static #userRepository = User;
     static #roleRepository = Role;
 
-    static async findUserByEmail (email = '', next) {
+    static async findUserByEmail (emailUser, next) {
         try {
             const foundUser = await this.#userRepository.findOne({
-                where: { email },
+                where: { email: emailUser },
                 include: [
                     {
                         model: Role,
                         attributes: ['role'],
-                        as: 'roles',
                     },
                 ],
             });
-            if (!foundUser) {
-                next(new UserNotFoundError('User with this email not found'));
-            }
-            return foundUser;
+            const response = {
+                id: foundUser.id,
+                email: foundUser.email,
+                roles: foundUser.Roles.map(item => item.role),
+            };
+            console.log(response);
+            return response;
         } catch (err) {
             next(err);
         }
@@ -29,20 +31,16 @@ module.exports = class UserService {
     static async createUser (data = {}, next) {
         try {
             const createdUser = await this.#userRepository.create(data);
-            const createdRole = await this.#roleRepository.findOne({
+            const roleUser = await this.#roleRepository.findOne({
                 where: { role: 'user' },
             });
-            createdUser.addRole(createdRole);
-            createdRole.addUser(createdUser);
-            return await this.#userRepository.findByPk(createdUser.id, {
-                include: [
-                    {
-                        model: Role,
-                        attributes: ['role'],
-                        as: 'roles',
-                    },
-                ],
-            });
+            createdUser.addRole(roleUser);
+
+            return {
+                id: createdUser.id,
+                email: createdUser.email,
+                role: roleUser.role,
+            };
         } catch (err) {
             next(err);
         }
