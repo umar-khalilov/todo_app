@@ -6,7 +6,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserAlreadyExistError = require('../errors/UserAlreadyExist');
 
 module.exports = class AuthService {
-    static async #generateToken(user = {}) {
+    static async #generateToken (user = {}) {
         const {
             env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
         } = process;
@@ -14,7 +14,7 @@ module.exports = class AuthService {
         const payload = {
             id: user.id,
             email: user.email,
-            role: user.roles.map((elem) => elem),
+            role: user.roles.map(elem => elem),
         };
         return {
             token: await sign(
@@ -34,7 +34,7 @@ module.exports = class AuthService {
         };
     }
 
-    static async #validateUser(signInData = {}) {
+    static async #validateUser (signInData = {}) {
         try {
             const { email, password } = signInData;
             const user = await UserService.findUserByEmail(email);
@@ -47,7 +47,7 @@ module.exports = class AuthService {
         }
     }
 
-    static async signIn(signInData = {}, next) {
+    static async signIn (signInData = {}, next) {
         try {
             const signedUser = await this.#validateUser(signInData);
             return await this.#generateToken(signedUser);
@@ -56,7 +56,7 @@ module.exports = class AuthService {
         }
     }
 
-    static async signUp(signUpData, next) {
+    static async signUp (signUpData, next) {
         const { email, password } = signUpData;
         const candidate = await UserService.findUserByEmail(email, next);
         if (candidate) {

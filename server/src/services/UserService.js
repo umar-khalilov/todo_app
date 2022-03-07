@@ -5,7 +5,7 @@ module.exports = class UserService {
     static #userRepository = User;
     static #roleRepository = Role;
 
-    static async findUserByEmail(email = '', next) {
+    static async findUserByEmail (email = '', next) {
         try {
             const foundUser = await this.#userRepository.findOne({
                 where: { email },
@@ -26,7 +26,7 @@ module.exports = class UserService {
         }
     }
 
-    static async createUser(data = {}, next) {
+    static async createUser (data = {}, next) {
         try {
             const createdUser = await this.#userRepository.create(data);
             const createdRole = await this.#roleRepository.findOne({

@@ -14,12 +14,12 @@ const sequelize = config.use_env_variable
 
 fs.readdirSync(__dirname)
     .filter(
-        (file) =>
+        file =>
             file.indexOf('.') !== 0 &&
             file !== basename &&
             file.slice(-3) === '.js'
     )
-    .forEach((file) => {
+    .forEach(file => {
         const model = require(path.join(__dirname, file))(
             sequelize,
             Sequelize.DataTypes
@@ -27,7 +27,7 @@ fs.readdirSync(__dirname)
         db[model.name] = model;
     });
 
-Object.keys(db).forEach((modelName) =>
+Object.keys(db).forEach(modelName =>
     db[modelName].associate ? db[modelName].associate(db) : null
 );
 
