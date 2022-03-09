@@ -11,36 +11,33 @@ module.exports = class AuthService {
             env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
         } = process;
 
-        const { id, email, roles } = user;
         const payload = {
-            id,
-            email,
-            roles,
+            id: user.id,
+            email: user.email,
+            roles: user.roles,
         };
         return {
-            token: await sign(payload, REFRESH_TOKEN_SECRET, {
+            token: sign(payload, REFRESH_TOKEN_SECRET, {
                 algorithm: 'HS384',
                 expiresIn: REFRESH_TOKEN_TIME,
             }),
         };
     }
 
-    static async #validateUser (signInData = {}) {
-        try {
-            const { email, password } = signInData;
-            const user = await UserService.findUserByEmail(email);
-            const comparePassword = await compare(password, user.password);
-            if (user && comparePassword) {
-                return user;
-            }
-        } catch (err) {
-            throw new UnauthorizedError();
+    static async #validateUser (signInData = {}, next) {
+        const { email, password } = signInData;
+        const user = await UserService.findUserByEmail(email, next);
+        const comparePassword = await compare(password, user.password);
+        if (user && comparePassword) {
+            return user;
+        } else {
+            next(new UnauthorizedError());
         }
     }
 
     static async signIn (signInData = {}, next) {
         try {
-            const signedUser = await this.#validateUser(signInData);
+            const signedUser = await this.#validateUser(signInData, next);
             return await this.#generateToken(signedUser);
         } catch (err) {
             next(err);
@@ -64,7 +61,6 @@ module.exports = class AuthService {
             },
             next
         );
-
         return await this.#generateToken(createdUser);
     }
 };

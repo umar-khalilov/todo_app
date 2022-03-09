@@ -5,10 +5,10 @@ module.exports = class UserService {
     static #userRepository = User;
     static #roleRepository = Role;
 
-    static async findUserByEmail (emailUser, next) {
+    static async findUserByEmail (email, next) {
         try {
-            const foundUser = await this.#userRepository.findOne({
-                where: { email: emailUser },
+            const user = await this.#userRepository.findOne({
+                where: { email },
                 include: [
                     {
                         model: Role,
@@ -16,13 +16,15 @@ module.exports = class UserService {
                     },
                 ],
             });
-            const response = {
-                id: foundUser.id,
-                email: foundUser.email,
-                roles: foundUser.Roles.map(item => item.role),
-            };
-            console.log(response);
-            return response;
+
+            return user
+                ? {
+                      id: user.id,
+                      email: user.email,
+                      password: user.password,
+                      roles: user.Roles.map(elem => elem.role),
+                  }
+                : null;
         } catch (err) {
             next(err);
         }
@@ -39,7 +41,7 @@ module.exports = class UserService {
             return {
                 id: createdUser.id,
                 email: createdUser.email,
-                role: roleUser.role,
+                roles: [roleUser.role],
             };
         } catch (err) {
             next(err);
