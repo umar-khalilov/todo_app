@@ -11,5 +11,9 @@ const {
 const server = http.createServer(app);
 
 server.listen(PORT || 3001, () =>
-    console.log(`Express App started on http//${address()}:${PORT}`)
+    console.info(
+        '\x1b[32m',
+        '\x1b[1m',
+        `Express App started on http//${address()}:${PORT}`
+    )
 );
