@@ -1,4 +1,4 @@
-const { User, Role } = require('../db/models');
+const { User, Role } = require('../database/models');
 
 module.exports = class UserService {
     static #userRepository = User;
