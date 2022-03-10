@@ -4,5 +4,10 @@ const userRouter = require('express').Router({ mergeParams: true }),
     { paginate } = require('../middlewares/paginate');
 
 userRouter.get('/', paginate, UserController.findAll);
+userRouter
+    .route('/:id')
+    .get(UserController.findOne)
+    .patch(UserController.updateOne)
+    .delete(UserController.removeOne);
 
 module.exports = userRouter;

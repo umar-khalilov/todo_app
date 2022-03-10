@@ -17,7 +17,7 @@ module.exports = {
                     key: 'id',
                 },
                 onDelete: 'cascade',
-                onUpdate: 'restrict',
+                onUpdate: 'cascade',
             },
             title: {
                 allowNull: false,

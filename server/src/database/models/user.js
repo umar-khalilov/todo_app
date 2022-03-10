@@ -7,12 +7,16 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             User.hasMany(models.Task, {
                 foreignKey: 'userId',
+                onDelete: 'cascade',
                 as: 'tasks',
             });
             User.belongsToMany(models.Role, {
                 through: 'users_roles',
                 foreignKey: 'userId',
+                otherKey: 'roleId',
                 timestamps: false,
+                onDelete: 'cascade',
+                as: 'roles',
             });
         }
     }
@@ -71,6 +75,11 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         {
+            defaultScope: {
+                attributes: {
+                    exclude: ['password'],
+                },
+            },
             sequelize,
             modelName: 'User',
             tableName: 'users',

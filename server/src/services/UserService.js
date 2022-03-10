@@ -13,6 +13,7 @@ module.exports = class UserService {
                 {
                     model: Role,
                     attributes: ['role'],
+                    as: 'roles',
                 },
             ],
         });
@@ -22,7 +23,7 @@ module.exports = class UserService {
                   id: user.id,
                   email: user.email,
                   password: user.password,
-                  roles: user.Roles.map(elem => elem.role),
+                  roles: user.roles.map(elem => elem.role),
               }
             : null;
     }
@@ -43,15 +44,16 @@ module.exports = class UserService {
 
     static async findAllUsers({ limit, offset, page }) {
         let { count, rows } = await this.#userRepository.findAndCountAll({
-            attributes: { exclude: ['password'] },
             include: [
-                {
-                    model: Role,
-                    attributes: ['role'],
-                },
                 {
                     model: Task,
                     as: 'tasks',
+                },
+                {
+                    model: Role,
+                    attributes: ['role'],
+                    through: { attributes: [] },
+                    as: 'roles',
                 },
             ],
             order: [['updatedAt', 'DESC']],
@@ -69,8 +71,8 @@ module.exports = class UserService {
             email: item.email,
             birthday: item.birthday,
             isMale: item.isMale,
-            roles: item.Roles.map(item => item.role),
             tasks: item.tasks,
+            roles: item.roles.map(item => item.role),
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
         }));
@@ -79,22 +81,57 @@ module.exports = class UserService {
     }
 
     static async findUserById(id) {
-        const user = await this.#userRepository.findByPk(id, {
-            attributes: { exclude: ['password'] },
+        let user = await this.#userRepository.findByPk(id, {
             include: [
-                {
-                    model: Role,
-                    attributes: ['role'],
-                },
                 {
                     model: Task,
                     as: 'tasks',
                 },
+                {
+                    model: Role,
+                    attributes: ['role'],
+                    through: { attributes: [] },
+                    as: 'roles',
+                },
             ],
         });
+
         if (!user) {
             throw new UserNotFoundError();
         }
+
+        user = {
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            birthday: user.birthday,
+            isMale: user.isMale,
+            tasks: user.tasks,
+            roles: user.roles.map(item => item.role),
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        };
         return user;
+    }
+
+    static async updateUserById(id, data = {}) {
+        const foundUser = await this.#userRepository.findByPk(id);
+        if (!foundUser) {
+            throw new UserNotFoundError();
+        }
+        return await foundUser.update(data);
+    }
+
+    static async removeUserById(id) {
+        const removedUser = await this.#userRepository.destroy({
+            where: { id },
+            force: true,
+        });
+        if (removedUser === 0) {
+            throw new UserNotFoundError();
+        }
+
+        return 'This user successfully removed';
     }
 };
