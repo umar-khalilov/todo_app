@@ -1,32 +1,32 @@
 require('dotenv').config();
-const { compare, hash, genSalt } = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
-const UserService = require('./UserService');
-const UnauthorizedError = require('../errors/UnauthorizedError');
-const UserAlreadyExistError = require('../errors/UserAlreadyExist');
-const TokenError = require('../errors/TokenError');
+const { compare, hash, genSalt } = require('bcryptjs'),
+    { sign } = require('jsonwebtoken'),
+    UserService = require('./UserService'),
+    UnauthorizedError = require('../errors/UnauthorizedError'),
+    UserAlreadyExistError = require('../errors/UserAlreadyExist'),
+    TokenError = require('../errors/TokenError');
 
 module.exports = class AuthService {
     static async #generateToken (user = {}) {
-        const {
-            env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
-        } = process;
-
         if (user.id && user.email && user.roles) {
             const payload = {
                 id: user.id,
                 email: user.email,
                 roles: user.roles,
             };
+
+            const {
+                env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
+            } = process;
+
             return {
                 token: sign(payload, REFRESH_TOKEN_SECRET, {
                     algorithm: 'HS384',
                     expiresIn: REFRESH_TOKEN_TIME,
                 }),
             };
-        } else {
-            throw new TokenError();
         }
+        throw new TokenError();
     }
 
     static async #validateUser ({ email, password }) {
@@ -36,9 +36,8 @@ module.exports = class AuthService {
         const user = await UserService.findUserByEmail(email);
         if (user && (await compare(password, user.password))) {
             return user;
-        } else {
-            throw new UnauthorizedError();
         }
+        throw new UnauthorizedError();
     }
 
     static async signIn (signInData = {}) {

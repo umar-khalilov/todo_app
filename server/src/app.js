@@ -1,8 +1,8 @@
 'use strict';
-const express = require('express');
-const cors = require('cors');
-const router = require('./routes');
-const { handlerError } = require('./middlewares/handlerError');
+const express = require('express'),
+    cors = require('cors'),
+    router = require('./routes'),
+    { handlerError } = require('./middlewares/handlerError');
 
 const app = express();
 app.use(cors());
