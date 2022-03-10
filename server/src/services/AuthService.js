@@ -8,16 +8,17 @@ const TokenError = require('../errors/TokenError');
 
 module.exports = class AuthService {
     static async #generateToken (user = {}) {
-        const {
-            env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
-        } = process;
-
         if (user.id && user.email && user.roles) {
             const payload = {
                 id: user.id,
                 email: user.email,
                 roles: user.roles,
             };
+
+            const {
+                env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
+            } = process;
+
             return {
                 token: sign(payload, REFRESH_TOKEN_SECRET, {
                     algorithm: 'HS384',
