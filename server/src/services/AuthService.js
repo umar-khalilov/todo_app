@@ -7,7 +7,7 @@ const { compare, hash, genSalt } = require('bcryptjs'),
     TokenError = require('../errors/TokenError');
 
 module.exports = class AuthService {
-    static async #generateToken (user = {}) {
+    static async #generateToken(user = {}) {
         if (user.id && user.email && user.roles) {
             const payload = {
                 id: user.id,
@@ -29,7 +29,7 @@ module.exports = class AuthService {
         throw new TokenError();
     }
 
-    static async #validateUser ({ email, password }) {
+    static async #validateUser({ email, password }) {
         if (!(email && password)) {
             throw new BadRequestError('Need email and password');
         }
@@ -40,12 +40,12 @@ module.exports = class AuthService {
         throw new UnauthorizedError();
     }
 
-    static async signIn (signInData = {}) {
+    static async signIn(signInData = {}) {
         const signedUser = await this.#validateUser(signInData);
         return await this.#generateToken(signedUser);
     }
 
-    static async signUp (signUpData) {
+    static async signUp(signUpData) {
         const candidate = await UserService.findUserByEmail(signUpData.email);
         if (candidate) {
             throw new UserAlreadyExistError();

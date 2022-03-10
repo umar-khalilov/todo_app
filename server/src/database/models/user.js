@@ -4,7 +4,7 @@ const { isAfter } = require('date-fns');
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
-        static associate (models) {
+        static associate(models) {
             User.hasMany(models.Task, {
                 foreignKey: 'userId',
                 as: 'tasks',
@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATEONLY,
                 validate: {
                     isDate: true,
-                    isCorrectDate (value) {
+                    isCorrectDate(value) {
                         if (isAfter(new Date(value), new Date())) {
                             throw new Error('Enter a valid date');
                         }
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
             modelName: 'User',
             tableName: 'users',
             underscored: true,
-        }
+        },
     );
     return User;
 };
