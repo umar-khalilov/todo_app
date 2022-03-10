@@ -4,6 +4,7 @@ const { sign } = require('jsonwebtoken');
 const UserService = require('./UserService');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserAlreadyExistError = require('../errors/UserAlreadyExist');
+const TokenError = require('../errors/TokenError');
 
 module.exports = class AuthService {
     static async #generateToken (user = {}) {
@@ -11,56 +12,57 @@ module.exports = class AuthService {
             env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
         } = process;
 
-        const payload = {
-            id: user.id,
-            email: user.email,
-            roles: user.roles,
-        };
-        return {
-            token: sign(payload, REFRESH_TOKEN_SECRET, {
-                algorithm: 'HS384',
-                expiresIn: REFRESH_TOKEN_TIME,
-            }),
-        };
+        if (user.id && user.email && user.roles) {
+            const payload = {
+                id: user.id,
+                email: user.email,
+                roles: user.roles,
+            };
+            return {
+                token: sign(payload, REFRESH_TOKEN_SECRET, {
+                    algorithm: 'HS384',
+                    expiresIn: REFRESH_TOKEN_TIME,
+                }),
+            };
+        } else {
+            throw new TokenError();
+        }
     }
 
-    static async #validateUser (signInData = {}, next) {
-        const { email, password } = signInData;
-        const user = await UserService.findUserByEmail(email, next);
-        const comparePassword = await compare(password, user.password);
-        if (user && comparePassword) {
+    static async #validateUser ({ email, password }) {
+        if (!(email && password)) {
+            throw new BadRequestError('Need email and password');
+        }
+        const user = await UserService.findUserByEmail(email);
+        if (user && (await compare(password, user.password))) {
             return user;
         } else {
-            next(new UnauthorizedError());
+            throw new UnauthorizedError();
         }
     }
 
-    static async signIn (signInData = {}, next) {
-        try {
-            const signedUser = await this.#validateUser(signInData, next);
-            return await this.#generateToken(signedUser);
-        } catch (err) {
-            next(err);
-        }
+    static async signIn (signInData = {}) {
+        const signedUser = await this.#validateUser(signInData);
+        return await this.#generateToken(signedUser);
     }
 
-    static async signUp (signUpData, next) {
-        const { email, password } = signUpData;
-        const candidate = await UserService.findUserByEmail(email, next);
+    static async signUp (signUpData) {
+        const candidate = await UserService.findUserByEmail(signUpData.email);
         if (candidate) {
-            next(new UserAlreadyExistError());
+            throw new UserAlreadyExistError();
         }
 
-        const { SALT_ROUNDS } = process.env;
-        const salt = await genSalt(+SALT_ROUNDS);
-        const passwordHash = await hash(password, salt);
-        const createdUser = await UserService.createUser(
-            {
-                ...signUpData,
-                password: passwordHash,
-            },
-            next
+        const {
+            env: { SALT_ROUNDS },
+        } = process;
+        const passwordHash = await hash(
+            signUpData.password,
+            await genSalt(+SALT_ROUNDS)
         );
+        const createdUser = await UserService.createUser({
+            ...signUpData,
+            password: passwordHash,
+        });
         return await this.#generateToken(createdUser);
     }
 };

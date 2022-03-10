@@ -1,10 +1,12 @@
-module.exports.handlerError = (err, req, res, next) => {
-    console.error(`ERROR caught:->>>>> ${err}`);
-    if (err.message || err.status) {
-        res.status(err.status).send(err.message);
-        next(err);
+const ApplicationError = require('../errors/ApplicationError');
+
+module.exports.handlerError = async (err, req, res, next) => {
+    console.error('\x1b[31m', `ERROR caught:->>>>> ${err.stack}`);
+    if (err instanceof ApplicationError) {
+        return res
+            .status(err.status)
+            .send({ name: err.name, message: err.message });
     } else {
-        res.status(500).send('Server Error');
-        next(err);
+        return res.status(500).send('Server Error');
     }
 };

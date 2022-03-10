@@ -16,6 +16,8 @@ module.exports = {
         database: POSTGRES_DB,
         host: POSTGRES_HOSTNAME,
         dialect: DB_DIALECT,
+        migrationStorage: 'json',
+        seederStorage: 'json',
     },
     test: {},
     production: {},
