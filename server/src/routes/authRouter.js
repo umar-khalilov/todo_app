@@ -1,3 +1,4 @@
+'use strict';
 const authRouter = require('express').Router({ mergeParams: true });
 const AuthController = require('../controllers/AuthController');
 

@@ -3,5 +3,5 @@
 /.vscode
 /*.iml
 **.env
-**sequelize-meta.json
+**/sequelize*.json
 !.gitignore

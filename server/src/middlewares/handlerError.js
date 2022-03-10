@@ -1,3 +1,4 @@
+'use strict';
 const ApplicationError = require('../errors/ApplicationError');
 
 module.exports.handlerError = async (err, req, res, next) => {
