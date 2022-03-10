@@ -1,7 +1,7 @@
 'use strict';
 require('dotenv').config();
-const { verify } = require('jsonwebtoken');
-const RightsError = require('../errors/RighstError');
+const { verify } = require('jsonwebtoken'),
+    RightsError = require('../errors/RighstError');
 
 module.exports.verifyToken = async (req, res, next) => {
     try {
