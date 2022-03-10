@@ -14,6 +14,6 @@ server.listen(PORT || 3001, () =>
     console.info(
         '\x1b[32m',
         '\x1b[1m',
-        `Express App started on http//${address()}:${PORT}`
-    )
+        `Express App started on http//${address()}:${PORT}`,
+    ),
 );

@@ -56,7 +56,7 @@ module.exports = class AuthService {
         } = process;
         const passwordHash = await hash(
             signUpData.password,
-            await genSalt(+SALT_ROUNDS)
+            await genSalt(+SALT_ROUNDS),
         );
         const createdUser = await UserService.createUser({
             ...signUpData,
