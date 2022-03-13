@@ -9,7 +9,14 @@
         "start-dev": "nodemon ./src/server.js",
         "debug": "nodemon --inspect ./src/server.js"
     },
-    "keywords": [],
+    "keywords": [
+        "nodejs",
+        "express",
+        "rest",
+        "api",
+        "sequelize",
+        "postgresql"
+    ],
     "author": "Umar Khalilov",
     "license": "ISC",
     "dependencies": {

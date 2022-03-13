@@ -13,8 +13,6 @@ module.exports = {
                         model: 'users',
                         key: 'id',
                     },
-                    onDelete: 'cascade',
-                    onUpdate: 'cascade',
                 },
                 roleId: {
                     allowNull: false,
@@ -24,8 +22,6 @@ module.exports = {
                         model: 'roles',
                         key: 'id',
                     },
-                    onDelete: 'cascade',
-                    onUpdate: 'cascade',
                 },
             },
             {

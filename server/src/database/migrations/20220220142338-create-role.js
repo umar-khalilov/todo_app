@@ -8,7 +8,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            role: {
+            name: {
                 type: Sequelize.ENUM('admin', 'user'),
                 allowNull: false,
                 unique: true,

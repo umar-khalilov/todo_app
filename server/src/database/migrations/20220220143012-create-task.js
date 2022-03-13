@@ -15,9 +15,10 @@ module.exports = {
                 references: {
                     model: 'users',
                     key: 'id',
+                    as: 'userId',
                 },
                 onDelete: 'cascade',
-                onUpdate: 'cascade',
+                onUpdate: 'restrict',
             },
             title: {
                 allowNull: false,

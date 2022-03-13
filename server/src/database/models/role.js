@@ -9,14 +9,13 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'roleId',
                 otherKey: 'userId',
                 timestamps: false,
-                onDelete: 'cascade',
             });
         }
     }
 
     Role.init(
         {
-            role: {
+            name: {
                 allowNull: false,
                 unique: true,
                 type: DataTypes.ENUM('admin', 'user'),

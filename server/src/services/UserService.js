@@ -12,7 +12,7 @@ module.exports = class UserService {
             include: [
                 {
                     model: Role,
-                    attributes: ['role'],
+                    attributes: ['name'],
                     as: 'roles',
                 },
             ],
@@ -23,7 +23,7 @@ module.exports = class UserService {
                   id: user.id,
                   email: user.email,
                   password: user.password,
-                  roles: user.roles.map(elem => elem.role),
+                  roles: user.roles.map(elem => elem.name),
               }
             : null;
     }
@@ -31,14 +31,14 @@ module.exports = class UserService {
     static async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
         const roleUser = await this.#roleRepository.findOne({
-            where: { role: 'user' },
+            where: { name: 'user' },
         });
         createdUser.addRole(roleUser);
 
         return {
             id: createdUser.id,
             email: createdUser.email,
-            roles: [roleUser.role],
+            roles: [roleUser.name],
         };
     }
 
@@ -51,7 +51,7 @@ module.exports = class UserService {
                 },
                 {
                     model: Role,
-                    attributes: ['role'],
+                    attributes: ['name'],
                     through: { attributes: [] },
                     as: 'roles',
                 },
@@ -72,7 +72,7 @@ module.exports = class UserService {
             birthday: item.birthday,
             isMale: item.isMale,
             tasks: item.tasks,
-            roles: item.roles.map(item => item.role),
+            roles: item.roles.map(({ name }) => name),
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
         }));
@@ -89,7 +89,7 @@ module.exports = class UserService {
                 },
                 {
                     model: Role,
-                    attributes: ['role'],
+                    attributes: ['name'],
                     through: { attributes: [] },
                     as: 'roles',
                 },
@@ -100,7 +100,7 @@ module.exports = class UserService {
             throw new UserNotFoundError();
         }
 
-        user = {
+        return {
             id: user.id,
             name: user.name,
             surname: user.surname,
@@ -108,11 +108,10 @@ module.exports = class UserService {
             birthday: user.birthday,
             isMale: user.isMale,
             tasks: user.tasks,
-            roles: user.roles.map(item => item.role),
+            roles: user.roles.map(({ name }) => name),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
-        return user;
     }
 
     static async updateUserById(id, data = {}) {
@@ -124,14 +123,16 @@ module.exports = class UserService {
     }
 
     static async removeUserById(id) {
-        const removedUser = await this.#userRepository.destroy({
-            where: { id },
-            force: true,
-        });
-        if (removedUser === 0) {
+        const removedUser = await this.#userRepository.findByPk(id);
+        if (!removedUser) {
             throw new UserNotFoundError();
         }
 
-        return 'This user successfully removed';
+        const roles = await removedUser.getRoles();
+        const tasks = await removedUser.getTasks();
+        await removedUser.removeRoles(roles);
+        await removedUser.removeTasks(tasks);
+        await removedUser.destroy();
+        return `User with id: ${id} was successfully removed`;
     }
 };
