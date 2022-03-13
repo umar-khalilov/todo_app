@@ -2,9 +2,9 @@ POST http://localhost:3001/api/auth/sign-up
 Content-Type: application/json
 
 {
-  "name": "John",
-  "surname": "Wick",
-  "email": "test@gmail.com",
+  "name": "Tomas",
+  "surname": "Andersen",
+  "email": "test2@gmail.com",
   "birthday": "1993-10-10",
   "isMale": true,
   "password": "123Admin"
