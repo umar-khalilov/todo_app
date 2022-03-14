@@ -1,6 +1,6 @@
-const { User, Role, Task } = require('../database/models'),
-    UserNotFoundError = require('../errors/UserNotFoundError'),
-    { paginateResponse } = require('../utils/paginateResponse');
+const { User, Role, Task } = require('../database/models');
+const UserNotFoundError = require('../errors/UserNotFoundError');
+const { paginateResponse } = require('../utils/paginateResponse');
 
 module.exports = class UserService {
     static #userRepository = User;
@@ -23,7 +23,7 @@ module.exports = class UserService {
                   id: user.id,
                   email: user.email,
                   password: user.password,
-                  roles: user.roles.map(elem => elem.name),
+                  roles: user.roles.map(({ name }) => name),
               }
             : null;
     }
