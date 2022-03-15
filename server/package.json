@@ -2,12 +2,12 @@
     "name": "server",
     "version": "1.0.0",
     "description": "Todo application for everyone",
-    "main": "server.js",
+    "main": "main.js",
     "private": true,
     "scripts": {
-        "start": "node ./src/server.js",
-        "start-dev": "nodemon ./src/server.js",
-        "debug": "nodemon --inspect ./src/server.js"
+        "start": "node ./src/main.js",
+        "start:dev": "nodemon ./src/main.js",
+        "debug": "nodemon --inspect ./src/main.js"
     },
     "keywords": [
         "nodejs",
