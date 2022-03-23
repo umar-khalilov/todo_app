@@ -8,9 +8,9 @@ const {
     env: { PORT },
 } = process;
 
-const startExpressApp = async port => {
+const runExpressApp = async port => {
     try {
-        http.createServer(app).listen(+port || 3001, () =>
+        http.createServer(app).listen(Number(port) || 3001, () =>
             console.info(
                 '\x1b[1m',
                 '\x1b[32m',
@@ -23,4 +23,4 @@ const startExpressApp = async port => {
     }
 };
 
-void startExpressApp(PORT);
+void runExpressApp(PORT);
