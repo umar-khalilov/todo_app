@@ -24,7 +24,6 @@ module.exports = class ValidationSchemas {
             email: new StringSchema()
                 .email('Must be a valid email')
                 .max(255)
-                .lowercase('Email must be in lovercase')
                 .required('Email is required'),
             password: new StringSchema()
                 .matches(

@@ -45,23 +45,20 @@ module.exports = class AuthService {
         return await this.#generateToken(signedUser);
     }
 
-    static async signUp(signUpData) {
+    static async signUp(signUpData = {}) {
         const candidate = await findUserByEmail(signUpData.email);
         if (candidate) {
             throw new UserAlreadyExistError();
         }
 
-        const {
-            env: { SALT_ROUNDS },
-        } = process;
-        const passwordHash = await hash(
-            signUpData.password,
-            await genSalt(+SALT_ROUNDS),
-        );
-        const createdUser = await createUser({
-            ...signUpData,
-            password: passwordHash,
-        });
+        // const {
+        //     env: { SALT_ROUNDS },
+        // } = process;
+        // const passwordHash = await hash(
+        //     signUpData.password,
+        //     await genSalt(+SALT_ROUNDS),
+        // );
+        const createdUser = await createUser(signUpData);
         return await this.#generateToken(createdUser);
     }
 };
