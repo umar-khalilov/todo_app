@@ -9,6 +9,7 @@ const {
 module.exports = class ValidationSchemas {
     static #nameSchema = new StringSchema()
         .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')
+        .trim()
         .required();
 
     static #parseDateString(value, originalValue) {
@@ -17,12 +18,13 @@ module.exports = class ValidationSchemas {
             : parse(originalValue, 'yyyy-MM-dd', new Date(0, 0, 0, 0, 0, 0, 0));
     }
 
-    static signUpSchema() {
-        return new ObjectSchema({
+    static async signUpSchema() {
+        return await new ObjectSchema({
             name: this.#nameSchema,
             surname: this.#nameSchema,
             email: new StringSchema()
-                .email('Must be a valid email')
+                .email('Email must be a valid email')
+                .trim()
                 .max(255)
                 .required('Email is required'),
             password: new StringSchema()
@@ -30,6 +32,7 @@ module.exports = class ValidationSchemas {
                     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$/,
                     'Password have to contain an one big letter',
                 )
+                .trim()
                 .required('Required'),
             birthday: new DateSchema()
                 .transform(this.#parseDateString)
@@ -42,8 +45,9 @@ module.exports = class ValidationSchemas {
         return new ObjectSchema({
             email: new StringSchema()
                 .email('Email must be truly email')
+                .trim()
                 .required('Required'),
-            password: new StringSchema().required('Required'),
+            password: new StringSchema().trim().required('Required'),
         });
     }
 };

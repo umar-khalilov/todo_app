@@ -7,5 +7,5 @@ Content-Type: application/json
   "email": "testsystem@gmail.com",
   "birthday": "1993-10-10",
   "isMale": true,
-  "password": "123Admin"
+  "password": "123Admin!"
 }
