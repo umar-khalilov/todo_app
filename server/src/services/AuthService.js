@@ -59,6 +59,7 @@ module.exports = class AuthService {
         //     signUpData.password,
         //     await genSalt(+SALT_ROUNDS),
         // );
+
         const createdUser = await createUser(signUpData);
         return await this.#generateToken(createdUser);
     }

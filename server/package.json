@@ -34,10 +34,11 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.17.0",
     "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-unicorn": "^42.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "sequelize-cli": "^6.4.1"

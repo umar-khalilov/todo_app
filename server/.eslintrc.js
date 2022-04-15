@@ -4,12 +4,23 @@ module.exports = {
         browser: true,
         es2022: true,
     },
-    extends: ['eslint:recommended', 'prettier'],
+    plugins: ['@typescript-eslint', 'prettier', 'unicorn', 'import'],
+    extends: [
+        'airbnb-typescript/base',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended',
+        'plugin:unicorn/recommended',
+        'plugin:prettier/recommended',
+        'prettier',
+        'prettier/@typescript-eslint',
+        'airbnb-base',
+        'airbnb-base/whitespace',
+    ],
     parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
     },
-    plugins: ['prettier'],
+
     rules: {
         'comma-dangle': ['error', 'always-multiline'],
         'comma-spacing': ['error', { before: false, after: true }],
