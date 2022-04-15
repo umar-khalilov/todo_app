@@ -7,21 +7,19 @@ const {
 } = require('yup');
 
 module.exports = class ValidationSchemas {
-    static #nameSchema = new StringSchema()
-        .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')
-        .trim()
-        .required();
+    static signUpSchema() {
+        const nameSchema = new StringSchema()
+            .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')
+            .trim()
+            .required();
+        const parseDateString = (value, originalValue) =>
+            isDate(originalValue)
+                ? originalValue
+                : parse(originalValue, 'yyyy-MM-dd', new Date());
 
-    static #parseDateString(value, originalValue) {
-        return isDate(originalValue)
-            ? originalValue
-            : parse(originalValue, 'yyyy-MM-dd', new Date(0, 0, 0, 0, 0, 0, 0));
-    }
-
-    static async signUpSchema() {
-        return await new ObjectSchema({
-            name: this.#nameSchema,
-            surname: this.#nameSchema,
+        return new ObjectSchema({
+            name: nameSchema,
+            surname: nameSchema,
             email: new StringSchema()
                 .email('Email must be a valid email')
                 .trim()
@@ -35,8 +33,8 @@ module.exports = class ValidationSchemas {
                 .trim()
                 .required('Required'),
             birthday: new DateSchema()
-                .transform(this.#parseDateString)
-                .max(new Date(0, 0, 0, 0, 0, 0, 0)),
+                .transform(parseDateString)
+                .max(new Date()),
             isMale: new BooleanSchema(),
         });
     }

@@ -3,7 +3,7 @@ module.exports = class AuthValidation {
         schema =>
         async ({ body }, res, next) => {
             try {
-                await schema.validate(body);
+                await schema().validate(body);
                 return next();
             } catch (error) {
                 return res
@@ -16,7 +16,7 @@ module.exports = class AuthValidation {
         schema =>
         async ({ body }, res, next) => {
             try {
-                await schema.validate(body);
+                await schema().validate(body);
                 return next();
             } catch (error) {
                 return res

@@ -81,7 +81,7 @@ module.exports = class UserService {
     }
 
     static async findUserById(id) {
-        let user = await this.#userRepository.findByPk(id, {
+        const user = await this.#userRepository.findByPk(id, {
             include: [
                 {
                     model: Task,

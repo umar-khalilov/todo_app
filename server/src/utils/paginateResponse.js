@@ -1,4 +1,3 @@
-'use strict';
 module.exports.paginateResponse = ([total, result], page, limit) => {
     const lastPage = Math.ceil(total / limit);
     const nextPage = page + 1 > lastPage ? null : page + 1;

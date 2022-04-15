@@ -1,4 +1,3 @@
-'use strict';
 const Router = require('express').Router({ mergeParams: true });
 const AuthRouter = require('./AuthRouter');
 const UserRouter = require('./UserRouter');

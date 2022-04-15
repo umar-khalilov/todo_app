@@ -1,4 +1,3 @@
-'use strict';
 require('dotenv').config();
 const { Model } = require('sequelize');
 const { isAfter } = require('date-fns');
@@ -80,11 +79,10 @@ module.exports = (sequelize, DataTypes) => {
         {
             hooks: {
                 beforeCreate: async (user = {}, options = {}) => {
-                    const passwordHash = await hash(
+                    user.password = await hash(
                         user.password,
                         await genSalt(+SALT_ROUNDS),
                     );
-                    user.password = passwordHash;
                     user.email = user.email.toLowerCase();
                     return user;
                 },

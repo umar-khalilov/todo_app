@@ -1,4 +1,3 @@
-'use strict';
 module.exports.paginate = async (req, res, next) => {
     try {
         let {

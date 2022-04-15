@@ -1,10 +1,11 @@
 require('dotenv').config();
-const { compare, hash, genSalt } = require('bcryptjs');
+const { compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const { findUserByEmail, createUser } = require('./UserService');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserAlreadyExistError = require('../errors/UserAlreadyExist');
 const TokenError = require('../errors/TokenError');
+const BadRequestError = require('../errors/BadRequestError');
 
 module.exports = class AuthService {
     static async #generateToken(user = {}) {

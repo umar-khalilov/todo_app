@@ -1,4 +1,3 @@
-'use strict';
 require('dotenv').config();
 const { verify } = require('jsonwebtoken');
 const RightsError = require('../errors/RightsError');

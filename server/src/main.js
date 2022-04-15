@@ -1,4 +1,3 @@
-'use strict';
 require('dotenv').config();
 const { createServer } = require('http');
 const { address } = require('ip');
