@@ -20,21 +20,21 @@ you need to open a new terminal tab.
 Type command in terminal:
 
 ```bash
-make up_migrate
+make up-migrate
 ```
 
 If you want to down migration
 you need type command in terminal:
 
 ```bash
-make down_migrate
+make down-migrate
 ```
 
 If you want to run application one command
 you need type in terminal:
 
 ```bash
-make start_one_click
+make start-one-click
 ```
 
 ## Stopping the app
