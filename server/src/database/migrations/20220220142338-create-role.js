@@ -1,6 +1,5 @@
-'use strict';
 module.exports = {
-    async up (queryInterface, Sequelize) {
+    async up(queryInterface, Sequelize) {
         await queryInterface.createTable('roles', {
             id: {
                 allowNull: false,
@@ -8,7 +7,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            role: {
+            name: {
                 type: Sequelize.ENUM('admin', 'user'),
                 allowNull: false,
                 unique: true,
@@ -25,7 +24,7 @@ module.exports = {
             },
         });
     },
-    async down (queryInterface, Sequelize) {
+    async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('roles');
     },
 };

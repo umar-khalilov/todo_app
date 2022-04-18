@@ -1,5 +1,5 @@
-'use strict';
 require('dotenv').config();
+
 const {
     env: {
         POSTGRES_USER,

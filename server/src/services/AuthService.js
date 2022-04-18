@@ -1,13 +1,14 @@
 require('dotenv').config();
-const { compare, hash, genSalt } = require('bcryptjs'),
-    { sign } = require('jsonwebtoken'),
-    UserService = require('./UserService'),
-    UnauthorizedError = require('../errors/UnauthorizedError'),
-    UserAlreadyExistError = require('../errors/UserAlreadyExist'),
-    TokenError = require('../errors/TokenError');
+const { compare } = require('bcryptjs');
+const { sign } = require('jsonwebtoken');
+const { findUserByEmail, createUser } = require('./UserService');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const UserAlreadyExistError = require('../errors/UserAlreadyExist');
+const TokenError = require('../errors/TokenError');
+const BadRequestError = require('../errors/BadRequestError');
 
 module.exports = class AuthService {
-    static async #generateToken (user = {}) {
+    static async #generateToken(user = {}) {
         if (user.id && user.email && user.roles) {
             const payload = {
                 id: user.id,
@@ -16,52 +17,50 @@ module.exports = class AuthService {
             };
 
             const {
-                env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
+                env: { ACCESS_TOKEN_SECRET, ACCESS_TOKEN_TIME },
             } = process;
 
             return {
-                token: sign(payload, REFRESH_TOKEN_SECRET, {
+                token: sign(payload, ACCESS_TOKEN_SECRET, {
                     algorithm: 'HS384',
-                    expiresIn: REFRESH_TOKEN_TIME,
+                    expiresIn: ACCESS_TOKEN_TIME,
                 }),
             };
         }
         throw new TokenError();
     }
 
-    static async #validateUser ({ email, password }) {
+    static async #validateUser({ email, password }) {
         if (!(email && password)) {
             throw new BadRequestError('Need email and password');
         }
-        const user = await UserService.findUserByEmail(email);
+        const user = await findUserByEmail(email);
         if (user && (await compare(password, user.password))) {
             return user;
         }
         throw new UnauthorizedError();
     }
 
-    static async signIn (signInData = {}) {
+    static async signIn(signInData = {}) {
         const signedUser = await this.#validateUser(signInData);
         return await this.#generateToken(signedUser);
     }
 
-    static async signUp (signUpData) {
-        const candidate = await UserService.findUserByEmail(signUpData.email);
+    static async signUp(signUpData = {}) {
+        const candidate = await findUserByEmail(signUpData.email);
         if (candidate) {
             throw new UserAlreadyExistError();
         }
 
-        const {
-            env: { SALT_ROUNDS },
-        } = process;
-        const passwordHash = await hash(
-            signUpData.password,
-            await genSalt(+SALT_ROUNDS)
-        );
-        const createdUser = await UserService.createUser({
-            ...signUpData,
-            password: passwordHash,
-        });
+        // const {
+        //     env: { SALT_ROUNDS },
+        // } = process;
+        // const passwordHash = await hash(
+        //     signUpData.password,
+        //     await genSalt(+SALT_ROUNDS),
+        // );
+
+        const createdUser = await createUser(signUpData);
         return await this.#generateToken(createdUser);
     }
 };

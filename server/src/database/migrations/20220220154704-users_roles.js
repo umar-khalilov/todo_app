@@ -1,7 +1,5 @@
-'use strict';
-
 module.exports = {
-    async up (queryInterface, Sequelize) {
+    async up(queryInterface, Sequelize) {
         await queryInterface.createTable(
             'users_roles',
             {
@@ -26,11 +24,11 @@ module.exports = {
             },
             {
                 timestamps: false,
-            }
+            },
         );
     },
 
-    async down (queryInterface, Sequelize) {
+    async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('users_roles');
     },
 };

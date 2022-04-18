@@ -1,10 +1,14 @@
-'use strict';
+require('dotenv').config();
 const { Model } = require('sequelize');
 const { isAfter } = require('date-fns');
+const { hash, genSalt } = require('bcryptjs');
 
+const {
+    env: { SALT_ROUNDS },
+} = process;
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
-        static associate (models) {
+        static associate(models) {
             User.hasMany(models.Task, {
                 foreignKey: 'userId',
                 as: 'tasks',
@@ -12,7 +16,9 @@ module.exports = (sequelize, DataTypes) => {
             User.belongsToMany(models.Role, {
                 through: 'users_roles',
                 foreignKey: 'userId',
+                otherKey: 'roleId',
                 timestamps: false,
+                as: 'roles',
             });
         }
     }
@@ -52,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATEONLY,
                 validate: {
                     isDate: true,
-                    isCorrectDate (value) {
+                    isCorrectDate(value) {
                         if (isAfter(new Date(value), new Date())) {
                             throw new Error('Enter a valid date');
                         }
@@ -71,11 +77,35 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         {
+            hooks: {
+                beforeCreate: async (user = {}, options = {}) => {
+                    user.password = await hash(
+                        user.password,
+                        await genSalt(+SALT_ROUNDS),
+                    );
+                    user.email = user.email.toLowerCase();
+                    return user;
+                },
+                beforeUpdate: async (user = {}, options = {}) => {
+                    if (user.password) {
+                        user.password = await hash(
+                            user.password,
+                            await genSalt(+SALT_ROUNDS),
+                        );
+                    }
+                    return user;
+                },
+            },
+            defaultScope: {
+                attributes: {
+                    exclude: ['password'],
+                },
+            },
             sequelize,
             modelName: 'User',
             tableName: 'users',
             underscored: true,
-        }
+        },
     );
     return User;
 };

@@ -1,7 +1,13 @@
-'use strict';
-const router = require('express').Router({ mergeParams: true }),
-    authRouter = require('./authRouter');
+const Router = require('express').Router({ mergeParams: true });
+const AuthRouter = require('./AuthRouter');
+const UserRouter = require('./UserRouter');
 
-router.use('/auth', authRouter);
+class MainRouter {
+    constructor() {
+        Router.use('/auth', AuthRouter);
+        Router.use('/users', UserRouter);
+    }
+}
 
-module.exports = router;
+new MainRouter();
+module.exports = Router;
