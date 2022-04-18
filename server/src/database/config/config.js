@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const {
     env: {
         POSTGRES_USER,
@@ -6,7 +7,6 @@ const {
         POSTGRES_DB,
         POSTGRES_HOSTNAME,
         DB_DIALECT,
-        POSTGRES_DB_PORT,
     },
 } = process;
 
@@ -17,7 +17,6 @@ module.exports = {
         database: POSTGRES_DB,
         host: POSTGRES_HOSTNAME,
         dialect: DB_DIALECT,
-        port: POSTGRES_DB_PORT,
         migrationStorage: 'json',
         seederStorage: 'json',
     },

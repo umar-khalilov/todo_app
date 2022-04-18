@@ -17,13 +17,13 @@ module.exports = class AuthService {
             };
 
             const {
-                env: { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_TIME },
+                env: { ACCESS_TOKEN_SECRET, ACCESS_TOKEN_TIME },
             } = process;
 
             return {
-                token: sign(payload, REFRESH_TOKEN_SECRET, {
+                token: sign(payload, ACCESS_TOKEN_SECRET, {
                     algorithm: 'HS384',
-                    expiresIn: REFRESH_TOKEN_TIME,
+                    expiresIn: ACCESS_TOKEN_TIME,
                 }),
             };
         }
