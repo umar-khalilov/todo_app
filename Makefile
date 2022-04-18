@@ -9,11 +9,11 @@ build:
 	docker-compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} build
 up:
 	docker-compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} up
-up_migrate:
+up-migrate:
 	${INITIALSCRIPTS}
-down_migrate:
+down-migrate:
 	${DOWNMIGRATION}
-start_one_click:
+start-one-click:
 	${STARTONECLICK}
 stop:
 	docker-compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} stop
