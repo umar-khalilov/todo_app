@@ -32,10 +32,10 @@ module.exports = class UserService {
 
     static async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
-        const roleUser = await this.role.findOne({
+        const roleUser = await this.#roleRepository.findOne({
             where: { name: 'user' },
         });
-        createdUser.addRole(roleUser);
+        await createdUser.addRole(roleUser);
 
         return {
             id: createdUser.id,
