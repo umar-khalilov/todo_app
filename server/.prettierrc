@@ -1,12 +1,7 @@
 {
-  "tabWidth": 4,
-  "max-len": [
-    "error",
-    160,
-    2
-  ],
-  "trailingComma": "all",
-  "semi": true,
-  "singleQuote": true,
-  "arrowParens": "avoid"
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "semi": true,
+    "singleQuote": true,
+    "arrowParens": "avoid"
 }
