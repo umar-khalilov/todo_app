@@ -52,14 +52,6 @@ module.exports = class AuthService {
             throw new UserAlreadyExistError();
         }
 
-        // const {
-        //     env: { SALT_ROUNDS },
-        // } = process;
-        // const passwordHash = await hash(
-        //     signUpData.password,
-        //     await genSalt(+SALT_ROUNDS),
-        // );
-
         const createdUser = await UserService.createUser(signUpData);
         return await this.#generateToken(createdUser);
     }
