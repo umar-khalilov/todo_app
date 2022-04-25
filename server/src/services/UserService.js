@@ -1,4 +1,4 @@
-const { User, Role, Task } = require('../database/models');
+const { User, Role } = require('../database/models');
 const UserNotFoundError = require('../errors/UserNotFoundError');
 const { paginateResponse } = require('../utils/paginateResponse');
 
