@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./src/main.js",
     "start:dev": "nodemon ./src/main.js",
-    "debug": "nodemon --inspect=0.0.0.0:9229 ./src/main.js"
+    "debug": "nodemon --inspect ./src/main.js"
   },
   "keywords": [
     "nodejs",

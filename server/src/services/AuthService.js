@@ -9,7 +9,7 @@ const BadRequestError = require('../errors/BadRequestError');
 
 module.exports = class AuthService {
     static async #generateToken(user = {}) {
-        if (user.id && user.email && user.roles) {
+        if (user.id && user.email && user.roles[0]) {
             const payload = {
                 id: user.id,
                 email: user.email,
@@ -30,7 +30,7 @@ module.exports = class AuthService {
         throw new TokenError();
     }
 
-    static async #validateUser({ email, password }) {
+    static async #validateUser(email = '', password = '') {
         if (!(email && password)) {
             throw new BadRequestError('Need email and password');
         }
@@ -42,7 +42,8 @@ module.exports = class AuthService {
     }
 
     static async signIn(signInData = {}) {
-        const signedUser = await this.#validateUser(signInData);
+        const { email, password } = signInData;
+        const signedUser = await this.#validateUser(email, password);
         return await this.#generateToken(signedUser);
     }
 

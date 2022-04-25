@@ -1,9 +1,10 @@
-
 ## Description
 
 Todo application for everyone
 
 ## Installation
+
+You need install node 14-17 version
 
 ```bash
 make build

@@ -44,7 +44,7 @@ module.exports = class ValidationSchemas {
             email: new StringSchema()
                 .email('Email must be truly email')
                 .trim()
-                .required('Required'),
+                .required('Email is required'),
             password: new StringSchema().trim().required('Required'),
         });
     }

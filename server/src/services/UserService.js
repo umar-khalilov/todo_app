@@ -18,8 +18,6 @@ module.exports = class UserService {
             ],
         });
 
-        console.log(user);
-
         return user
             ? {
                   id: user.id,
