@@ -46,10 +46,6 @@ module.exports = class UserService {
         let { count, rows } = await this.#userRepository.findAndCountAll({
             include: [
                 {
-                    model: Task,
-                    as: 'tasks',
-                },
-                {
                     model: Role,
                     attributes: ['name'],
                     through: { attributes: [] },
@@ -71,7 +67,6 @@ module.exports = class UserService {
             email: item.email,
             birthday: item.birthday,
             isMale: item.isMale,
-            tasks: item.tasks,
             roles: item.roles.map(({ name }) => name),
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
@@ -83,10 +78,6 @@ module.exports = class UserService {
     static async findUserById(id) {
         const user = await this.#userRepository.findByPk(id, {
             include: [
-                {
-                    model: Task,
-                    as: 'tasks',
-                },
                 {
                     model: Role,
                     attributes: ['name'],
@@ -107,7 +98,6 @@ module.exports = class UserService {
             email: user.email,
             birthday: user.birthday,
             isMale: user.isMale,
-            tasks: user.tasks,
             roles: user.roles.map(({ name }) => name),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
