@@ -47,21 +47,23 @@ module.exports = class TaskService {
     }
 
     static async updateTaskById(id = 0, data = {}) {
-        const foundTask = await this.#taskRepository.findByPk(id);
-        if (!foundTask) {
+        const [rows, [foundTask]] = await this.#taskRepository.update(data, {
+            where: { id },
+            returning: true,
+        });
+        if (rows === 0) {
             throw new TaskNotFoundError();
         }
-        return await foundTask.update(data);
+        return foundTask;
     }
 
     static async removeTaskById(id = 0) {
         const task = await this.#taskRepository.destroy({
             where: { id },
         });
-        console.log(task);
-        // if (task) {
-        //     throw new TaskNotFoundError();
-        // }
+        if (task === 0) {
+            throw new TaskNotFoundError();
+        }
         return `Task with id: ${id} was successfully removed`;
     }
 };

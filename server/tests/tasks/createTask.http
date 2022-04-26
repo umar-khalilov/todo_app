@@ -3,6 +3,6 @@ Content-Type: application/json
 
 {
   "title": "Test",
-  "body": "lalwkawlalwefwllaa",
+  "body": "something",
   "deadline": "2022-09-10"
 }
