@@ -1,6 +1,7 @@
 const { Task } = require('../database/models');
 const BadRequestError = require('../errors/BadRequestError');
 const { paginateResponse } = require('../utils/paginateResponse');
+const TaskNotFoundError = require('../errors/TaskNotFoundError');
 
 module.exports = class TaskService {
     static #taskRepository = Task;
@@ -22,6 +23,45 @@ module.exports = class TaskService {
         });
         return tasks.length
             ? paginateResponse([tasks.length, tasks], page, limit)
-            : 'Tasks not found';
+            : new TaskNotFoundError();
+    }
+
+    static async findAllTasks({ limit, offset, page }) {
+        const { count, rows } = await this.#taskRepository.findAndCountAll({
+            order: [['updatedAt', 'DESC']],
+            limit,
+            offset,
+        });
+        if (count <= 0) {
+            throw new TaskNotFoundError();
+        }
+        return paginateResponse([count, rows], page, limit);
+    }
+
+    static async findTaskById(id = 0) {
+        const foundTask = await this.#taskRepository.findByPk(id);
+        if (!foundTask) {
+            throw new TaskNotFoundError();
+        }
+        return foundTask;
+    }
+
+    static async updateTaskById(id = 0, data = {}) {
+        const foundTask = await this.#taskRepository.findByPk(id);
+        if (!foundTask) {
+            throw new TaskNotFoundError();
+        }
+        return await foundTask.update(data);
+    }
+
+    static async removeTaskById(id = 0) {
+        const task = await this.#taskRepository.destroy({
+            where: { id },
+        });
+        console.log(task);
+        // if (task) {
+        //     throw new TaskNotFoundError();
+        // }
+        return `Task with id: ${id} was successfully removed`;
     }
 };

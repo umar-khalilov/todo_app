@@ -2,5 +2,7 @@ PATCH http://localhost:3001/api/users/7 HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "John"
+  "name": "Bill",
+  "surname": "Hero",
+  "password": "logOtq123!"
 }

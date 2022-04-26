@@ -8,11 +8,16 @@ const {
 const { createOne, findUserTasks } = require('../controllers/TaskController');
 const { paginate } = require('../middlewares/paginate');
 const { checkUser } = require('../middlewares/checkUser');
+const { userUpdateSchema } = require('../utils/UserValidationSchemas');
+const { validateUserData } = require('../middlewares/UserValidation');
 
 class UserRouter {
     constructor() {
         Router.get('/', paginate, findAll);
-        Router.route('/:id').get(findOne).patch(updateOne).delete(removeOne);
+        Router.route('/:id')
+            .get(findOne)
+            .patch(validateUserData(userUpdateSchema), updateOne)
+            .delete(removeOne);
         Router.route('/:id/tasks')
             .post(checkUser, createOne)
             .get(checkUser, paginate, findUserTasks);

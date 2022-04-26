@@ -6,7 +6,7 @@ const {
     BooleanSchema,
 } = require('yup');
 
-module.exports = class ValidationSchemas {
+module.exports = class AuthValidationSchemas {
     static signUpSchema() {
         const nameSchema = new StringSchema()
             .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')

@@ -8,7 +8,7 @@ module.exports = class AuthValidation {
             } catch (error) {
                 return res
                     .status(400)
-                    .send({ type: error.name, message: error.message });
+                    .send({ name: error.name, message: error.message });
             }
         };
 
@@ -21,7 +21,7 @@ module.exports = class AuthValidation {
             } catch (error) {
                 return res
                     .status(400)
-                    .send({ type: error.name, message: error.message });
+                    .send({ name: error.name, message: error.message });
             }
         };
 };

@@ -18,8 +18,7 @@ module.exports.verifyToken = async (req, res, next) => {
             env: { REFRESH_TOKEN_SECRET },
         } = process;
 
-        const decoded = verify(token, REFRESH_TOKEN_SECRET);
-        req.user = decoded;
+        req.user = verify(token, REFRESH_TOKEN_SECRET,);
         next();
     } catch (error) {
         next(error);

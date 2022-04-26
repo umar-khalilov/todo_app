@@ -44,6 +44,9 @@ module.exports = class UserService {
 
     static async findAllUsers({ limit, offset, page }) {
         let { count, rows } = await this.#userRepository.findAndCountAll({
+            attributes: {
+                exclude: ['password'],
+            },
             include: [
                 {
                     model: Role,
@@ -60,16 +63,16 @@ module.exports = class UserService {
             throw new UserNotFoundError();
         }
 
-        rows = rows.map(item => ({
-            id: item.id,
-            name: item.name,
-            surname: item.surname,
-            email: item.email,
-            birthday: item.birthday,
-            isMale: item.isMale,
-            roles: item.roles.map(({ name }) => name),
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
+        rows = rows.map(user => ({
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            birthday: user.birthday,
+            isMale: user.isMale,
+            roles: user.roles.map(({ name }) => name),
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         }));
 
         return paginateResponse([count, rows], page, limit);
@@ -77,6 +80,9 @@ module.exports = class UserService {
 
     static async findUserById(id) {
         const user = await this.#userRepository.findByPk(id, {
+            attributes: {
+                exclude: ['password'],
+            },
             include: [
                 {
                     model: Role,
@@ -105,24 +111,37 @@ module.exports = class UserService {
     }
 
     static async updateUserById(id, data = {}) {
+        const [rows, [updatedUser]] = await User.update(data, {
+            where: { id },
+            returning: [
+                'id',
+                'name',
+                'surname',
+                'email',
+                'birthday',
+                'is_male',
+                'created_at',
+                'updated_at',
+            ],
+            individualHooks: true,
+        });
+        if (rows === 0) {
+            throw new UserNotFoundError();
+        }
+        return updatedUser;
+    }
+
+    static async removeUserById(id) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
             throw new UserNotFoundError();
         }
-        return await foundUser.update(data);
-    }
 
-    static async removeUserById(id) {
-        const removedUser = await this.#userRepository.findByPk(id);
-        if (!removedUser) {
-            throw new UserNotFoundError();
-        }
-
-        const roles = await removedUser.getRoles();
-        const tasks = await removedUser.getTasks();
-        await removedUser.removeRoles(roles);
-        await removedUser.removeTasks(tasks);
-        await removedUser.destroy();
+        const roles = await foundUser.getRoles();
+        const tasks = await foundUser.getTasks();
+        await foundUser.removeRoles(roles);
+        await foundUser.removeTasks(tasks);
+        await foundUser.destroy();
         return `User with id: ${id} was successfully removed`;
     }
 };

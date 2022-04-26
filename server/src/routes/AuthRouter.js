@@ -4,7 +4,10 @@ const {
     validateSignInData,
     validateSignUpData,
 } = require('../middlewares/AuthValidation');
-const { signInSchema, signUpSchema } = require('../utils/ValidationSchemas');
+const {
+    signInSchema,
+    signUpSchema,
+} = require('../utils/AuthValidationSchemas');
 
 class AuthRouter {
     constructor() {
