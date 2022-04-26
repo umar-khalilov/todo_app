@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
-const { findUserByEmail, createUser } = require('./UserService');
+const UserService = require('./UserService');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserAlreadyExistError = require('../errors/UserAlreadyExist');
 const TokenError = require('../errors/TokenError');
@@ -9,7 +9,7 @@ const BadRequestError = require('../errors/BadRequestError');
 
 module.exports = class AuthService {
     static async #generateToken(user = {}) {
-        if (user.id && user.email && user.roles) {
+        if (user.id && user.email && user.roles[0]) {
             const payload = {
                 id: user.id,
                 email: user.email,
@@ -30,11 +30,11 @@ module.exports = class AuthService {
         throw new TokenError();
     }
 
-    static async #validateUser({ email, password }) {
+    static async #validateUser(email = '', password = '') {
         if (!(email && password)) {
             throw new BadRequestError('Need email and password');
         }
-        const user = await findUserByEmail(email);
+        const user = await UserService.findUserByEmail(email);
         if (user && (await compare(password, user.password))) {
             return user;
         }
@@ -42,25 +42,18 @@ module.exports = class AuthService {
     }
 
     static async signIn(signInData = {}) {
-        const signedUser = await this.#validateUser(signInData);
+        const { email, password } = signInData;
+        const signedUser = await this.#validateUser(email, password);
         return await this.#generateToken(signedUser);
     }
 
     static async signUp(signUpData = {}) {
-        const candidate = await findUserByEmail(signUpData.email);
+        const candidate = await UserService.findUserByEmail(signUpData.email);
         if (candidate) {
             throw new UserAlreadyExistError();
         }
 
-        // const {
-        //     env: { SALT_ROUNDS },
-        // } = process;
-        // const passwordHash = await hash(
-        //     signUpData.password,
-        //     await genSalt(+SALT_ROUNDS),
-        // );
-
-        const createdUser = await createUser(signUpData);
+        const createdUser = await UserService.createUser(signUpData);
         return await this.#generateToken(createdUser);
     }
 };

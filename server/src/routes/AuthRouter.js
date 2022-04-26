@@ -1,10 +1,13 @@
 const Router = require('express').Router({ mergeParams: true });
-const { signIn, signUp } = require('../controllers/AuthController');
+const { signUp, signIn } = require('../controllers/AuthController');
 const {
     validateSignInData,
     validateSignUpData,
 } = require('../middlewares/AuthValidation');
-const { signInSchema, signUpSchema } = require('../utils/ValidationSchemas');
+const {
+    signInSchema,
+    signUpSchema,
+} = require('../utils/AuthValidationSchemas');
 
 class AuthRouter {
     constructor() {

@@ -1,4 +1,4 @@
-const { User, Role, Task } = require('../database/models');
+const { User, Role } = require('../database/models');
 const UserNotFoundError = require('../errors/UserNotFoundError');
 const { paginateResponse } = require('../utils/paginateResponse');
 
@@ -7,7 +7,7 @@ module.exports = class UserService {
     static #roleRepository = Role;
 
     static async findUserByEmail(email = '') {
-        const user = await this.#userRepository.findOne({
+        const user = await this.#userRepository.scope('withPassword').findOne({
             where: { email },
             include: [
                 {
@@ -33,7 +33,7 @@ module.exports = class UserService {
         const roleUser = await this.#roleRepository.findOne({
             where: { name: 'user' },
         });
-        createdUser.addRole(roleUser);
+        await createdUser.addRole(roleUser);
 
         return {
             id: createdUser.id,
@@ -45,10 +45,6 @@ module.exports = class UserService {
     static async findAllUsers({ limit, offset, page }) {
         let { count, rows } = await this.#userRepository.findAndCountAll({
             include: [
-                {
-                    model: Task,
-                    as: 'tasks',
-                },
                 {
                     model: Role,
                     attributes: ['name'],
@@ -64,17 +60,16 @@ module.exports = class UserService {
             throw new UserNotFoundError();
         }
 
-        rows = rows.map(item => ({
-            id: item.id,
-            name: item.name,
-            surname: item.surname,
-            email: item.email,
-            birthday: item.birthday,
-            isMale: item.isMale,
-            tasks: item.tasks,
-            roles: item.roles.map(({ name }) => name),
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
+        rows = rows.map(user => ({
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            birthday: user.birthday,
+            isMale: user.isMale,
+            roles: user.roles.map(({ name }) => name),
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         }));
 
         return paginateResponse([count, rows], page, limit);
@@ -83,10 +78,6 @@ module.exports = class UserService {
     static async findUserById(id) {
         const user = await this.#userRepository.findByPk(id, {
             include: [
-                {
-                    model: Task,
-                    as: 'tasks',
-                },
                 {
                     model: Role,
                     attributes: ['name'],
@@ -107,7 +98,6 @@ module.exports = class UserService {
             email: user.email,
             birthday: user.birthday,
             isMale: user.isMale,
-            tasks: user.tasks,
             roles: user.roles.map(({ name }) => name),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -115,24 +105,29 @@ module.exports = class UserService {
     }
 
     static async updateUserById(id, data = {}) {
+        const [rows, [updatedUser]] = await this.#userRepository.update(data, {
+            where: { id },
+            returning: true,
+            individualHooks: true,
+        });
+        if (rows === 0) {
+            throw new UserNotFoundError();
+        }
+        updatedUser.password = undefined;
+        return updatedUser;
+    }
+
+    static async removeUserById(id) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
             throw new UserNotFoundError();
         }
-        return await foundUser.update(data);
-    }
 
-    static async removeUserById(id) {
-        const removedUser = await this.#userRepository.findByPk(id);
-        if (!removedUser) {
-            throw new UserNotFoundError();
-        }
-
-        const roles = await removedUser.getRoles();
-        const tasks = await removedUser.getTasks();
-        await removedUser.removeRoles(roles);
-        await removedUser.removeTasks(tasks);
-        await removedUser.destroy();
+        const roles = await foundUser.getRoles();
+        const tasks = await foundUser.getTasks();
+        await foundUser.removeRoles(roles);
+        await foundUser.removeTasks(tasks);
+        await foundUser.destroy();
         return `User with id: ${id} was successfully removed`;
     }
 };

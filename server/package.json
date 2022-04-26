@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./src/main.js",
     "start:dev": "nodemon ./src/main.js",
-    "debug": "nodemon --inspect=0.0.0.0:9229 ./src/main.js"
+    "debug": "nodemon --inspect ./src/main.js"
   },
   "keywords": [
     "nodejs",
@@ -34,10 +34,6 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "eslint": "^8.13.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "sequelize-cli": "^6.4.1"

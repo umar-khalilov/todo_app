@@ -21,15 +21,16 @@ services:
     container_name: app
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
+    working_dir: /usr/src/app  
     ports:
       - ${PORT}:${PORT}
       - '9229:9229'
     volumes:
-      - ./:/app/
+      - .:/app
+      - ignore:/usr/src/app/node_modules/
     env_file:
       - .env
-    command: npm run start:dev
     depends_on:
       - database
     networks:
@@ -38,7 +39,7 @@ services:
 
 volumes:
   pgdata:
-  app:
+  ignore:
 
 networks:
   todo_net:
