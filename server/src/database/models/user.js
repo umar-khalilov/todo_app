@@ -77,6 +77,14 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         {
+            defaultScope: {
+                attributes: { exclude: ['password'] },
+            },
+            scopes: {
+                withPassword: {
+                    attributes: {},
+                },
+            },
             hooks: {
                 beforeCreate: async (user = {}, options = {}) => {
                     user.password = await hash(

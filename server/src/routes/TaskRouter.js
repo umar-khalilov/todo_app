@@ -5,12 +5,17 @@ const {
     updateOne,
     removeOne,
 } = require('../controllers/TaskController');
+const { taskUpdateSchema } = require('../utils/TaskValidationSchemas');
+const { validateUpdateTaskData } = require('../middlewares/TaskValidation');
 const { paginate } = require('../middlewares/paginate');
 
 class TaskRouter {
     constructor() {
         Router.get('/', paginate, findAllTasks);
-        Router.route('/:id').get(findOne).patch(updateOne).delete(removeOne);
+        Router.route('/:id')
+            .get(findOne)
+            .patch(validateUpdateTaskData(taskUpdateSchema), updateOne)
+            .delete(removeOne);
     }
 }
 

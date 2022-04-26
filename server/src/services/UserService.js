@@ -7,7 +7,7 @@ module.exports = class UserService {
     static #roleRepository = Role;
 
     static async findUserByEmail(email = '') {
-        const user = await this.#userRepository.findOne({
+        const user = await this.#userRepository.scope('withPassword').findOne({
             where: { email },
             include: [
                 {
@@ -18,6 +18,7 @@ module.exports = class UserService {
             ],
         });
 
+        console.log(user);
         return user
             ? {
                   id: user.id,
@@ -44,9 +45,6 @@ module.exports = class UserService {
 
     static async findAllUsers({ limit, offset, page }) {
         let { count, rows } = await this.#userRepository.findAndCountAll({
-            attributes: {
-                exclude: ['password'],
-            },
             include: [
                 {
                     model: Role,
@@ -80,9 +78,6 @@ module.exports = class UserService {
 
     static async findUserById(id) {
         const user = await this.#userRepository.findByPk(id, {
-            attributes: {
-                exclude: ['password'],
-            },
             include: [
                 {
                     model: Role,
@@ -111,23 +106,15 @@ module.exports = class UserService {
     }
 
     static async updateUserById(id, data = {}) {
-        const [rows, [updatedUser]] = await User.update(data, {
+        const [rows, [updatedUser]] = await this.#userRepository.update(data, {
             where: { id },
-            returning: [
-                'id',
-                'name',
-                'surname',
-                'email',
-                'birthday',
-                'is_male',
-                'created_at',
-                'updated_at',
-            ],
+            returning: true,
             individualHooks: true,
         });
         if (rows === 0) {
             throw new UserNotFoundError();
         }
+        updatedUser.password = undefined;
         return updatedUser;
     }
 
