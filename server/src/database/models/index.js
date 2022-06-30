@@ -1,16 +1,22 @@
 'use strict';
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import config from './../config/config.js';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+const configPath = (__dirname + config)[env];
 const db = {};
 
-const sequelize = config.use_env_variable
-    ? new Sequelize(process.env[config.use_env_variable], config)
-    : new Sequelize(config.database, config.username, config.password, config);
+const sequelize = configPath.use_env_variable
+    ? new Sequelize(process.env[configPath.use_env_variable], configPath)
+    : new Sequelize(
+          configPath.database,
+          configPath.username,
+          configPath.password,
+          configPath,
+      );
 
 fs.readdirSync(__dirname)
     .filter(
@@ -34,4 +40,4 @@ Object.keys(db).forEach(modelName =>
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

@@ -1,12 +1,12 @@
-require('dotenv').config();
-const { Model } = require('sequelize');
-const { isAfter } = require('date-fns');
-const { hash, genSalt } = require('bcryptjs');
+'use strict';
+import 'dotenv/config';
+import { Model } from 'sequelize';
+import { isAfter } from 'date-fns';
+import { genSalt, hash } from 'bcryptjs';
 
-const {
-    env: { SALT_ROUNDS },
-} = process;
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
+    const salt = +process.env.SALT_ROUNDS;
+
     class User extends Model {
         static associate(models) {
             User.hasMany(models.Task, {
@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
                 beforeCreate: async (user = {}, options = {}) => {
                     user.password = await hash(
                         user.password,
-                        await genSalt(+SALT_ROUNDS),
+                        await genSalt(salt),
                     );
                     user.email = user.email.toLowerCase();
                     return user;
@@ -98,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
                     if (user.password) {
                         user.password = await hash(
                             user.password,
-                            await genSalt(+SALT_ROUNDS),
+                            await genSalt(salt),
                         );
                     }
                     return user;

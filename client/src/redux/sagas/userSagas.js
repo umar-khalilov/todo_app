@@ -7,7 +7,7 @@ export function* getUsersSaga(action) {
         const {
             data: { data: users },
         } = yield API.getUsers();
-        yield put(Actions.getUsersSuccess({ users }));
+        yield put(Actions.getUsersSuccess(users));
     } catch (err) {
         yield put(Actions.getUsersError({ err }));
     }

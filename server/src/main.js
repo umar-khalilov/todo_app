@@ -1,25 +1,17 @@
-require('dotenv').config();
-const { createServer } = require('http');
-const { address } = require('ip');
-const app = require('./app');
+import('dotenv/config');
+import { validateEnv } from './utils/validateEnv.js';
+import { App } from './App.js';
 
-const {
-    env: { PORT },
-} = process;
-
-const runExpressApp = async port => {
+const bootstrap = async port => {
     try {
-        createServer(app).listen(Number(port) || 3001, () =>
-            console.info(
-                '\x1b[1m',
-                '\x1b[32m',
-                `Express App started on http//${address()}:${port}`,
-            ),
-        );
+        await validateEnv();
+        const controllers = [];
+        const app = new App(controllers, port);
+        app.listen();
     } catch (err) {
         console.error(err);
-        process.exit();
+        process.exit(1);
     }
 };
 
-void runExpressApp(PORT);
+void bootstrap(+process.env.PORT);

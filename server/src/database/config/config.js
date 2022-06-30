@@ -1,4 +1,5 @@
-require('dotenv').config();
+'use strict';
+import 'dotenv/config';
 
 const {
     env: {
@@ -10,7 +11,7 @@ const {
     },
 } = process;
 
-module.exports = {
+export default {
     development: {
         username: POSTGRES_USER,
         password: POSTGRES_PASSWORD,

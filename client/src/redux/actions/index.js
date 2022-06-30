@@ -43,4 +43,31 @@ export class Actions {
             payload: { error },
         };
     }
+
+    static deleteUserRequest({ id } = {}) {
+        return {
+            type: ACTION_USER_TYPES.DELETE_USER_REQUEST,
+            payload: { id },
+        };
+    }
+
+    static deleteUserSuccess({ id } = {}) {
+        return {
+            type: ACTION_USER_TYPES.DELETE_USER_SUCCESS,
+            payload: { id },
+        };
+    }
+
+    static deleteUserError({ error } = {}) {
+        return {
+            type: ACTION_USER_TYPES.DELETE_USER_ERROR,
+            payload: { error },
+        };
+    }
+
+    static clearUserError() {
+        return {
+            type: ACTION_USER_TYPES.CLEAR_USER_ERROR,
+        };
+    }
 }

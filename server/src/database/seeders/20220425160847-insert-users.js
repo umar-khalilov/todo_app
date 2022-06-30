@@ -1,7 +1,6 @@
 'use strict';
-const { Role } = require('../models');
 
-module.exports = {
+export default {
     async up(queryInterface, Sequelize) {
         const generateUser = key => ({
             name: `Name=${key}`,

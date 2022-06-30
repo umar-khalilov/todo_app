@@ -1,4 +1,4 @@
-const TaskService = require('../services/TaskService');
+const TaskService = require('./TaskService.js');
 
 module.exports = class TaskController {
     static async createOne({ params: { id }, body }, res, next) {

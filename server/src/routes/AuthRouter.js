@@ -1,5 +1,5 @@
 const Router = require('express').Router({ mergeParams: true });
-const { signUp, signIn } = require('../controllers/AuthController');
+const { signUp, signIn } = require('../authentication/AuthController.js');
 const {
     validateSignInData,
     validateSignUpData,

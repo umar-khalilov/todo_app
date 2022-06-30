@@ -1,7 +1,7 @@
 'use strict';
-const { User } = require('../models');
+import User from '../models';
 
-module.exports = {
+export default {
     async up(queryInterface, Sequelize) {
         const users = await User.findAll({
             attributes: ['id'],
@@ -13,17 +13,19 @@ module.exports = {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         };
 
-        const tasks = users.map(user =>
-            new Array(getRandom(1, 10)).fill(null).map((_, index) => ({
-                user_id: user.id,
-                title: `Title=${index}`,
-                body: `Test task ${index}`,
-                deadline: new Date(2020, 1, index),
-                is_done: Math.random() > 0.5,
-                created_at: new Date(),
-                updated_at: new Date(),
-            })),
-        ).flat(2);
+        const tasks = users
+            .map(user =>
+                new Array(getRandom(1, 10)).fill(null).map((_, index) => ({
+                    user_id: user.id,
+                    title: `Title=${index}`,
+                    body: `Test task ${index}`,
+                    deadline: new Date(2020, 1, index),
+                    is_done: Math.random() > 0.5,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                })),
+            )
+            .flat(2);
 
         await queryInterface.bulkInsert('tasks', tasks, {});
     },

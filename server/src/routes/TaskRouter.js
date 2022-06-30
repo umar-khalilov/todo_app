@@ -4,7 +4,7 @@ const {
     findOne,
     updateOne,
     removeOne,
-} = require('../controllers/TaskController');
+} = require('../tasks/TaskController.js');
 const { taskUpdateSchema } = require('../utils/TaskValidationSchemas');
 const { validateUpdateTaskData } = require('../middlewares/TaskValidation');
 const { paginate } = require('../middlewares/paginate');

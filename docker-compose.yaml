@@ -1,6 +1,24 @@
 version: '3.9'
 
 services:
+  main:
+    container_name: main
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+      - '9229:9229'
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - todo_net
+    restart: unless-stopped
   database:
     container_name: database
     image: postgres:14-alpine3.15
@@ -16,32 +34,12 @@ services:
     networks:
       - todo_net
     tty: true
-    restart: always
-  app:
-    container_name: app
-    build:
-      context: ./server
-      dockerfile: ./Dockerfile
-    working_dir: /usr/src/app  
-    ports:
-      - ${PORT}:${PORT}
-      - '9229:9229'
-    volumes:
-      - .:/app
-      - ignore:/usr/src/app/node_modules/
-    env_file:
-      - .env
-    depends_on:
-      - database
-    networks:
-      - todo_net
-    restart: always
+    restart: unless-stopped
 
 volumes:
   pgdata:
-  ignore:
+  server:
 
 networks:
   todo_net:
     driver: bridge
-

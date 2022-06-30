@@ -1,4 +1,4 @@
-const UserService = require('../services/UserService');
+const UserService = require('./UserService.js');
 
 module.exports = class UserController {
     static async findAll({ pagination }, res, next) {

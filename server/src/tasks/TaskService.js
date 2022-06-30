@@ -1,7 +1,7 @@
-const { Task } = require('../database/models');
-const BadRequestError = require('../errors/BadRequestError');
-const { paginateResponse } = require('../utils/paginateResponse');
-const TaskNotFoundError = require('../errors/TaskNotFoundError');
+const { Task } = require('../database/models/index.js');
+const BadRequestError = require('../errors/BadRequestException.js');
+const { paginateResponse } = require('../utils/paginateResponse.js');
+const TaskNotFoundError = require('../errors/TaskNotFoundException.js');
 
 module.exports = class TaskService {
     static #taskRepository = Task;

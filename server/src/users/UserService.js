@@ -1,6 +1,6 @@
-const { User, Role } = require('../database/models');
-const UserNotFoundError = require('../errors/UserNotFoundError');
-const { paginateResponse } = require('../utils/paginateResponse');
+const { User, Role } = require('../database/models/index.js');
+const UserNotFoundError = require('../errors/UserNotFoundException.js');
+const { paginateResponse } = require('../utils/paginateResponse.js');
 
 module.exports = class UserService {
     static #userRepository = User;
@@ -117,7 +117,7 @@ module.exports = class UserService {
         return updatedUser;
     }
 
-    static async removeUserById(id) {
+    static async removeUserById(id = 0) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
             throw new UserNotFoundError();

@@ -1,4 +1,6 @@
-module.exports = {
+'use strict';
+
+export default {
     async up(queryInterface, Sequelize) {
         await queryInterface.bulkInsert(
             'roles',

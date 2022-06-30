@@ -4,8 +4,8 @@ const {
     findOne,
     updateOne,
     removeOne,
-} = require('../controllers/UserController');
-const { createOne, findUserTasks } = require('../controllers/TaskController');
+} = require('../users/UserController.js');
+const { createOne, findUserTasks } = require('../tasks/TaskController.js');
 const { taskCreateSchema } = require('../utils/TaskValidationSchemas');
 const { userUpdateSchema } = require('../utils/UserValidationSchemas');
 const { paginate } = require('../middlewares/paginate');

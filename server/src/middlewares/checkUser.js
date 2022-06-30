@@ -1,14 +1,14 @@
-const { User } = require('../database/models');
-const UserNotFoundError = require('../errors/UserNotFoundError');
+import User from '../database/models';
+import { UserNotFoundException } from '../errors/UserNotFoundException.js';
 
-module.exports.checkUser = async (req, res, next) => {
+export const checkUser = async (req, res, next) => {
     try {
         const {
             params: { id },
         } = req;
         const userInstance = await User.findByPk(+id);
         if (!userInstance) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
         req.userInstance = userInstance;
         next();
