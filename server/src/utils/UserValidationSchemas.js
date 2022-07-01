@@ -1,13 +1,8 @@
-const { parse, isDate } = require('date-fns');
-const {
-    ObjectSchema,
-    StringSchema,
-    DateSchema,
-    BooleanSchema,
-} = require('yup');
+import { isDate, parse } from 'date-fns';
+import { BooleanSchema, DateSchema, ObjectSchema, StringSchema } from 'yup';
 
-module.exports = class UserValidationSchemas {
-    static userUpdateSchema() {
+export class UserValidationSchemas {
+    userUpdateSchema() {
         const nameSchema = new StringSchema()
             .optional()
             .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')
@@ -39,4 +34,4 @@ module.exports = class UserValidationSchemas {
             isMale: new BooleanSchema().optional(),
         });
     }
-};
+}

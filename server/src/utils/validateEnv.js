@@ -1,7 +1,7 @@
 import { cleanEnv, num, port, str } from 'envalid';
 
-export const validateEnv = async () => {
-    await cleanEnv(process.env, {
+export const validateEnv = () =>
+    cleanEnv(process.env, {
         PORT: port(),
         DB_DIALECT: str(),
         POSTGRES_HOSTNAME: str(),
@@ -13,4 +13,4 @@ export const validateEnv = async () => {
         ACCESS_TOKEN_TIME: str(),
         SALT_ROUNDS: num(),
     });
-};
+

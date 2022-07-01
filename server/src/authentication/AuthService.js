@@ -1,14 +1,16 @@
-require('dotenv').config();
-const { compare } = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
-const UserService = require('../users/UserService.js');
-const UnauthorizedError = require('../errors/UnauthorizedException.js');
-const UserAlreadyExistError = require('../errors/UserAlreadyExistException.js');
-const TokenError = require('../errors/TokenException.js');
-const BadRequestError = require('../errors/BadRequestException.js');
+import 'dotenv/config';
+import { compare } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+import { TokenException } from '../errors/TokenException.js';
+import { BadRequestException } from '../errors/BadRequestException.js';
+import { UserService } from '../users/UserService.js';
+import { UnauthorizedException } from '../errors/UnauthorizedException.js';
+import { UserAlreadyExistException } from '../errors/UserAlreadyExistException.js';
 
-module.exports = class AuthService {
-    static async #generateToken(user = {}) {
+export class AuthService {
+    #userService = new UserService();
+
+    async #generateToken(user = {}) {
         if (user.id && user.email && user.roles[0]) {
             const payload = {
                 id: user.id,
@@ -27,33 +29,35 @@ module.exports = class AuthService {
                 }),
             };
         }
-        throw new TokenError();
+        throw new TokenException();
     }
 
-    static async #validateUser(email = '', password = '') {
+    #validateUser = async (email = '', password = '') => {
         if (!(email && password)) {
-            throw new BadRequestError('Need email and password');
+            throw new BadRequestException('Need email and password');
         }
-        const user = await UserService.findUserByEmail(email);
+        const user = await this.#userService.findUserByEmail(email);
         if (user && (await compare(password, user.password))) {
             return user;
         }
-        throw new UnauthorizedError();
-    }
+        throw new UnauthorizedException();
+    };
 
-    static async signIn(signInData = {}) {
+    signIn = async (signInData = {}) => {
         const { email, password } = signInData;
         const signedUser = await this.#validateUser(email, password);
         return await this.#generateToken(signedUser);
-    }
+    };
 
-    static async signUp(signUpData = {}) {
-        const candidate = await UserService.findUserByEmail(signUpData.email);
+    signUp = async (signUpData = {}) => {
+        const candidate = await this.#userService.findUserByEmail(
+            signUpData.email,
+        );
         if (candidate) {
-            throw new UserAlreadyExistError();
+            throw new UserAlreadyExistException();
         }
 
-        const createdUser = await UserService.createUser(signUpData);
+        const createdUser = await this.#userService.createUser(signUpData);
         return await this.#generateToken(createdUser);
-    }
-};
+    };
+}

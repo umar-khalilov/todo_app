@@ -1,17 +1,17 @@
-const { User, Role } = require('../database/models/index.js');
-const UserNotFoundError = require('../errors/UserNotFoundException.js');
-const { paginateResponse } = require('../utils/paginateResponse.js');
+import { Role, User } from '../database/models';
+import { UserNotFoundException } from '../errors/UserNotFoundException.js';
+import { paginateResponse } from '../utils/paginateResponse.js';
 
-module.exports = class UserService {
-    static #userRepository = User;
-    static #roleRepository = Role;
+export class UserService {
+    #userRepository = User;
+    #roleRepository = Role;
 
-    static async findUserByEmail(email = '') {
+    async findUserByEmail(email = '') {
         const user = await this.#userRepository.scope('withPassword').findOne({
             where: { email },
             include: [
                 {
-                    model: Role,
+                    model: this.#roleRepository,
                     attributes: ['name'],
                     as: 'roles',
                 },
@@ -28,7 +28,7 @@ module.exports = class UserService {
             : null;
     }
 
-    static async createUser(data = {}) {
+    async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
         const roleUser = await this.#roleRepository.findOne({
             where: { name: 'user' },
@@ -42,11 +42,11 @@ module.exports = class UserService {
         };
     }
 
-    static async findAllUsers({ limit, offset, page }) {
+    async findAllUsers({ limit, offset, page }) {
         let { count, rows } = await this.#userRepository.findAndCountAll({
             include: [
                 {
-                    model: Role,
+                    model: this.#roleRepository,
                     attributes: ['name'],
                     through: { attributes: [] },
                     as: 'roles',
@@ -57,7 +57,7 @@ module.exports = class UserService {
             offset,
         });
         if (count <= 0) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
 
         rows = rows.map(user => ({
@@ -75,11 +75,11 @@ module.exports = class UserService {
         return paginateResponse([count, rows], page, limit);
     }
 
-    static async findUserById(id) {
+    async findUserById(id) {
         const user = await this.#userRepository.findByPk(id, {
             include: [
                 {
-                    model: Role,
+                    model: this.#roleRepository,
                     attributes: ['name'],
                     through: { attributes: [] },
                     as: 'roles',
@@ -88,7 +88,7 @@ module.exports = class UserService {
         });
 
         if (!user) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
 
         return {
@@ -104,23 +104,23 @@ module.exports = class UserService {
         };
     }
 
-    static async updateUserById(id, data = {}) {
+    async updateUserById(id, data = {}) {
         const [rows, [updatedUser]] = await this.#userRepository.update(data, {
             where: { id },
             returning: true,
             individualHooks: true,
         });
         if (rows === 0) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
         updatedUser.password = undefined;
         return updatedUser;
     }
 
-    static async removeUserById(id = 0) {
+    async removeUserById(id = 0) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
 
         const roles = await foundUser.getRoles();
@@ -130,4 +130,4 @@ module.exports = class UserService {
         await foundUser.destroy();
         return `User with id: ${id} was successfully removed`;
     }
-};
+}

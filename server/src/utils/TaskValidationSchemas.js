@@ -1,17 +1,7 @@
-const { parse, isDate } = require('date-fns');
-const {
-    ObjectSchema,
-    StringSchema,
-    DateSchema,
-    BooleanSchema,
-} = require('yup');
+import { BooleanSchema, DateSchema, ObjectSchema, StringSchema } from 'yup';
 
-module.exports = class TaskValidationSchemas {
-    static taskCreateSchema() {
-        const parseDateString = (value, originalValue) =>
-            isDate(originalValue)
-                ? originalValue
-                : parse(originalValue, 'YYYY-MM-DDThh:mm:ss.sTZD', new Date());
+export class TaskValidationSchemas {
+    taskCreateSchema() {
         return new ObjectSchema({
             title: new StringSchema()
                 .matches(/^([a-zA-Z\d _-]+)$/, 'Enter a valid title')
@@ -30,7 +20,7 @@ module.exports = class TaskValidationSchemas {
         });
     }
 
-    static taskUpdateSchema() {
+    taskUpdateSchema() {
         return new ObjectSchema({
             title: new StringSchema()
                 .optional()
@@ -48,4 +38,4 @@ module.exports = class TaskValidationSchemas {
             isDone: new BooleanSchema().optional(),
         });
     }
-};
+}

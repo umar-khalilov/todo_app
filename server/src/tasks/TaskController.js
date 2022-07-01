@@ -1,18 +1,49 @@
-const TaskService = require('./TaskService.js');
+import { Router } from 'express';
+import { TaskService } from './TaskService.js';
+import { paginate } from '../middlewares/paginate.js';
+import { TaskValidation } from '../middlewares/TaskValidation.js';
+import { TaskValidationSchemas } from '../utils/TaskValidationSchemas.js';
 
-module.exports = class TaskController {
-    static async createOne({ params: { id }, body }, res, next) {
+export class TaskController {
+    #path = '/tasks';
+    #router = Router({ mergeParams: true });
+    #taskService = new TaskService();
+    #taskValidation = new TaskValidation();
+    #taskSchema = new TaskValidationSchemas();
+
+    constructor() {
+        this.#initializeRoutes();
+    }
+
+    #initializeRoutes() {
+        this.#router.get(this.#path, paginate, this.#taskService.findAllTasks);
+        this.#router
+            .route(`${this.#path}/:id`)
+            .get(this.#findOne)
+            .patch(
+                this.#taskValidation.validateUpdateTaskData(
+                    this.#taskSchema.taskUpdateSchema,
+                ),
+                this.#updateOne,
+            )
+            .delete(this.#removeOne);
+    }
+
+    #createOne = async ({ params: { id }, body }, res, next) => {
         try {
-            const task = await TaskService.createTask({ ...body, userId: +id });
+            const task = await this.#taskService.createTask({
+                ...body,
+                userId: +id,
+            });
             return res.status(201).send({ data: task });
         } catch (err) {
             next(err);
         }
-    }
+    };
 
-    static async findUserTasks({ userInstance, pagination }, res, next) {
+    #findUserTasks = async ({ userInstance, pagination }, res, next) => {
         try {
-            const tasks = await TaskService.findUserTasks(
+            const tasks = await this.#taskService.findUserTasks(
                 userInstance,
                 pagination,
             );
@@ -20,29 +51,29 @@ module.exports = class TaskController {
         } catch (err) {
             next(err);
         }
-    }
+    };
 
-    static async findAllTasks({ pagination }, res, next) {
+    #findAllTasks = async ({ pagination }, res, next) => {
         try {
-            const tasks = await TaskService.findAllTasks(pagination);
+            const tasks = await this.#taskService.findAllTasks(pagination);
             return res.status(200).send(tasks);
         } catch (err) {
             next(err);
         }
-    }
+    };
 
-    static async findOne({ params: { id } }, res, next) {
+    #findOne = async ({ params: { id } }, res, next) => {
         try {
-            const foundTask = await TaskService.findTaskById(Number(id));
+            const foundTask = await this.#taskService.findTaskById(Number(id));
             return res.status(200).send({ data: foundTask });
         } catch (err) {
             next(err);
         }
-    }
+    };
 
-    static async updateOne({ params: { id }, body }, res, next) {
+    #updateOne = async ({ params: { id }, body }, res, next) => {
         try {
-            const updatedTask = await TaskService.updateTaskById(
+            const updatedTask = await this.#taskService.updateTaskById(
                 Number(id),
                 body,
             );
@@ -50,14 +81,14 @@ module.exports = class TaskController {
         } catch (err) {
             next(err);
         }
-    }
+    };
 
-    static async removeOne({ params: { id } }, res, next) {
+    #removeOne = async ({ params: { id } }, res, next) => {
         try {
-            const result = await TaskService.removeTaskById(id);
+            const result = await this.#taskService.removeTaskById(id);
             return res.status(204).send({ data: result });
         } catch (err) {
             next(err);
         }
-    }
-};
+    };
+}

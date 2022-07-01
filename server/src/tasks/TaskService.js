@@ -1,20 +1,20 @@
-const { Task } = require('../database/models/index.js');
-const BadRequestError = require('../errors/BadRequestException.js');
-const { paginateResponse } = require('../utils/paginateResponse.js');
-const TaskNotFoundError = require('../errors/TaskNotFoundException.js');
+import { Task } from '../database/models';
+import { BadRequestException } from '../errors/BadRequestException.js';
+import { paginateResponse } from '../utils/paginateResponse.js';
+import { TaskNotFoundException } from '../errors/TaskNotFoundException.js';
 
-module.exports = class TaskService {
-    static #taskRepository = Task;
+export class TaskService {
+    #taskRepository = Task;
 
-    static async createTask(data = {}) {
+    async createTask(data = {}) {
         const createdTask = await this.#taskRepository.create(data);
         if (!createdTask) {
-            throw new BadRequestError();
+            throw new BadRequestException();
         }
         return createdTask;
     }
 
-    static async findUserTasks(userInstance = {}, pagination = {}) {
+    async findUserTasks(userInstance = {}, pagination = {}) {
         const { limit, offset, page } = pagination;
         const tasks = await userInstance.getTasks({
             limit,
@@ -23,47 +23,47 @@ module.exports = class TaskService {
         });
         return tasks.length
             ? paginateResponse([tasks.length, tasks], page, limit)
-            : new TaskNotFoundError();
+            : new TaskNotFoundException();
     }
 
-    static async findAllTasks({ limit, offset, page }) {
+    async findAllTasks({ limit, offset, page }) {
         const { count, rows } = await this.#taskRepository.findAndCountAll({
             order: [['updatedAt', 'DESC']],
             limit,
             offset,
         });
         if (count <= 0) {
-            throw new TaskNotFoundError();
+            throw new TaskNotFoundException();
         }
         return paginateResponse([count, rows], page, limit);
     }
 
-    static async findTaskById(id = 0) {
+    async findTaskById(id = 0) {
         const foundTask = await this.#taskRepository.findByPk(id);
         if (!foundTask) {
-            throw new TaskNotFoundError();
+            throw new TaskNotFoundException();
         }
         return foundTask;
     }
 
-    static async updateTaskById(id = 0, data = {}) {
+    async updateTaskById(id = 0, data = {}) {
         const [rows, [foundTask]] = await this.#taskRepository.update(data, {
             where: { id },
             returning: true,
         });
         if (rows === 0) {
-            throw new TaskNotFoundError();
+            throw new TaskNotFoundException();
         }
         return foundTask;
     }
 
-    static async removeTaskById(id = 0) {
+    async removeTaskById(id = 0) {
         const task = await this.#taskRepository.destroy({
             where: { id },
         });
         if (task === 0) {
-            throw new TaskNotFoundError();
+            throw new TaskNotFoundException();
         }
         return `Task with id: ${id} was successfully removed`;
     }
-};
+}
