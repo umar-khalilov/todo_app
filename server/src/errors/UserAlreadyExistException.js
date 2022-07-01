@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class UserAlreadyExistException extends ApplicationException {
+class UserAlreadyExistException extends ApplicationException {
     constructor(message = 'User with this email already exist') {
         super(message, 406);
     }
 }
+
+module.exports = UserAlreadyExistException;

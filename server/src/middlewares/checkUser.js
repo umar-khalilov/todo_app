@@ -1,7 +1,8 @@
-import User from '../database/models';
-import { UserNotFoundException } from '../errors/UserNotFoundException.js';
+'use strict';
+const { User } = require('../database/models');
+const UserNotFoundException = require('../errors/UserNotFoundException');
 
-export const checkUser = async (req, res, next) => {
+module.exports.checkUser = async (req, res, next) => {
     try {
         const {
             params: { id },

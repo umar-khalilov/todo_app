@@ -13,7 +13,7 @@
         "prettier:fix": "prettier --write ./",
         "format": "npm run prettier:fix && npm run lint:fix"
     },
-    "type": "module",
+    "type": "commonjs",
     "keywords": [
         "nodejs",
         "express",

@@ -1,9 +1,9 @@
-import('dotenv/config');
-import { UserController } from './users/UserController.js';
-import { AuthController } from './authentication/AuthController.js';
-import { TaskController } from './tasks/TaskController.js';
-import { App } from './App.js';
-import { validateEnv } from './utils/validateEnv.js';
+require('dotenv').config();
+const App = require('./App');
+const UserController = require('./users/UserController');
+const AuthController = require('./authentication/AuthController');
+const TaskController = require('./tasks/TaskController');
+const { validateEnv } = require('./utils/validateEnv');
 
 const bootstrap = async port => {
     try {
@@ -21,4 +21,4 @@ const bootstrap = async port => {
     }
 };
 
-void bootstrap(+process.env.PORT);
+void bootstrap(process.env.PORT);

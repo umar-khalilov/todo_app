@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class BadRequestException extends ApplicationException {
+class BadRequestException extends ApplicationException {
     constructor(message = 'Bad request') {
         super(message, 400);
     }
 }
+
+module.exports = BadRequestException;

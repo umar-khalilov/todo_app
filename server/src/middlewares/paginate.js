@@ -1,4 +1,6 @@
-export const paginate = async (req, res, next) => {
+'use strict';
+
+module.exports.paginate = async (req, res, next) => {
     try {
         let {
             query: { limit = 10, offset = 0, page = 1 },

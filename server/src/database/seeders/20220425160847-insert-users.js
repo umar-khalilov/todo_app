@@ -1,6 +1,6 @@
 'use strict';
 
-export default {
+module.exports = {
     async up(queryInterface, Sequelize) {
         const generateUser = key => ({
             name: `Name=${key}`,

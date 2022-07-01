@@ -1,7 +1,7 @@
 'use strict';
-import User from '../models';
+const { User } = require('../models');
 
-export default {
+module.exports = {
     async up(queryInterface, Sequelize) {
         const users = await User.findAll({
             attributes: ['id'],

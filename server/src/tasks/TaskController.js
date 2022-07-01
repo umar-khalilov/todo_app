@@ -1,32 +1,29 @@
-import { Router } from 'express';
-import { TaskService } from './TaskService.js';
-import { paginate } from '../middlewares/paginate.js';
-import { TaskValidation } from '../middlewares/TaskValidation.js';
-import { TaskValidationSchemas } from '../utils/TaskValidationSchemas.js';
+const { Router } = require('express');
+const TaskService = require('./TaskService');
+const { paginate } = require('../middlewares/paginate');
+const { validateUpdateTaskData } = require('../middlewares/taskValidation');
+const { taskUpdateSchema } = require('../utils/taskValidationSchemas');
 
-export class TaskController {
+class TaskController {
     #path = '/tasks';
     #router = Router({ mergeParams: true });
     #taskService = new TaskService();
-    #taskValidation = new TaskValidation();
-    #taskSchema = new TaskValidationSchemas();
 
     constructor() {
         this.#initializeRoutes();
     }
 
     #initializeRoutes() {
-        this.#router.get(this.#path, paginate, this.#taskService.findAllTasks);
-        this.#router
+        this.router.get(this.#path, paginate, this.#taskService.findAllTasks);
+        this.router
             .route(`${this.#path}/:id`)
             .get(this.#findOne)
-            .patch(
-                this.#taskValidation.validateUpdateTaskData(
-                    this.#taskSchema.taskUpdateSchema,
-                ),
-                this.#updateOne,
-            )
+            .patch(validateUpdateTaskData(taskUpdateSchema), this.#updateOne)
             .delete(this.#removeOne);
+    }
+
+    get router() {
+        return this.#router;
     }
 
     #createOne = async ({ params: { id }, body }, res, next) => {
@@ -92,3 +89,5 @@ export class TaskController {
         }
     };
 }
+
+module.exports = TaskController;

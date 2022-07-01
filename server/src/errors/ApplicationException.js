@@ -1,4 +1,4 @@
-export class ApplicationException extends Error {
+class ApplicationException extends Error {
     constructor(
         message = 'Something went wrong. Please try again',
         status = 500,
@@ -10,3 +10,5 @@ export class ApplicationException extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 }
+
+module.exports = ApplicationException;

@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class UserNotFoundException extends ApplicationException {
+class UserNotFoundException extends ApplicationException {
     constructor(message = 'User not found') {
         super(message, 404);
     }
 }
+
+module.exports = UserNotFoundException;

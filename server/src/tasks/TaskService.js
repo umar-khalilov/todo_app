@@ -1,9 +1,9 @@
-import { Task } from '../database/models';
-import { BadRequestException } from '../errors/BadRequestException.js';
-import { paginateResponse } from '../utils/paginateResponse.js';
-import { TaskNotFoundException } from '../errors/TaskNotFoundException.js';
+const { Task } = require('../database/models');
+const BadRequestException = require('../errors/BadRequestException');
+const TaskNotFoundException = require('../errors/TaskNotFoundException');
+const { paginateResponse } = require('../utils/paginateResponse');
 
-export class TaskService {
+class TaskService {
     #taskRepository = Task;
 
     async createTask(data = {}) {
@@ -67,3 +67,5 @@ export class TaskService {
         return `Task with id: ${id} was successfully removed`;
     }
 }
+
+module.exports = TaskService;

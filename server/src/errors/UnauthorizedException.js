@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class UnauthorizedException extends ApplicationException {
+class UnauthorizedException extends ApplicationException {
     constructor(message = 'Wrong email or password') {
         super(message, 403);
     }
 }
+
+module.exports = UnauthorizedException;

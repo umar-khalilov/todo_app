@@ -1,7 +1,7 @@
 'use strict';
-import { ApplicationException } from '../errors/ApplicationException.js';
+const ApplicationException = require('../errors/ApplicationException');
 
-export const errorHandler = async (err, req, res, next) => {
+module.exports.errorHandler = async (err, req, res, next) => {
     console.error('\x1b[31m', `ERROR caught:->>>>> ${err.stack}`, '\x1b[0m');
     if (err instanceof ApplicationException) {
         return res

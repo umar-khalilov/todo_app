@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class TaskNotFoundException extends ApplicationException {
+class TaskNotFoundException extends ApplicationException {
     constructor(message = 'Task not found') {
         super(message, 404);
     }
 }
+
+module.exports = TaskNotFoundException;

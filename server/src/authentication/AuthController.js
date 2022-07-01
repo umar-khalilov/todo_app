@@ -1,34 +1,38 @@
-import { Router } from 'express';
-import { AuthService } from './AuthService.js';
-import { AuthValidation } from '../middlewares/AuthValidation.js';
-import { AuthValidationSchemas } from '../utils/AuthValidationSchemas.js';
+const { Router } = require('express');
+const AuthService = require('./AuthService');
+const {
+    signUpSchema,
+    signInSchema,
+} = require('../utils/authValidationSchemas');
+const {
+    validateSignUpData,
+    validateSignInData,
+} = require('../middlewares/authValidation');
 
-export class AuthController {
+class AuthController {
     #path = '/auth';
-    #router = Router({ mergeParams: true });
+    #router = Router({ mergeParams: true, caseSensitive: true });
     #authService = new AuthService();
-    #authValidation = new AuthValidation();
-    #authSchema = new AuthValidationSchemas();
 
     constructor() {
         this.#initializeRoutes();
     }
 
     #initializeRoutes() {
-        this.#router.post(
+        this.router.post(
             `${this.#path}/sign-up`,
-            this.#authValidation.validateSignUpData(
-                this.#authSchema.signUpSchema,
-            ),
+            validateSignUpData(signUpSchema),
             this.#signUp,
         );
-        this.#router.post(
+        this.router.post(
             `${this.#path}/sign-in`,
-            this.#authValidation.validateSignInData(
-                this.#authValidation.validateSignInData,
-            ),
+            validateSignInData(signInSchema),
             this.#signIn,
         );
+    }
+
+    get router() {
+        return this.#router;
     }
 
     #signUp = async ({ body }, res, next) => {
@@ -49,3 +53,5 @@ export class AuthController {
         }
     };
 }
+
+module.exports = AuthController;

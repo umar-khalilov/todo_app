@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class TokenException extends ApplicationException {
+class TokenException extends ApplicationException {
     constructor(message = 'Token error') {
         super(message, 419);
     }
 }
+
+module.exports = TokenException;

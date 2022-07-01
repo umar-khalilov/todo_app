@@ -1,48 +1,38 @@
-import { Router } from 'express';
-import { UserService } from './UserService.js';
-import { TaskService } from '../tasks/TaskService.js';
-import { UserValidation } from '../middlewares/UserValidation.js';
-import { TaskValidation } from '../middlewares/TaskValidation.js';
-import { UserValidationSchemas } from '../utils/UserValidationSchemas.js';
-import { TaskValidationSchemas } from '../utils/TaskValidationSchemas.js';
-import { paginate } from '../middlewares/paginate.js';
-import { checkUser } from '../middlewares/checkUser.js';
+const { Router } = require('express');
+const UserService = require('./UserService');
+const TaskService = require('../tasks/TaskService');
+const { paginate } = require('../middlewares/paginate');
+const { checkUser } = require('../middlewares/checkUser');
+const { validateUserData } = require('../middlewares/validateUserData');
+const { validateCreateTaskData } = require('../middlewares/taskValidation');
+const { userUpdateSchema } = require('../utils/userValidationSchemas');
+const { taskCreateSchema } = require('../utils/taskValidationSchemas');
 
-export class UserController {
+class UserController {
     #path = '/users';
     #router = Router({ mergeParams: true });
     #userService = new UserService();
     #taskService = new TaskService();
-    #userValidation = new UserValidation();
-    #userSchema = new UserValidationSchemas();
-    #taskValidation = new TaskValidation();
-    #taskSchema = new TaskValidationSchemas();
 
     constructor() {
         this.#initializeRoutes();
     }
 
     #initializeRoutes() {
-        this.#router.get(this.#path, paginate, this.#findAll);
-        this.#router
+        this.router.get(this.#path, paginate, this.#findAll);
+        this.router
             .route(`${this.#path}/:id`)
             .get(this.#findOne)
-            .patch(
-                this.#userValidation.validateUserData(
-                    this.#userSchema.userUpdateSchema,
-                ),
-                this.#updateOne,
-            )
+            .patch(validateUserData(userUpdateSchema), this.#updateOne)
             .delete(this.#removeOne);
-        this.#router
+        this.router
             .route(`${this.#path}/:id/tasks`)
-            .post(
-                checkUser,
-                this.#taskValidation.validateCreateTaskData(
-                    this.#taskSchema.taskCreateSchema,
-                ),
-            )
+            .post(checkUser, validateCreateTaskData(taskCreateSchema))
             .get(checkUser, paginate, this.#taskService.findUserTasks);
+    }
+
+    get router() {
+        return this.#router;
     }
 
     #findAll = async ({ pagination }, res, next) => {
@@ -86,3 +76,5 @@ export class UserController {
         }
     };
 }
+
+module.exports = UserController;

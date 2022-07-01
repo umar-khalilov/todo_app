@@ -1,10 +1,10 @@
-import { createServer } from 'http';
-import express from 'express';
-import cors from 'cors';
-import compression from 'compression';
-import { errorHandler } from './middlewares/errorHandler.js';
+const { createServer } = require('http');
+const express = require('express');
+const cors = require('cors');
+const compression = require('compression');
+const { errorHandler } = require('./middlewares/errorHandler');
 
-export class App {
+class App {
     #app;
     #port;
 
@@ -17,7 +17,7 @@ export class App {
     }
 
     listen() {
-        createServer(this.#app).listen(this.#port, () =>
+        createServer(this.#app).listen(Number(this.#port), () =>
             console.info(
                 '\x1b[1m',
                 '\x1b[32m',
@@ -28,19 +28,24 @@ export class App {
     }
 
     #initializeMiddlewares() {
-        this.#app.use((req, res, next) => {
+        this.#app.all((req, res, next) => {
+            res.setHeader(
+                'Access-Control-Allow-Headers',
+                'X-Requested-With, Content-Type, Authorization, Accept',
+            );
             res.header('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Credentials', true);
             res.header(
                 'Access-Control-Allow-Methods',
-                'GET,POST,DELETE,OPTIONS,PUT',
+                'GET,POST,DELETE,PUT,PATCH',
             );
-            res.header('Access-Control-Allow-Headers', '*');
+            res.header('Access-Control-Max-Age', '3600');
             next();
         });
-        this.#app.use(cors());
+        this.#app.use(cors({ origin: 'http://localhost:3000' }));
         this.#app.use(compression());
-        this.#app.use(express.json());
-        this.#app.use(express.urlencoded({ extended: true }));
+        this.#app.use(express.json({ limit: '100mb' }));
+        this.#app.use(express.urlencoded({ limit: '50mb', extended: true }));
     }
 
     #initializeErrorHandling() {
@@ -53,3 +58,5 @@ export class App {
         );
     }
 }
+
+module.exports = App;

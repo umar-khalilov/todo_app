@@ -1,8 +1,8 @@
-import { Role, User } from '../database/models';
-import { UserNotFoundException } from '../errors/UserNotFoundException.js';
-import { paginateResponse } from '../utils/paginateResponse.js';
+const { User, Role } = require('../database/models');
+const UserNotFoundException = require('../errors/UserNotFoundException');
+const { paginateResponse } = require('../utils/paginateResponse');
 
-export class UserService {
+class UserService {
     #userRepository = User;
     #roleRepository = Role;
 
@@ -131,3 +131,5 @@ export class UserService {
         return `User with id: ${id} was successfully removed`;
     }
 }
+
+module.exports = UserService;

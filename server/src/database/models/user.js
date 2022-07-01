@@ -1,10 +1,10 @@
 'use strict';
-import 'dotenv/config';
-import { Model } from 'sequelize';
-import { isAfter } from 'date-fns';
-import { genSalt, hash } from 'bcryptjs';
+require('dotenv').config();
+const { Model } = require('sequelize');
+const { isAfter } = require('date-fns');
+const { hash, genSalt } = require('bcryptjs');
 
-export default (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
     const salt = +process.env.SALT_ROUNDS;
 
     class User extends Model {

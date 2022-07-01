@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class IncorrectException extends ApplicationException {
+class IncorrectException extends ApplicationException {
     constructor(message = 'Incorrect password') {
         super(message, 406);
     }
 }
+
+module.exports = IncorrectException;

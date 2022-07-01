@@ -1,5 +1,5 @@
 'use strict';
-import 'dotenv/config';
+require('dotenv').config();
 
 const {
     env: {
@@ -11,7 +11,7 @@ const {
     },
 } = process;
 
-export default {
+module.exports = {
     development: {
         username: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
@@ -20,6 +20,12 @@ export default {
         dialect: DB_DIALECT,
         migrationStorage: 'json',
         seederStorage: 'json',
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000,
+        },
+        logging: false,
     },
     test: {},
     production: {},

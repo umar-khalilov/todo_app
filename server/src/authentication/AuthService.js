@@ -1,13 +1,13 @@
-import 'dotenv/config';
-import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
-import { TokenException } from '../errors/TokenException.js';
-import { BadRequestException } from '../errors/BadRequestException.js';
-import { UserService } from '../users/UserService.js';
-import { UnauthorizedException } from '../errors/UnauthorizedException.js';
-import { UserAlreadyExistException } from '../errors/UserAlreadyExistException.js';
+require('dotenv').config();
+const { compare } = require('bcryptjs');
+const { sign } = require('jsonwebtoken');
+const TokenException = require('../errors/TokenException');
+const BadRequestException = require('../errors/BadRequestException');
+const UserService = require('../users/UserService');
+const UnauthorizedException = require('../errors/UnauthorizedException');
+const UserAlreadyExistException = require('../errors/UserAlreadyExistException');
 
-export class AuthService {
+class AuthService {
     #userService = new UserService();
 
     async #generateToken(user = {}) {
@@ -61,3 +61,5 @@ export class AuthService {
         return await this.#generateToken(createdUser);
     };
 }
+
+module.exports = AuthService;

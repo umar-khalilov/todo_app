@@ -1,6 +1,7 @@
-import { cleanEnv, num, port, str } from 'envalid';
+'use strict';
+const { cleanEnv, num, port, str } = require('envalid');
 
-export const validateEnv = () =>
+module.exports.validateEnv = () =>
     cleanEnv(process.env, {
         PORT: port(),
         DB_DIALECT: str(),
@@ -13,4 +14,3 @@ export const validateEnv = () =>
         ACCESS_TOKEN_TIME: str(),
         SALT_ROUNDS: num(),
     });
-

@@ -1,9 +1,9 @@
 'use strict';
-import 'dotenv/config';
-import { verify } from 'jsonwebtoken';
-import { RightsException } from '../errors/RightsException.js';
+require('dotenv').config();
+const { verify } = require('jsonwebtoken');
+const RightsException = require('../errors/RightsException');
 
-export const verifyToken = async (req, res, next) => {
+module.exports.verifyToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') {
         next();
     }

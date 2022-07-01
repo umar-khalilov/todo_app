@@ -1,7 +1,9 @@
-import { ApplicationException } from './ApplicationException.js';
+const ApplicationException = require('./ApplicationException');
 
-export class ServerException extends ApplicationException {
+class ServerException extends ApplicationException {
     constructor(message = 'Server error') {
         super(message, 500);
     }
 }
+
+module.exports = ServerException;
