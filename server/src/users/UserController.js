@@ -11,7 +11,7 @@ const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class UserController {
     #path = '/users';
-    #router = Router({ mergeParams: true });
+    #router = Router({ mergeParams: true, caseSensitive: true });
     #userService = new UserService();
     #taskService = new TaskService();
 
@@ -28,7 +28,11 @@ class UserController {
             .delete(this.#removeOne);
         this.router
             .route(`${this.#path}/:id/tasks`)
-            .post(checkUser, validateCreateTaskData(taskCreateSchema),this.#taskService.createTask)
+            .post(
+                checkUser,
+                validateCreateTaskData(taskCreateSchema),
+                this.#taskService.createTask,
+            )
             .get(checkUser, paginate, this.#taskService.findUserTasks);
     }
 

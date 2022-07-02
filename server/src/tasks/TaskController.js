@@ -7,7 +7,7 @@ const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class TaskController {
     #path = '/tasks';
-    #router = Router({ mergeParams: true });
+    #router = Router({ mergeParams: true, caseSensitive: true });
     #taskService = new TaskService();
 
     constructor() {

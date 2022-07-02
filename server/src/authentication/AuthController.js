@@ -12,7 +12,7 @@ const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class AuthController {
     #path = '/auth';
-    #router = Router({ mergeParams: true, caseSensitive: true });
+    #router = Router({ mergeParams: true });
     #authService = new AuthService();
 
     constructor() {
