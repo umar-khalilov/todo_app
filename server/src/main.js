@@ -1,25 +1,24 @@
 require('dotenv').config();
-const { createServer } = require('http');
-const { address } = require('ip');
-const app = require('./app');
+const App = require('./App');
+const UserController = require('./users/UserController');
+const AuthController = require('./authentication/AuthController');
+const TaskController = require('./tasks/TaskController');
+const { validateEnv } = require('./utils/validateEnv');
 
-const {
-    env: { PORT },
-} = process;
-
-const runExpressApp = async port => {
+const bootstrap = async port => {
     try {
-        createServer(app).listen(Number(port) || 3001, () =>
-            console.info(
-                '\x1b[1m',
-                '\x1b[32m',
-                `Express App started on http//${address()}:${port}`,
-            ),
-        );
+        validateEnv();
+        const controllers = [
+            new UserController(),
+            new AuthController(),
+            new TaskController(),
+        ];
+        const app = new App(controllers, port);
+        app.listen();
     } catch (err) {
-        console.error(err);
-        process.exit();
+        console.error('\x1b[31m', err, '\x1b[0m');
+        process.exit(1);
     }
 };
 
-void runExpressApp(PORT);
+void bootstrap(process.env.PORT);

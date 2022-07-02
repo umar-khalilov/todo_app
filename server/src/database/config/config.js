@@ -1,3 +1,4 @@
+'use strict';
 require('dotenv').config();
 
 const {
@@ -19,6 +20,12 @@ module.exports = {
         dialect: DB_DIALECT,
         migrationStorage: 'json',
         seederStorage: 'json',
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000,
+        },
+        logging: false,
     },
     test: {},
     production: {},

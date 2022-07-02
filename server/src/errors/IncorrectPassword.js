@@ -1,7 +1,10 @@
-const ApplicationError = require('./ApplicationError');
+const ApplicationException = require('./ApplicationException');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
-module.exports = class IncorrectError extends ApplicationError {
-    constructor(message) {
-        super(message || 'Incorrect password', 406);
+class IncorrectException extends ApplicationException {
+    constructor(message = 'Incorrect password') {
+        super(message, HttpStatusCodes.NOT_ACCEPTABLE);
     }
-};
+}
+
+module.exports = IncorrectException;

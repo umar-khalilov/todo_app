@@ -1,5 +1,4 @@
 'use strict';
-const { Role } = require('../models');
 
 module.exports = {
     async up(queryInterface, Sequelize) {

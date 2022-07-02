@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports.paginate = async (req, res, next) => {
     try {
         let {
@@ -5,12 +7,13 @@ module.exports.paginate = async (req, res, next) => {
         } = req;
 
         req.pagination = {
-            limit: !limit || limit <= 0 || limit > 100 ? 100 : limit,
-            page: !page || page <= 0 ? 1 : page,
-            offset:
+            limit: Number(!limit || limit <= 0 || limit > 100 ? 100 : limit),
+            page: Number(!page || page <= 0 ? 1 : page),
+            offset: Number(
                 !offset || offset <= 0
                     ? (offset = (page - 1) * limit)
                     : (offset = (page - 1) * limit),
+            ),
         };
         next();
     } catch (error) {

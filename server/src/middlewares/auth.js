@@ -1,6 +1,7 @@
+'use strict';
 require('dotenv').config();
 const { verify } = require('jsonwebtoken');
-const RightsError = require('../errors/RightsError');
+const RightsException = require('../errors/RightsException');
 
 module.exports.verifyToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') {
@@ -11,14 +12,14 @@ module.exports.verifyToken = async (req, res, next) => {
             req.headers.authorization.split(' ')[1] ||
             req.headers['x-access-token'];
         if (!token) {
-            throw new RightsError();
+            throw new RightsException();
         }
 
         const {
             env: { REFRESH_TOKEN_SECRET },
         } = process;
 
-        req.user = verify(token, REFRESH_TOKEN_SECRET,);
+        req.user = verify(token, REFRESH_TOKEN_SECRET);
         next();
     } catch (error) {
         next(error);

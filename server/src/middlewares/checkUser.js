@@ -1,5 +1,6 @@
+'use strict';
 const { User } = require('../database/models');
-const UserNotFoundError = require('../errors/UserNotFoundError');
+const UserNotFoundException = require('../errors/UserNotFoundException');
 
 module.exports.checkUser = async (req, res, next) => {
     try {
@@ -8,7 +9,7 @@ module.exports.checkUser = async (req, res, next) => {
         } = req;
         const userInstance = await User.findByPk(+id);
         if (!userInstance) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundException();
         }
         req.userInstance = userInstance;
         next();
