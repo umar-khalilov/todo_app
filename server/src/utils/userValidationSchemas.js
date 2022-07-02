@@ -9,7 +9,7 @@ const {
 
 const nameSchema = new StringSchema()
     .optional()
-    .matches(/^[A-ZА-Я][a-zа-я]{3,32}$/, 'Enter a valid name')
+    .matches(/^[A-ZА-Я][a-zа-я]{2,32}$/, 'Enter a valid name')
     .trim();
 
 const parseDateString = (value, originalValue) =>

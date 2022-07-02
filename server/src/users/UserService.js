@@ -17,7 +17,6 @@ class UserService {
                 },
             ],
         });
-
         return user
             ? {
                   id: user.id,
@@ -25,7 +24,7 @@ class UserService {
                   password: user.password,
                   roles: user.roles.map(({ name }) => name),
               }
-            : null;
+            : undefined;
     }
 
     async createUser(data = {}) {
@@ -43,15 +42,7 @@ class UserService {
     }
 
     async findAllUsers({ limit, offset, page }) {
-        let { count, rows } = await this.#userRepository.findAndCountAll({
-            include: [
-                {
-                    model: this.#roleRepository,
-                    attributes: ['name'],
-                    through: { attributes: [] },
-                    as: 'roles',
-                },
-            ],
+        const { count, rows } = await this.#userRepository.findAndCountAll({
             order: [['updatedAt', 'DESC']],
             limit,
             offset,
@@ -59,49 +50,15 @@ class UserService {
         if (count <= 0) {
             throw new UserNotFoundException();
         }
-
-        rows = rows.map(user => ({
-            id: user.id,
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-            birthday: user.birthday,
-            isMale: user.isMale,
-            roles: user.roles.map(({ name }) => name),
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-        }));
-
         return paginateResponse([count, rows], page, limit);
     }
 
     async findUserById(id) {
-        const user = await this.#userRepository.findByPk(id, {
-            include: [
-                {
-                    model: this.#roleRepository,
-                    attributes: ['name'],
-                    through: { attributes: [] },
-                    as: 'roles',
-                },
-            ],
-        });
-
+        const user = await this.#userRepository.findByPk(id);
         if (!user) {
             throw new UserNotFoundException();
         }
-
-        return {
-            id: user.id,
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-            birthday: user.birthday,
-            isMale: user.isMale,
-            roles: user.roles.map(({ name }) => name),
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-        };
+        return user;
     }
 
     async updateUserById(id, data = {}) {
@@ -128,7 +85,6 @@ class UserService {
         await foundUser.removeRoles(roles);
         await foundUser.removeTasks(tasks);
         await foundUser.destroy();
-        return `User with id: ${id} was successfully removed`;
     }
 }
 

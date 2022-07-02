@@ -1,7 +1,9 @@
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
+
 class ApplicationException extends Error {
     constructor(
         message = 'Something went wrong. Please try again',
-        status = 500,
+        status = HttpStatusCodes.INTERNAL_SERVER_ERROR,
     ) {
         super(message);
         this.name = this.constructor.name;

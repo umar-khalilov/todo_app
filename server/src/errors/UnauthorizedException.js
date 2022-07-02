@@ -1,8 +1,9 @@
 const ApplicationException = require('./ApplicationException');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class UnauthorizedException extends ApplicationException {
     constructor(message = 'Wrong email or password') {
-        super(message, 403);
+        super(message, HttpStatusCodes.FORBIDDEN);
     }
 }
 

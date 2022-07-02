@@ -3,6 +3,7 @@ const TaskService = require('./TaskService');
 const { paginate } = require('../middlewares/paginate');
 const { validateUpdateTaskData } = require('../middlewares/taskValidation');
 const { taskUpdateSchema } = require('../utils/taskValidationSchemas');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class TaskController {
     #path = '/tasks';
@@ -14,7 +15,7 @@ class TaskController {
     }
 
     #initializeRoutes() {
-        this.router.get(this.#path, paginate, this.#taskService.findAllTasks);
+        this.router.get(this.#path, paginate, this.#findAllTasks);
         this.router
             .route(`${this.#path}/:id`)
             .get(this.#findOne)
@@ -32,7 +33,7 @@ class TaskController {
                 ...body,
                 userId: +id,
             });
-            return res.status(201).send({ data: task });
+            return res.status(HttpStatusCodes.CREATED).send({ data: task });
         } catch (err) {
             next(err);
         }
@@ -44,7 +45,7 @@ class TaskController {
                 userInstance,
                 pagination,
             );
-            return res.status(200).send(tasks);
+            return res.status(HttpStatusCodes.OK).send(tasks);
         } catch (err) {
             next(err);
         }
@@ -53,7 +54,7 @@ class TaskController {
     #findAllTasks = async ({ pagination }, res, next) => {
         try {
             const tasks = await this.#taskService.findAllTasks(pagination);
-            return res.status(200).send(tasks);
+            return res.status(HttpStatusCodes.OK).send(tasks);
         } catch (err) {
             next(err);
         }
@@ -62,7 +63,7 @@ class TaskController {
     #findOne = async ({ params: { id } }, res, next) => {
         try {
             const foundTask = await this.#taskService.findTaskById(Number(id));
-            return res.status(200).send({ data: foundTask });
+            return res.status(HttpStatusCodes.OK).send({ data: foundTask });
         } catch (err) {
             next(err);
         }
@@ -74,7 +75,9 @@ class TaskController {
                 Number(id),
                 body,
             );
-            return res.status(202).send({ data: updatedTask });
+            return res
+                .status(HttpStatusCodes.ACCEPTED)
+                .send({ data: updatedTask });
         } catch (err) {
             next(err);
         }
@@ -82,8 +85,8 @@ class TaskController {
 
     #removeOne = async ({ params: { id } }, res, next) => {
         try {
-            const result = await this.#taskService.removeTaskById(id);
-            return res.status(204).send({ data: result });
+            await this.#taskService.removeTaskById(id);
+            return res.status(HttpStatusCodes.NO_CONTENT).end();
         } catch (err) {
             next(err);
         }

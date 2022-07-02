@@ -5,21 +5,12 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const enVariables = require(__dirname + './../config/config.js')[env];
+const config = require(__dirname + './../config/config.js')[env];
 const db = {};
 
-const sequelize = enVariables.use_env_variable
-    ? new Sequelize(process.env[enVariables.use_env_variable], enVariables)
-    : new Sequelize(
-          enVariables.database,
-          enVariables.username,
-          enVariables.password,
-          enVariables,
-      );
-// sequelize
-//     .authenticate()
-//     .then(() => console.info('Connection has been established successfully!'))
-//     .catch(err => console.error('Unable to connect to the database:', err));
+const sequelize = config.use_env_variable
+    ? new Sequelize(process.env[config.use_env_variable], config)
+    : new Sequelize(config.database, config.username, config.password, config);
 
 readdirSync(__dirname)
     .filter(

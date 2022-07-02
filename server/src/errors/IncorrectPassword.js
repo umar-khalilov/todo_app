@@ -1,8 +1,9 @@
 const ApplicationException = require('./ApplicationException');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class IncorrectException extends ApplicationException {
     constructor(message = 'Incorrect password') {
-        super(message, 406);
+        super(message, HttpStatusCodes.NOT_ACCEPTABLE);
     }
 }
 

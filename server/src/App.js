@@ -42,7 +42,7 @@ class App {
             res.header('Access-Control-Max-Age', '3600');
             next();
         });
-        this.#app.use(cors({ origin: 'http://localhost:3000' }));
+        this.#app.use(cors());
         this.#app.use(compression());
         this.#app.use(express.json({ limit: '100mb' }));
         this.#app.use(express.urlencoded({ limit: '50mb', extended: true }));

@@ -1,8 +1,9 @@
 const ApplicationException = require('./ApplicationException');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class BadRequestException extends ApplicationException {
     constructor(message = 'Bad request') {
-        super(message, 400);
+        super(message, HttpStatusCodes.BAD_REQUEST);
     }
 }
 

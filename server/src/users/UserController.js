@@ -7,6 +7,7 @@ const { validateUserData } = require('../middlewares/validateUserData');
 const { validateCreateTaskData } = require('../middlewares/taskValidation');
 const { userUpdateSchema } = require('../utils/userValidationSchemas');
 const { taskCreateSchema } = require('../utils/taskValidationSchemas');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class UserController {
     #path = '/users';
@@ -27,7 +28,7 @@ class UserController {
             .delete(this.#removeOne);
         this.router
             .route(`${this.#path}/:id/tasks`)
-            .post(checkUser, validateCreateTaskData(taskCreateSchema))
+            .post(checkUser, validateCreateTaskData(taskCreateSchema),this.#taskService.createTask)
             .get(checkUser, paginate, this.#taskService.findUserTasks);
     }
 
@@ -38,7 +39,7 @@ class UserController {
     #findAll = async ({ pagination }, res, next) => {
         try {
             const users = await this.#userService.findAllUsers(pagination);
-            return res.status(200).send(users);
+            return res.status(HttpStatusCodes.OK).send(users);
         } catch (error) {
             next(error);
         }
@@ -47,7 +48,7 @@ class UserController {
     #findOne = async ({ params: { id } }, res, next) => {
         try {
             const user = await this.#userService.findUserById(Number(id));
-            return res.status(200).send({ data: user });
+            return res.status(HttpStatusCodes.OK).send({ data: user });
         } catch (error) {
             next(error);
         }
@@ -59,7 +60,9 @@ class UserController {
                 Number(id),
                 body,
             );
-            return res.status(202).send({ data: updatedUser });
+            return res
+                .status(HttpStatusCodes.ACCEPTED)
+                .send({ data: updatedUser });
         } catch (error) {
             next(error);
         }
@@ -67,10 +70,8 @@ class UserController {
 
     #removeOne = async ({ params: { id } }, res, next) => {
         try {
-            const removedUser = await this.#userService.removeUserById(
-                Number(id),
-            );
-            return res.status(204).send({ data: removedUser });
+            await this.#userService.removeUserById(Number(id));
+            return res.status(HttpStatusCodes.NO_CONTENT).end();
         } catch (error) {
             next(error);
         }

@@ -8,6 +8,7 @@ const {
     validateSignUpData,
     validateSignInData,
 } = require('../middlewares/authValidation');
+const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class AuthController {
     #path = '/auth';
@@ -38,7 +39,7 @@ class AuthController {
     #signUp = async ({ body }, res, next) => {
         try {
             const token = await this.#authService.signUp(body);
-            return res.status(201).send(token);
+            return res.status(HttpStatusCodes.CREATED).send(token);
         } catch (error) {
             next(error);
         }
@@ -47,7 +48,7 @@ class AuthController {
     #signIn = async ({ body }, res, next) => {
         try {
             const token = await this.#authService.signIn(body);
-            return res.status(200).send(token);
+            return res.status(HttpStatusCodes.OK).send(token);
         } catch (error) {
             next(error);
         }
