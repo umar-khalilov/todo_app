@@ -1,13 +1,24 @@
 module.exports = {
-    root: true,
     env: {
         node: true,
-        es2022: true,
+        commonjs: true,
+        es2021: true,
     },
-    extends: ['eslint:recommended', 'prettier'],
+    extends: ['standard', 'eslint:recommended', 'prettier'],
     parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'script',
     },
-    rules: {},
+    rules: {
+        indent: ['error', 4],
+        quotes: ['error', 'single'],
+        semi: ['error', 'always'],
+        'linebreak-style': ['error', 'unix'],
+        'no-void': ['error', { allowAsStatement: true }],
+        'class-methods-use-this': 'off',
+        'no-loop-func': 'warn',
+        'no-await-in-loop': 'off',
+        'no-promise-executor-return': 'off',
+        'no-console': 'off',
+        'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    },
 };

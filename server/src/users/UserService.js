@@ -19,11 +19,11 @@ class UserService {
         });
         return user
             ? {
-                  id: user.id,
-                  email: user.email,
-                  password: user.password,
-                  roles: user.roles.map(({ name }) => name),
-              }
+                id: user.id,
+                email: user.email,
+                password: user.password,
+                roles: user.roles.map(({ name }) => name),
+            }
             : undefined;
     }
 
