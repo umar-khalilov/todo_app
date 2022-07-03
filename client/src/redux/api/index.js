@@ -7,4 +7,4 @@ const http = axios.create({
 
 export const authSignUp = body => http.post('/auth/sign-up', body);
 
-export const getUsers = ()=> http.get(`/users`)
+export const getUsers = () => http.get(`/users`);

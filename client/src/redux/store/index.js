@@ -24,9 +24,6 @@ function countReducer(state = initialState, action) {
 }
 
 const sagaMiddleware = createSagaMiddleware();
-export const store = createStore(
-    countReducer,
-    composeWithDevTools(applyMiddleware(sagaMiddleware)),
-);
+export const store = createStore(countReducer, composeWithDevTools(applyMiddleware(sagaMiddleware)));
 
 sagaMiddleware.run(rootSaga);

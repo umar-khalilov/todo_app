@@ -18,11 +18,7 @@ export const UserList = props => {
                 {error && (
                     <>
                         {error.message}
-                        <button
-                            onClick={() => dispatch(Actions.clearUserError())}
-                        >
-                            ❌
-                        </button>
+                        <button onClick={() => dispatch(Actions.clearUserError())}>❌</button>
                     </>
                 )}
             </span>

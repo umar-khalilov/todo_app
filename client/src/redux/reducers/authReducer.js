@@ -1,12 +1,9 @@
 const initialState = {
-    users:[],
+    users: [],
     isFetching: false,
     error: null,
-}
+};
 
-
-
-export const authReducer=(state=initialState,action)=>{
-    const {type} = action;
-
-}
+export const authReducer = (state = initialState, action) => {
+    const { type } = action;
+};
