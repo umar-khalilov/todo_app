@@ -13,12 +13,12 @@ services:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - database
+      - database_todo
     networks:
       - todo_net
     restart: unless-stopped
-  database:
-    container_name: database
+  database_todo:
+    container_name: database_todo
     image: postgres:14-alpine3.15
     environment:
       POSTGRES_PASSWORD: JavaDeveloper
@@ -32,7 +32,7 @@ services:
     networks:
       - todo_net
     tty: true
-    restart: unless-stopped
+    restart: always
 
 volumes:
   pgdata:

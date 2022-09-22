@@ -1,30 +1,34 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Actions } from '../../redux/actions';
 import { User } from './User';
+import { actions } from '../../redux/actions';
 
 export const UserList = props => {
-    const { users, isFetching, error } = useSelector(({ users }) => users);
+    const { users, error, isFetching } = useSelector(({ user }) => user);
     const dispatch = useDispatch();
-    console.log(users);
+
     useEffect(() => {
-        dispatch(Actions.getUsersRequest());
+        dispatch(actions.getUsersRequest({ page: 1, limit: 10 }));
     }, [dispatch]);
 
     return (
-        <div>
-            {isFetching && 'Loading....'}
+        <section>
+            {isFetching && 'Loading...'}
             <span style={{ color: 'red' }}>
                 {error && (
                     <>
                         {error.message}
-                        <button onClick={() => dispatch(Actions.clearUserError())}>❌</button>
+                        <button
+                            onClick={() => dispatch(actions.clearUserError())}>
+                            X
+                        </button>
                     </>
                 )}
             </span>
+
             {users.map(user => (
                 <User {...user} key={user.id} />
             ))}
-        </div>
+        </section>
     );
 };

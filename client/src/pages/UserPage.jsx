@@ -1,14 +1,16 @@
+import { UserList } from '../components/users/UserList';
+import { UserForm } from '../components/users/UserForm';
 import { useDispatch } from 'react-redux';
-import { Actions } from '../redux/actions';
-import { UserList } from '../components/user/UserList';
+import { actions } from '../redux/actions';
 
 export const UserPage = () => {
     const dispatch = useDispatch();
-    const createUserAction = user => dispatch(Actions.getUsersRequest());
-
+    const updateUserAction = (userData, userId) =>
+        dispatch(actions.updateUserRequest({ userData, userId }));
     return (
-        <div>
+        <>
+            <UserForm submitHandler={updateUserAction} />
             <UserList />
-        </div>
+        </>
     );
 };

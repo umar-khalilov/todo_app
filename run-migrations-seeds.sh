@@ -9,7 +9,7 @@ web=$(docker-compose --file docker-compose.yaml ps | grep main | awk '{print $1}
 # Run Sequelize's migrations.
 echo "-----> Running application migrations"
 docker exec -it "$web" sequelize db:migrate
-echo ""
+echo "<----- Migrations created"
 
 # Run Sequelize's seeds.
 echo "-----> Running application seeds"

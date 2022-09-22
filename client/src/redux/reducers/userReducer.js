@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { ACTION_USER_TYPES } from '../actions/userTypes';
+import { ACTION_USER_TYPES } from '../action-types/userTypes';
 
 const initialState = {
     users: [],
@@ -26,6 +26,10 @@ const handlers = {
         } = action;
         draft.error = error;
         draft.isFetching = false;
+    }),
+
+    [ACTION_USER_TYPES.CLEAR_USER_ERROR]: produce(draft => {
+        draft.error = null;
     }),
 };
 

@@ -11,17 +11,12 @@ docker-compose --file docker-compose.yaml up
 echo ""
 docker-compose ps
 
-web=$(docker-compose --file docker-compose.yaml ps | grep main | awk '{print $1}')
+#web=$(docker-compose --file docker-compose.yaml ps | grep main | awk '{print $1}')
 
 # Run Sequelize's migrations.
-echo "-----> Running application migrations"
-docker exec -it "$web" sequelize db:migrate
-echo ""
-
-# Run Sequelize's seeds.
-echo "-----> Running application seeds"
-docker exec -it "$web" sequelize db:seed:all
-echo "<----- Seeds created"
+#echo "-----> Running application migrations"
+#docker exec -it "$web" sequelize db:migrate
+#echo "<---- Migrations created"
 
 ended_at=$(date +"%s")
 

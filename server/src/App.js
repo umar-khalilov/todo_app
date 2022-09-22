@@ -17,14 +17,16 @@ class App {
     }
 
     listen() {
-        createServer(this.#app).listen(Number(this.#port), () =>
+        const server = createServer(this.#app);
+        server.listen(+this.#port);
+        server.on('listening', () => {
             console.info(
                 '\x1b[1m',
                 '\x1b[32m',
                 `Express App started on http://localhost:${this.#port}`,
                 '\x1b[0m',
-            ),
-        );
+            );
+        });
     }
 
     #initializeMiddlewares() {
