@@ -23,6 +23,10 @@ module.exports = class UserController {
         this.#initializeRoutes();
     }
 
+    get router() {
+        return this.#router;
+    }
+
     #initializeRoutes() {
         this.router.get(this.#path, paginate, this.#findAll);
         this.router
@@ -38,10 +42,6 @@ module.exports = class UserController {
             `${this.#path}/:userId/tasks`,
             this.#taskController.router,
         );
-    }
-
-    get router() {
-        return this.#router;
     }
 
     #findAll = asyncWrapper(async ({ pagination }) => {

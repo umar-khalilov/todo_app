@@ -40,7 +40,7 @@ module.exports = class AuthService {
         throw new TokenException();
     }
 
-    #validateUser = async (email, password) => {
+    async #validateUser(email, password) {
         if (!(email && password)) {
             throw new BadRequestException('Need email and password');
         }
@@ -53,15 +53,15 @@ module.exports = class AuthService {
             return user;
         }
         throw new UnauthorizedException();
-    };
+    }
 
-    signIn = async (signInData = {}) => {
+    async signIn(signInData = {}) {
         const { email, password } = signInData;
         const signedUser = await this.#validateUser(email, password);
         return this.#generateToken(signedUser);
-    };
+    }
 
-    signUp = async (signUpData = {}) => {
+    async signUp(signUpData = {}) {
         const candidate = await this.#userService.findUserByEmail(
             signUpData.email,
         );
@@ -71,5 +71,5 @@ module.exports = class AuthService {
 
         const createdUser = await this.#userService.createUser(signUpData);
         return this.#generateToken(createdUser);
-    };
+    }
 };

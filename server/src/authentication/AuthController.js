@@ -3,8 +3,8 @@ const AuthService = require('./AuthService');
 const SuccessResponse = require('../common/utils/SuccessResponse');
 const { validate } = require('../common/middlewares/validate');
 const { asyncWrapper } = require('../common/utils/asyncWrapper');
-const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { signUpDtoSchema, signInDtoSchema } = require('./authDtoSchemas');
+const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
 module.exports = class AuthController {
     #authService;
@@ -18,6 +18,10 @@ module.exports = class AuthController {
         this.#initializeRoutes();
     }
 
+    get router() {
+        return this.#router;
+    }
+
     #initializeRoutes() {
         this.router.post(
             `${this.#path}/sign-up`,
@@ -29,10 +33,6 @@ module.exports = class AuthController {
             validate(signInDtoSchema),
             this.#signIn,
         );
-    }
-
-    get router() {
-        return this.#router;
     }
 
     #signUp = asyncWrapper(async ({ body }) => {

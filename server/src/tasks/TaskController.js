@@ -6,11 +6,11 @@ const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { asyncWrapper } = require('../common/utils/asyncWrapper');
 const { checkUser } = require('../common/middlewares/checkUser');
+const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const {
     updateTaskDtoSchema,
     createTaskDtoSchema,
 } = require('./taskDtoSchemas');
-const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
 module.exports = class TaskController {
     #taskService;
@@ -20,6 +20,10 @@ module.exports = class TaskController {
         this.#taskService = new TaskService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#initializeRoutes();
+    }
+
+    get router() {
+        return this.#router;
     }
 
     #initializeRoutes() {
@@ -51,10 +55,6 @@ module.exports = class TaskController {
                 checkUser,
                 this.#removeOne,
             );
-    }
-
-    get router() {
-        return this.#router;
     }
 
     #createOne = asyncWrapper(
