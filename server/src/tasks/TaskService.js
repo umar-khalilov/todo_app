@@ -4,6 +4,7 @@ const {
     BadRequestException,
     TaskNotFoundException,
     TasksNotFoundException,
+    UserTasksNotFoundException,
 } = require('../common/exceptions');
 
 module.exports = class TaskService {
@@ -13,24 +14,31 @@ module.exports = class TaskService {
         this.#taskRepository = Task;
     }
 
-    async createTask(data = {}) {
-        const createdTask = await this.#taskRepository.create(data);
+    async createTask(userId, taskData = {}) {
+        const createdTask = await this.#taskRepository.create({
+            userId,
+            ...taskData,
+        });
         if (!createdTask) {
             throw new BadRequestException();
         }
         return createdTask;
     }
 
-    async findUserTasks(userInstance = {}, pagination = {}) {
-        const { limit, offset, page } = pagination;
-        const tasks = await userInstance.getTasks({
+    async findUserTasks(userId, pagination = {}) {
+        const { limit, offset, page, sort } = pagination;
+        const { count, rows } = await this.#taskRepository.findAndCountAll({
+            where: {
+                userId,
+            },
+            order: [['title', sort]],
             limit,
             offset,
-            order: [['updatedAt', 'DESC']],
         });
-        return tasks.length
-            ? paginateResponse([tasks.length, tasks], page, limit)
-            : new TaskNotFoundException();
+        if (count === 0) {
+            throw new UserTasksNotFoundException(userId);
+        }
+        return paginateResponse([count, rows], page, limit);
     }
 
     async findAllTasks({ limit, offset, page }) {
@@ -39,23 +47,25 @@ module.exports = class TaskService {
             limit,
             offset,
         });
-        if (count <= 0) {
+        if (count === 0) {
             throw new TasksNotFoundException();
         }
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findTaskById(id) {
-        const foundTask = await this.#taskRepository.findByPk(id);
-        if (!foundTask) {
-            throw new TaskNotFoundException(id);
+    async findTaskByIds(userId, taskId) {
+        const foundTask = await this.#taskRepository.findAll({
+            where: { userId, id: taskId },
+        });
+        if (!foundTask.length) {
+            throw new TaskNotFoundException(taskId);
         }
         return foundTask;
     }
 
-    async updateTaskById(id, data = {}) {
+    async updateTaskByIds(userId, taskId, data = {}) {
         const [rows, [foundTask]] = await this.#taskRepository.update(data, {
-            where: { id },
+            where: { userId, id: taskId },
             returning: true,
         });
         if (rows === 0) {
@@ -64,13 +74,13 @@ module.exports = class TaskService {
         return foundTask;
     }
 
-    async removeTaskById(id) {
+    async removeTaskByIds(userId, taskId) {
         const task = await this.#taskRepository.destroy({
-            where: { id },
+            where: { userId, id: taskId },
         });
         if (task === 0) {
-            throw new TaskNotFoundException(id);
+            throw new TaskNotFoundException(taskId);
         }
-        return `Task with id: ${id} was successfully removed`;
+        return `Task with taskId: ${taskId} was successfully removed`;
     }
 };

@@ -1,17 +1,12 @@
 'use strict';
-const { User } = require('../../app/database/models');
-const { UserNotFoundException } = require('../exceptions');
+const UserService = require('../../users/UserService');
 
 const checkUser = async (req, res, next) => {
     try {
         const {
-            params: { id },
+            params: { userId },
         } = req;
-        const userInstance = await User.findByPk(+id);
-        if (!userInstance) {
-            throw new UserNotFoundException();
-        }
-        req.userInstance = userInstance;
+        await new UserService().findUserById(userId);
         next();
     } catch (err) {
         next(err);

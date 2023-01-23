@@ -1,25 +1,23 @@
 const { Router } = require('express');
 const UserService = require('./UserService');
-const TaskService = require('../tasks/TaskService');
+const TaskController = require('../tasks/TaskController');
 const SuccessResponse = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
-const { checkUser } = require('../common/middlewares/checkUser');
 const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { asyncWrapper } = require('../common/utils/asyncWrapper');
 const { updateUserDtoSchema } = require('./userDtoSchemas');
-const { createTaskDtoSchema } = require('../tasks/taskDtoSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
 module.exports = class UserController {
     #userService;
-    #taskService;
+    #taskController;
     #router;
     #path;
 
     constructor() {
         this.#userService = new UserService();
-        this.#taskService = new TaskService();
+        this.#taskController = new TaskController();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/users';
         this.#initializeRoutes();
@@ -29,17 +27,17 @@ module.exports = class UserController {
         this.router.get(this.#path, paginate, this.#findAll);
         this.router
             .route(`${this.#path}/:id`)
-            .get(parseIntPipe, this.#findOne)
-            .patch(parseIntPipe, validate(updateUserDtoSchema), this.#updateOne)
-            .delete(parseIntPipe, this.#removeOne);
-        this.router
-            .route(`${this.#path}/:id/tasks`)
-            .post(
-                checkUser,
-                validate(createTaskDtoSchema),
-                this.#taskService.createTask,
+            .get(parseIntPipe('id'), this.#findOne)
+            .patch(
+                parseIntPipe('id'),
+                validate(updateUserDtoSchema),
+                this.#updateOne,
             )
-            .get(checkUser, paginate, this.#taskService.findUserTasks);
+            .delete(parseIntPipe('id'), this.#removeOne);
+        this.router.use(
+            `${this.#path}/:userId/tasks`,
+            this.#taskController.router,
+        );
     }
 
     get router() {

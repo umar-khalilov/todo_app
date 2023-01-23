@@ -2,7 +2,6 @@
 const App = require('./App');
 const UserController = require('./users/UserController');
 const AuthController = require('./authentication/AuthController');
-const TaskController = require('./tasks/TaskController');
 const ErrorHandler = require('./common/middlewares/ErrorHandler');
 const Logger = require('./common/utils/Logger');
 const db = require('./app/database/models');
@@ -13,11 +12,7 @@ const bootstrap = async () => {
     try {
         await validateEnv();
         await connectToDatabase(db);
-        const controllers = [
-            new UserController(),
-            new AuthController(),
-            new TaskController(),
-        ];
+        const controllers = [new AuthController(), new UserController()];
         const app = new App(controllers);
         await app.listen();
     } catch (err) {

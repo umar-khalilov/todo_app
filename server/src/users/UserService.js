@@ -79,7 +79,7 @@ module.exports = class UserService {
         if (rows === 0) {
             throw new UserNotFoundException(id);
         }
-        updatedUser.password = undefined;
+        // updatedUser.password = undefined;
         return updatedUser;
     }
 

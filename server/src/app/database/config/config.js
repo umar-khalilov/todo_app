@@ -1,13 +1,13 @@
 'use strict';
-const { configs } = require('../../../configs');
+const { configuration } = require('../../../configs');
 
 module.exports = {
     development: {
-        username: configs.dbUser,
-        password: configs.dbPassword,
-        database: configs.dbName,
-        host: configs.dbHost,
-        dialect: configs.dbDialect,
+        username: configuration.dbUser,
+        password: configuration.dbPassword,
+        database: configuration.dbName,
+        host: configuration.dbHost,
+        dialect: configuration.dbDialect,
         migrationStorage: 'json',
         seederStorage: 'json',
         pool: {
