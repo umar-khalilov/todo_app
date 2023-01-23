@@ -1,7 +1,7 @@
 **/node_modules/
 /.idea/
 /.idea/httpRequests
-/.vscode
+/.vscode/
 **/sandbox
 /*.iml
 **/sequelize*.json

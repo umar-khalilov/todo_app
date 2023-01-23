@@ -1,33 +1,32 @@
 const { Router } = require('express');
 const AuthService = require('./AuthService');
-const {
-    signUpSchema,
-    signInSchema,
-} = require('../utils/authValidationSchemas');
-const {
-    validateSignUpData,
-    validateSignInData,
-} = require('../middlewares/authValidation');
-const { HttpStatusCodes } = require('../utils/httpStatusCodes');
+const SuccessResponse = require('../common/utils/SuccessResponse');
+const { validate } = require('../common/middlewares/validate');
+const { asyncWrapper } = require('../common/utils/asyncWrapper');
+const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
+const { signUpDtoSchema, signInDtoSchema } = require('./authDtoSchemas');
 
-class AuthController {
-    #path = '/auth';
-    #router = Router({ mergeParams: true });
-    #authService = new AuthService();
+module.exports = class AuthController {
+    #authService;
+    #router;
+    #path;
 
     constructor() {
+        this.#authService = new AuthService();
+        this.#router = new Router({ mergeParams: true, caseSensitive: true });
+        this.#path = '/auth';
         this.#initializeRoutes();
     }
 
     #initializeRoutes() {
         this.router.post(
             `${this.#path}/sign-up`,
-            validateSignUpData(signUpSchema),
+            validate(signUpDtoSchema),
             this.#signUp,
         );
         this.router.post(
             `${this.#path}/sign-in`,
-            validateSignInData(signInSchema),
+            validate(signInDtoSchema),
             this.#signIn,
         );
     }
@@ -36,23 +35,13 @@ class AuthController {
         return this.#router;
     }
 
-    #signUp = async ({ body }, res, next) => {
-        try {
-            const token = await this.#authService.signUp(body);
-            return res.status(HttpStatusCodes.CREATED).send(token);
-        } catch (error) {
-            next(error);
-        }
-    };
+    #signUp = asyncWrapper(async ({ body }) => {
+        const token = await this.#authService.signUp(body);
+        return new SuccessResponse({ data: token }, HttpStatusCodes.CREATED);
+    });
 
-    #signIn = async ({ body }, res, next) => {
-        try {
-            const token = await this.#authService.signIn(body);
-            return res.status(HttpStatusCodes.OK).send(token);
-        } catch (error) {
-            next(error);
-        }
-    };
-}
-
-module.exports = AuthController;
+    #signIn = asyncWrapper(async ({ body }) => {
+        const token = await this.#authService.signIn(body);
+        return new SuccessResponse({ data: token }, HttpStatusCodes.OK);
+    });
+};

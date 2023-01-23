@@ -2,31 +2,23 @@ const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
-const { errorHandler } = require('./middlewares/errorHandler');
+const Logger = require('./common/utils/Logger');
+const ErrorHandler = require('./common/middlewares/ErrorHandler');
+const { PathNotFoundException } = require('./common/exceptions');
+const { configuration } = require('./configs');
 
-class App {
+module.exports = class App {
     #app;
     #port;
+    #logger;
 
-    constructor(controllers = [], port = 4000) {
+    constructor(controllers = []) {
         this.#app = express();
-        this.#port = port;
+        this.#port = configuration.serverPort;
+        this.#logger = new Logger(App.name);
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
-    }
-
-    listen() {
-        const server = createServer(this.#app);
-        server.listen(+this.#port);
-        server.on('listening', () => {
-            console.info(
-                '\x1b[1m',
-                '\x1b[32m',
-                `Express App started on http://localhost:${this.#port}`,
-                '\x1b[0m',
-            );
-        });
     }
 
     #initializeMiddlewares() {
@@ -50,15 +42,34 @@ class App {
         this.#app.use(express.urlencoded({ limit: '50mb', extended: true }));
     }
 
-    #initializeErrorHandling() {
-        this.#app.use(errorHandler);
-    }
-
     #initializeControllers(controllers = []) {
         controllers.forEach(controller =>
             this.#app.use('/api', controller.router),
         );
     }
-}
 
-module.exports = App;
+    #initializeErrorHandling() {
+        this.#app.use('*', (req, res, next) =>
+            next(new PathNotFoundException(req.path)),
+        );
+        this.#app.use(ErrorHandler.errorHandler);
+    }
+
+    async listen() {
+        const server = createServer(this.#app);
+        server.listen(this.#port);
+        server.on('listening', () => {
+            this.#logger.log(
+                'Express application started!',
+                `Application documentation is available at http://localhost:${
+                    this.#port
+                }/api/docs`,
+            );
+        });
+
+        process.on('SIGTERM', () => {
+            this.#logger.log('SIGTERM received');
+            server.close();
+        });
+    }
+};

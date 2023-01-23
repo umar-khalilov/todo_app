@@ -3,11 +3,15 @@ version: '3.9'
 services:
   main:
     container_name: main
+    environment:
+      NODE_ENV: development
     build:
       context: ./server
       dockerfile: ./Dockerfile
+      target: development
+    command: npm run start:dev  
     ports:
-      - '3001:3001'
+      - '4000:4000'
       - '9229:9229'
     volumes:
       - ./server:/usr/src/app
@@ -33,6 +37,16 @@ services:
       - todo_net
     tty: true
     restart: always
+  adminer:
+    image: adminer
+    container_name: adminer-docker
+    depends_on:
+      - database_todo
+    ports:
+      - '8080:8080'
+    networks:
+      - todo_net
+    restart: on-failure  
 
 volumes:
   pgdata:

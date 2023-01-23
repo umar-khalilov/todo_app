@@ -1,24 +1,23 @@
 module.exports = {
+    root: true,
+    parserOptions: {
+        ecmaVersion: '2022',
+        sourceType: 'script',
+    },
     env: {
         node: true,
         commonjs: true,
-        es2021: true,
+        es2022: true,
+        jest: true,
     },
-    extends: ['standard', 'eslint:recommended', 'prettier'],
-    parserOptions: {
-        ecmaVersion: 'latest',
-    },
+    plugins: ['eslint-plugin-prettier'],
+    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+    ignorePatterns: ['.eslintrc.js'],
     rules: {
-        indent: ['error', 4],
-        quotes: ['error', 'single'],
-        semi: ['error', 'always'],
         'linebreak-style': ['error', 'unix'],
         'no-void': ['error', { allowAsStatement: true }],
-        'class-methods-use-this': 'off',
-        'no-loop-func': 'warn',
-        'no-await-in-loop': 'off',
-        'no-promise-executor-return': 'off',
-        'no-console': 'off',
         'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+        'class-methods-use-this': 'off',
+        'no-console': 'off',
     },
 };

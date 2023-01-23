@@ -1,8 +1,8 @@
-FROM node:16-alpine3.16
+FROM node:19-alpine3.15 as development
 WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN npm install -g sequelize-cli && npm install
 COPY ./ ./
-ENV PORT 3001
+ENV SERVER_PORT 4000
 CMD ["npm","run","start:dev"]
-EXPOSE $PORT
+EXPOSE $SERVER_PORT

@@ -1,10 +1,17 @@
-const { Task } = require('../database/models');
-const BadRequestException = require('../errors/BadRequestException');
-const TaskNotFoundException = require('../errors/TaskNotFoundException');
-const { paginateResponse } = require('../utils/paginateResponse');
+const { Task } = require('../app/database/models');
+const { paginateResponse } = require('../common/utils/paginateResponse');
+const {
+    BadRequestException,
+    TaskNotFoundException,
+    TasksNotFoundException,
+} = require('../common/exceptions');
 
-class TaskService {
-    #taskRepository = Task;
+module.exports = class TaskService {
+    #taskRepository;
+
+    constructor() {
+        this.#taskRepository = Task;
+    }
 
     async createTask(data = {}) {
         const createdTask = await this.#taskRepository.create(data);
@@ -33,20 +40,20 @@ class TaskService {
             offset,
         });
         if (count <= 0) {
-            throw new TaskNotFoundException();
+            throw new TasksNotFoundException();
         }
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findTaskById(id = 0) {
+    async findTaskById(id) {
         const foundTask = await this.#taskRepository.findByPk(id);
         if (!foundTask) {
-            throw new TaskNotFoundException();
+            throw new TaskNotFoundException(id);
         }
         return foundTask;
     }
 
-    async updateTaskById(id = 0, data = {}) {
+    async updateTaskById(id, data = {}) {
         const [rows, [foundTask]] = await this.#taskRepository.update(data, {
             where: { id },
             returning: true,
@@ -57,15 +64,13 @@ class TaskService {
         return foundTask;
     }
 
-    async removeTaskById(id = 0) {
+    async removeTaskById(id) {
         const task = await this.#taskRepository.destroy({
             where: { id },
         });
         if (task === 0) {
-            throw new TaskNotFoundException();
+            throw new TaskNotFoundException(id);
         }
         return `Task with id: ${id} was successfully removed`;
     }
-}
-
-module.exports = TaskService;
+};
