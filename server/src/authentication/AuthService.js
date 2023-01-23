@@ -1,65 +1,75 @@
-require('dotenv').config();
-const { compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
-const TokenException = require('../errors/TokenException');
-const BadRequestException = require('../errors/BadRequestException');
 const UserService = require('../users/UserService');
-const UnauthorizedException = require('../errors/UnauthorizedException');
-const UserAlreadyExistException = require('../errors/UserAlreadyExistException');
+const HashService = require('../common/utils/HashService');
+const { configuration } = require('../configs');
+const {
+    BadRequestException,
+    TokenException,
+    UnauthorizedException,
+    UserAlreadyExistException,
+} = require('../common/exceptions');
 
-class AuthService {
-    #userService = new UserService();
+module.exports = class AuthService {
+    #userService;
+    #hashService;
+
+    constructor() {
+        this.#userService = new UserService();
+        this.#hashService = new HashService();
+    }
 
     async #generateToken(user = {}) {
-        if (user.id && user.email && user.roles[0]) {
+        if (user.id && user.email && user.roles.length) {
             const payload = {
                 id: user.id,
                 email: user.email,
                 roles: user.roles,
             };
 
-            const {
-                env: { ACCESS_TOKEN_SECRET, ACCESS_TOKEN_TIME },
-            } = process;
-
             return {
-                token: sign(payload, ACCESS_TOKEN_SECRET, {
-                    algorithm: 'HS384',
-                    expiresIn: ACCESS_TOKEN_TIME,
-                }),
+                accessToken: await sign(
+                    payload,
+                    configuration.accessTokenSecret,
+                    {
+                        algorithm: 'HS384',
+                        expiresIn: configuration.accessTokenTime,
+                    },
+                ),
             };
         }
         throw new TokenException();
     }
 
-    #validateUser = async (email = '', password = '') => {
+    async #validateUser(email, password) {
         if (!(email && password)) {
             throw new BadRequestException('Need email and password');
         }
         const user = await this.#userService.findUserByEmail(email);
-        if (user && (await compare(password, user.password))) {
+        const isMatch = await this.#hashService.checkIsMatch(
+            password,
+            user.password,
+        );
+        if (user && isMatch) {
             return user;
         }
         throw new UnauthorizedException();
-    };
+    }
 
-    signIn = async (signInData = {}) => {
+    async signIn(signInData = {}) {
         const { email, password } = signInData;
         const signedUser = await this.#validateUser(email, password);
-        return await this.#generateToken(signedUser);
-    };
+        return this.#generateToken(signedUser);
+    }
 
-    signUp = async (signUpData = {}) => {
+    async signUp(signUpData = {}) {
         const candidate = await this.#userService.findUserByEmail(
             signUpData.email,
         );
         if (candidate) {
-            throw new UserAlreadyExistException();
+            throw new UserAlreadyExistException(candidate.email);
         }
 
         const createdUser = await this.#userService.createUser(signUpData);
-        return await this.#generateToken(createdUser);
-    };
-}
-
-module.exports = AuthService;
+        return this.#generateToken(createdUser);
+    }
+};

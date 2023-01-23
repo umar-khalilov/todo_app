@@ -1,14 +1,16 @@
 import { put } from 'redux-saga/effects';
-import { Actions } from '../actions';
-import * as API from '../api';
+import { actions } from '../actions';
+import { httpTodoProvider } from '../api';
 
-export function* getUsersSaga(action) {
-    try {
-        const {
-            data: { data: users },
-        } = yield API.getUsers();
-        yield put(Actions.getUsersSuccess(users));
-    } catch (err) {
-        yield put(Actions.getUsersError({ err }));
-    }
-}
+export const userSagas = {
+    getAllUsersSaga: function* (action) {
+        try {
+            const {
+                data: { data: users },
+            } = yield httpTodoProvider.getAllUsers(action.payload);
+            yield put(actions.getUsersSuccess({ users }));
+        } catch (error) {
+            yield put(actions.getUsersError({ error }));
+        }
+    },
+};

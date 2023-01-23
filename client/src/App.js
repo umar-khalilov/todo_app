@@ -1,23 +1,15 @@
-import { connect } from 'react-redux';
 import './App.css';
+import { UserPage } from './pages/UserPage';
 
-const App = ({ count, dispatch }) => {
-    const increment = () => dispatch({ type: 'INCREMENT' });
-    const decrement = () => dispatch({ type: 'DECREMENT' });
+export const App = () => {
     return (
         <div className="App">
-            <h1>Current counter value: {count}</h1>
-            <button onClick={increment}>Increment</button>
-            &nbsp;
-            <button onClick={decrement}>Decrement</button>
+            <UserPage />
         </div>
     );
 };
 
-function mapStateToProps(state) {
-    return state;
-}
-
-function mapDispatchToProps(dispatch) {}
-
-export default connect(mapStateToProps)(App);
+// App.propTypes = {
+//     count: PropTypes.number.isRequired,
+//     dispatch: PropTypes.func.isRequired,
+// };

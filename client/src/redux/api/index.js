@@ -1,10 +1,19 @@
 import axios from 'axios';
 import { BASE_URL } from '../../config';
+import { getListUserRequests } from './getListUserRequests';
+import { getListAuthRequests } from './getListAuthRequests';
+import { getListTaskRequests } from './getListTaskRequests';
 
-const http = axios.create({
+const httpClient = axios.create({
     baseURL: `${BASE_URL}/api`,
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    timeout: 10000,
+    responseType: 'json',
+    responseEncoding: 'utf-8',
 });
 
-export const authSignUp = body => http.post('/auth/sign-up', body);
-
-export const getUsers = ()=> http.get(`/users`)
+export const httpTodoProvider = {
+    ...getListAuthRequests(httpClient),
+    ...getListUserRequests(httpClient),
+    ...getListTaskRequests(httpClient),
+};

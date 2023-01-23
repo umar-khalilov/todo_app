@@ -1,96 +1,106 @@
 const { Router } = require('express');
 const TaskService = require('./TaskService');
-const { paginate } = require('../middlewares/paginate');
-const { validateUpdateTaskData } = require('../middlewares/taskValidation');
-const { taskUpdateSchema } = require('../utils/taskValidationSchemas');
-const { HttpStatusCodes } = require('../utils/httpStatusCodes');
+const SuccessResponse = require('../common/utils/SuccessResponse');
+const { paginate } = require('../common/middlewares/paginate');
+const { validate } = require('../common/middlewares/validate');
+const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
+const { asyncWrapper } = require('../common/utils/asyncWrapper');
+const { checkUser } = require('../common/middlewares/checkUser');
+const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
+const {
+    updateTaskDtoSchema,
+    createTaskDtoSchema,
+} = require('./taskDtoSchemas');
 
-class TaskController {
-    #path = '/tasks';
-    #router = Router({ mergeParams: true });
-    #taskService = new TaskService();
+module.exports = class TaskController {
+    #taskService;
+    #router;
 
     constructor() {
+        this.#taskService = new TaskService();
+        this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#initializeRoutes();
-    }
-
-    #initializeRoutes() {
-        this.router.get(this.#path, paginate, this.#findAllTasks);
-        this.router
-            .route(`${this.#path}/:id`)
-            .get(this.#findOne)
-            .patch(validateUpdateTaskData(taskUpdateSchema), this.#updateOne)
-            .delete(this.#removeOne);
     }
 
     get router() {
         return this.#router;
     }
 
-    #createOne = async ({ params: { id }, body }, res, next) => {
-        try {
-            const task = await this.#taskService.createTask({
-                ...body,
-                userId: +id,
-            });
-            return res.status(HttpStatusCodes.CREATED).send({ data: task });
-        } catch (err) {
-            next(err);
-        }
-    };
+    #initializeRoutes() {
+        this.router
+            .route('/')
+            .post(
+                parseIntPipe('userId'),
+                validate(createTaskDtoSchema),
+                checkUser,
+                this.#createOne,
+            )
+            .get(
+                parseIntPipe('userId'),
+                paginate,
+                checkUser,
+                this.#findUserTasks,
+            );
+        this.router
+            .route('/:taskId')
+            .get(parseIntPipe('userId', 'taskId'), checkUser, this.#findOne)
+            .patch(
+                parseIntPipe('userId', 'taskId'),
+                validate(updateTaskDtoSchema),
+                checkUser,
+                this.#updateOne,
+            )
+            .delete(
+                parseIntPipe('userId', 'taskId'),
+                checkUser,
+                this.#removeOne,
+            );
+    }
 
-    #findUserTasks = async ({ userInstance, pagination }, res, next) => {
-        try {
+    #createOne = asyncWrapper(
+        async ({ params: { userId }, body: taskData }) => {
+            const task = await this.#taskService.createTask(userId, taskData);
+            return new SuccessResponse({ data: task }, HttpStatusCodes.CREATED);
+        },
+    );
+
+    #findUserTasks = asyncWrapper(
+        async ({ params: { userId }, pagination }) => {
             const tasks = await this.#taskService.findUserTasks(
-                userInstance,
+                userId,
                 pagination,
             );
-            return res.status(HttpStatusCodes.OK).send(tasks);
-        } catch (err) {
-            next(err);
-        }
-    };
+            return new SuccessResponse(tasks);
+        },
+    );
 
-    #findAllTasks = async ({ pagination }, res, next) => {
-        try {
-            const tasks = await this.#taskService.findAllTasks(pagination);
-            return res.status(HttpStatusCodes.OK).send(tasks);
-        } catch (err) {
-            next(err);
-        }
-    };
+    #findAllTasks = asyncWrapper(async ({ pagination }) => {
+        const tasks = await this.#taskService.findAllTasks(pagination);
+        return new SuccessResponse(tasks);
+    });
 
-    #findOne = async ({ params: { id } }, res, next) => {
-        try {
-            const foundTask = await this.#taskService.findTaskById(Number(id));
-            return res.status(HttpStatusCodes.OK).send({ data: foundTask });
-        } catch (err) {
-            next(err);
-        }
-    };
+    #findOne = asyncWrapper(async ({ params: { userId, taskId } }) => {
+        const foundTask = await this.#taskService.findTaskByIds(userId, taskId);
+        return new SuccessResponse({ data: foundTask });
+    });
 
-    #updateOne = async ({ params: { id }, body }, res, next) => {
-        try {
-            const updatedTask = await this.#taskService.updateTaskById(
-                Number(id),
-                body,
-            );
-            return res
-                .status(HttpStatusCodes.ACCEPTED)
-                .send({ data: updatedTask });
-        } catch (err) {
-            next(err);
-        }
-    };
+    #updateOne = asyncWrapper(async ({ params: { userId, taskId }, body }) => {
+        const updatedTask = await this.#taskService.updateTaskByIds(
+            userId,
+            taskId,
+            body,
+        );
+        return new SuccessResponse(
+            { data: updatedTask },
+            HttpStatusCodes.ACCEPTED,
+        );
+    });
 
-    #removeOne = async ({ params: { id } }, res, next) => {
-        try {
-            await this.#taskService.removeTaskById(id);
-            return res.status(HttpStatusCodes.NO_CONTENT).end();
-        } catch (err) {
-            next(err);
-        }
-    };
-}
-
-module.exports = TaskController;
+    #removeOne = asyncWrapper(async ({ params: { userId, taskId } }) => {
+        const response = await this.#taskService.removeTaskByIds(
+            userId,
+            taskId,
+        );
+        return new SuccessResponse(response, HttpStatusCodes.NO_CONTENT);
+    });
+};

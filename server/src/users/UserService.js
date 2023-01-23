@@ -1,12 +1,20 @@
-const { User, Role } = require('../database/models');
-const UserNotFoundException = require('../errors/UserNotFoundException');
-const { paginateResponse } = require('../utils/paginateResponse');
+const { User, Role } = require('../app/database/models');
+const { paginateResponse } = require('../common/utils/paginateResponse');
+const {
+    UserNotFoundException,
+    UsersNotFoundException,
+} = require('../common/exceptions');
 
-class UserService {
-    #userRepository = User;
-    #roleRepository = Role;
+module.exports = class UserService {
+    #userRepository;
+    #roleRepository;
 
-    async findUserByEmail(email = '') {
+    constructor() {
+        this.#userRepository = User;
+        this.#roleRepository = Role;
+    }
+
+    async findUserByEmail(email) {
         const user = await this.#userRepository.scope('withPassword').findOne({
             where: { email },
             include: [
@@ -24,7 +32,7 @@ class UserService {
                   password: user.password,
                   roles: user.roles.map(({ name }) => name),
               }
-            : undefined;
+            : null;
     }
 
     async createUser(data = {}) {
@@ -41,14 +49,15 @@ class UserService {
         };
     }
 
-    async findAllUsers({ limit, offset, page }) {
+    async findAllUsers({ limit, offset, page, sort }) {
         const { count, rows } = await this.#userRepository.findAndCountAll({
-            order: [['updatedAt', 'DESC']],
+            order: [['name', sort]],
             limit,
             offset,
+            distinct: true,
         });
-        if (count <= 0) {
-            throw new UserNotFoundException();
+        if (count === 0) {
+            throw new UsersNotFoundException();
         }
         return paginateResponse([count, rows], page, limit);
     }
@@ -56,7 +65,7 @@ class UserService {
     async findUserById(id) {
         const user = await this.#userRepository.findByPk(id);
         if (!user) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(id);
         }
         return user;
     }
@@ -68,16 +77,16 @@ class UserService {
             individualHooks: true,
         });
         if (rows === 0) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(id);
         }
-        updatedUser.password = undefined;
+        // updatedUser.password = undefined;
         return updatedUser;
     }
 
-    async removeUserById(id = 0) {
+    async removeUserById(id) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(id);
         }
 
         const roles = await foundUser.getRoles();
@@ -86,6 +95,4 @@ class UserService {
         await foundUser.removeTasks(tasks);
         await foundUser.destroy();
     }
-}
-
-module.exports = UserService;
+};

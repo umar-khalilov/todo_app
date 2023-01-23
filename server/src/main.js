@@ -1,24 +1,26 @@
-require('dotenv').config();
+'use strict';
 const App = require('./App');
 const UserController = require('./users/UserController');
 const AuthController = require('./authentication/AuthController');
-const TaskController = require('./tasks/TaskController');
-const { validateEnv } = require('./utils/validateEnv');
+const ErrorHandler = require('./common/middlewares/ErrorHandler');
+const Logger = require('./common/utils/Logger');
+const db = require('./app/database/models');
+const { validateEnv } = require('./common/utils/validateEnv');
+const { connectToDatabase } = require('./common/utils/connectToDatabase');
 
-const bootstrap = async port => {
+const bootstrap = async () => {
     try {
-        validateEnv();
-        const controllers = [
-            new UserController(),
-            new AuthController(),
-            new TaskController(),
-        ];
-        const app = new App(controllers, port);
-        app.listen();
+        await validateEnv();
+        await connectToDatabase(db);
+        const controllers = [new AuthController(), new UserController()];
+        const app = new App(controllers);
+        await app.listen();
     } catch (err) {
-        console.error('\x1b[31m', err, '\x1b[0m');
+        new Logger(bootstrap.name).error(err);
         process.exit(1);
     }
 };
 
-void bootstrap(process.env.PORT);
+void bootstrap();
+
+ErrorHandler.initializeUnhandledException();
