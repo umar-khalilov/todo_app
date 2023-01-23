@@ -26,7 +26,7 @@ const {
     },
 } = process;
 
-const configuration = {
+const configuration = Object.freeze({
     nodeEnv: NODE_ENV,
     serverPort: parseInt(SERVER_PORT, 10),
     dbPort: parseInt(DB_PORT, 10),
@@ -45,6 +45,6 @@ const configuration = {
     accessTokenSecret: ACCESS_TOKEN_SECRET,
     accessTokenTime: ACCESS_TOKEN_TIME,
     saltRounds: parseInt(SALT_ROUNDS, 10),
-};
+});
 
 module.exports = { configuration };

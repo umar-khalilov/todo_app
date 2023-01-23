@@ -1,13 +1,13 @@
 'use strict';
 
-const NODE_ENV = {
+const NODE_ENV = Object.freeze({
     DEVELOPMENT: 'development',
     PRODUCTION: 'production',
-};
+});
 
-const SequelizeErrors = {
+const SequelizeErrors = Object.freeze({
     SequelizeUniqueConstraintError: 'SequelizeUniqueConstraintError',
     SequelizeForeignKeyConstraintError: 'SequelizeForeignKeyConstraintError',
-};
+});
 
 module.exports = { NODE_ENV, SequelizeErrors };

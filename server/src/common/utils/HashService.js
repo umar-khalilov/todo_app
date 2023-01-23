@@ -1,5 +1,6 @@
 const { hash, genSalt, compare } = require('bcryptjs');
 const { configuration } = require('../../configs');
+
 module.exports = class HashService {
     #saltRounds;
 
