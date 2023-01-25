@@ -1,7 +1,7 @@
 const { hash, genSalt, compare } = require('bcryptjs');
 const { configuration } = require('../../configs');
 
-module.exports = class HashService {
+class HashService {
     #saltRounds;
 
     constructor() {
@@ -16,4 +16,6 @@ module.exports = class HashService {
     async checkIsMatch(plainPassword, hashedPassword) {
         return compare(plainPassword, hashedPassword);
     }
-};
+}
+
+module.exports = { HashService };

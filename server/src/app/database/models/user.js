@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const { isAfter } = require('date-fns');
-const HashService = require('../../../common/utils/HashService');
+const { HashService } = require('../../../common/utils/HashService');
 
 module.exports = (sequelize, DataTypes) => {
     const hashService = new HashService();
@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     User.init(
         {
             name: {
-                allowNull: false,
                 type: DataTypes.STRING,
+                allowNull: false,
                 validate: {
                     notNull: true,
                     notEmpty: true,
@@ -34,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             surname: {
-                allowNull: false,
                 type: DataTypes.STRING,
+                allowNull: false,
                 validate: {
                     notNull: true,
                     notEmpty: true,
@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             email: {
-                allowNull: false,
                 type: DataTypes.STRING,
+                allowNull: false,
                 unique: true,
                 validate: {
                     notNull: true,
@@ -52,9 +52,13 @@ module.exports = (sequelize, DataTypes) => {
                     isEmail: true,
                 },
             },
-            birthday: {
+            avatar: {
+                type: DataTypes.TEXT,
                 allowNull: true,
+            },
+            birthday: {
                 type: DataTypes.DATEONLY,
+                allowNull: true,
                 validate: {
                     isDate: true,
                     isCorrectDate(value) {
@@ -65,14 +69,14 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             isMale: {
+                type: DataTypes.BOOLEAN,
                 allowNull: true,
                 field: 'is_male',
-                type: DataTypes.BOOLEAN,
             },
             password: {
+                type: DataTypes.TEXT,
                 allowNull: false,
                 field: 'password_hash',
-                type: DataTypes.TEXT,
             },
         },
         {

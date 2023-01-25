@@ -1,7 +1,6 @@
 'use strict';
-const { verify } = require('jsonwebtoken');
+const { TokenService } = require('../utils/TokenService');
 const { RightsException } = require('../exceptions');
-const { configuration } = require('../../configs');
 
 const verifyToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') {
@@ -14,7 +13,7 @@ const verifyToken = async (req, res, next) => {
         if (!token) {
             throw new RightsException();
         }
-        req.user = verify(token, configuration.accessTokenSecret);
+        req.user = new TokenService().verifyAccessToken(token);
         next();
     } catch (error) {
         next(error);

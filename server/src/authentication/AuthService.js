@@ -1,7 +1,6 @@
-const { sign } = require('jsonwebtoken');
 const UserService = require('../users/UserService');
-const HashService = require('../common/utils/HashService');
-const { configuration } = require('../configs');
+const { HashService } = require('../common/utils/HashService');
+const { TokenService } = require('../common/utils/TokenService');
 const {
     BadRequestException,
     TokenException,
@@ -12,10 +11,12 @@ const {
 module.exports = class AuthService {
     #userService;
     #hashService;
+    #tokenService;
 
     constructor() {
         this.#userService = new UserService();
         this.#hashService = new HashService();
+        this.#tokenService = new TokenService();
     }
 
     async #generateToken(user = {}) {
@@ -27,13 +28,8 @@ module.exports = class AuthService {
             };
 
             return {
-                accessToken: await sign(
+                accessToken: await this.#tokenService.generateAccessToken(
                     payload,
-                    configuration.accessTokenSecret,
-                    {
-                        algorithm: 'HS384',
-                        expiresIn: configuration.accessTokenTime,
-                    },
                 ),
             };
         }
@@ -55,21 +51,17 @@ module.exports = class AuthService {
         throw new UnauthorizedException();
     }
 
-    async signIn(signInData = {}) {
-        const { email, password } = signInData;
+    async signIn({ email, password }) {
         const signedUser = await this.#validateUser(email, password);
         return this.#generateToken(signedUser);
     }
 
-    async signUp(signUpData = {}) {
-        const candidate = await this.#userService.findUserByEmail(
-            signUpData.email,
-        );
+    async signUp(data = {}) {
+        const candidate = await this.#userService.findUserByEmail(data.email);
         if (candidate) {
             throw new UserAlreadyExistException(candidate.email);
         }
-
-        const createdUser = await this.#userService.createUser(signUpData);
+        const createdUser = await this.#userService.createUser(data);
         return this.#generateToken(createdUser);
     }
 };

@@ -4,10 +4,10 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('roles', {
             id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
             },
             name: {
                 type: Sequelize.ENUM('admin', 'user'),
@@ -15,14 +15,14 @@ module.exports = {
                 unique: true,
             },
             createdAt: {
+                type: Sequelize.DATE,
                 field: 'created_at',
                 allowNull: false,
-                type: Sequelize.DATE,
             },
             updatedAt: {
+                type: Sequelize.DATE,
                 field: 'updated_at',
                 allowNull: false,
-                type: Sequelize.DATE,
             },
         });
     },

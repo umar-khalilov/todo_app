@@ -1,7 +1,7 @@
 'use strict';
 const { config } = require('dotenv');
 
-config({ path: __dirname + `/../../.env.${process.env.NODE_ENV}` });
+config({ path: `${__dirname}/../../.env.${process.env.NODE_ENV}` });
 
 const {
     env: {

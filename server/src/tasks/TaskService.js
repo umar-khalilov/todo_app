@@ -1,5 +1,5 @@
 const { Task } = require('../app/database/models');
-const { paginateResponse } = require('../common/utils/paginateResponse');
+const { paginateResponse } = require('../common/utils/helpers');
 const {
     BadRequestException,
     TaskNotFoundException,

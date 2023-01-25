@@ -14,21 +14,21 @@ module.exports = (sequelize, DataTypes) => {
     Task.init(
         {
             title: {
-                allowNull: false,
                 type: DataTypes.STRING(300),
+                allowNull: false,
                 validate: { notNull: true, notEmpty: true },
             },
             body: {
-                allowNull: false,
                 type: DataTypes.TEXT,
+                allowNull: false,
                 validate: {
                     notNull: true,
                     notEmpty: true,
                 },
             },
             deadline: {
-                allowNull: false,
                 type: DataTypes.DATE,
+                allowNull: false,
                 validate: {
                     notNull: true,
                     notEmpty: true,
@@ -36,10 +36,14 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             isDone: {
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
                 field: 'is_done',
                 defaultValue: false,
-                type: DataTypes.BOOLEAN,
+            },
+            files: {
+                type: DataTypes.ARRAY(DataTypes.STRING(600)),
+                allowNull: true,
             },
         },
         {

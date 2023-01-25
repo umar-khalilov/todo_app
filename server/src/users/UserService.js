@@ -1,5 +1,5 @@
 const { User, Role } = require('../app/database/models');
-const { paginateResponse } = require('../common/utils/paginateResponse');
+const { paginateResponse } = require('../common/utils/helpers');
 const {
     UserNotFoundException,
     UsersNotFoundException,
