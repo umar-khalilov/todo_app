@@ -1,4 +1,4 @@
-const UserService = require('../users/UserService');
+const { UserService } = require('../users/UserService');
 const { HashService } = require('../common/utils/HashService');
 const { TokenService } = require('../common/utils/TokenService');
 const {
@@ -8,7 +8,7 @@ const {
     UserAlreadyExistException,
 } = require('../common/exceptions');
 
-module.exports = class AuthService {
+class AuthService {
     #userService;
     #hashService;
     #tokenService;
@@ -64,4 +64,6 @@ module.exports = class AuthService {
         const createdUser = await this.#userService.createUser(data);
         return this.#generateToken(createdUser);
     }
-};
+}
+
+module.exports = { AuthService };

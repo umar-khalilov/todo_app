@@ -1,9 +1,9 @@
 'use strict';
-const App = require('./App');
-const UserController = require('./users/UserController');
-const AuthController = require('./authentication/AuthController');
-const ErrorHandler = require('./common/middlewares/ErrorHandler');
-const Logger = require('./common/utils/Logger');
+const { App } = require('./App');
+const { AuthController } = require('./authentication/AuthController');
+const { UserController } = require('./users/UserController');
+const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
+const { Logger } = require('./common/utils/Logger');
 const { validateEnv } = require('./common/utils/validateEnv');
 
 const bootstrap = async () => {

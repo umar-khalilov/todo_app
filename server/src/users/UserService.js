@@ -5,7 +5,7 @@ const {
     UsersNotFoundException,
 } = require('../common/exceptions');
 
-module.exports = class UserService {
+class UserService {
     #userRepository;
     #roleRepository;
 
@@ -95,4 +95,6 @@ module.exports = class UserService {
         await foundUser.removeTasks(tasks);
         await foundUser.destroy();
     }
-};
+}
+
+module.exports = { UserService };

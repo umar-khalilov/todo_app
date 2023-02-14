@@ -4,13 +4,13 @@ const cors = require('cors');
 const compression = require('compression');
 const swaggerUi = require('swagger-ui-express');
 const { sequelize } = require('./app/database/models');
-const Logger = require('./common/utils/Logger');
-const ErrorHandler = require('./common/middlewares/ErrorHandler');
+const { Logger } = require('./common/utils/Logger');
+const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
 const { PathNotFoundException } = require('./common/exceptions');
 const { docs } = require('./app/docs');
 const { configuration } = require('./configs');
 
-module.exports = class App {
+class App {
     #app;
     #port;
     #logger;
@@ -92,4 +92,6 @@ module.exports = class App {
             server.close();
         });
     }
-};
+}
+
+module.exports = { App };

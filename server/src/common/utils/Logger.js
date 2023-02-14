@@ -1,4 +1,4 @@
-module.exports = class Logger {
+class Logger {
     #name;
     #date;
 
@@ -26,4 +26,6 @@ module.exports = class Logger {
             );
         });
     }
-};
+}
+
+module.exports = { Logger };

@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const UserService = require('./UserService');
-const TaskController = require('../tasks/TaskController');
-const SuccessResponse = require('../common/utils/SuccessResponse');
+const { UserService } = require('./UserService');
+const { TaskController } = require('../tasks/TaskController');
+const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
@@ -9,30 +9,11 @@ const { asyncWrapper } = require('../common/utils/helpers');
 const { updateUserDtoSchema } = require('./userDtoSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
-module.exports = class UserController {
+class UserController {
     #userService;
     #taskController;
     #router;
     #path;
-    #findAll = asyncWrapper(async ({ pagination }) => {
-        const users = await this.#userService.findAllUsers(pagination);
-        return new SuccessResponse(users);
-    });
-    #findOne = asyncWrapper(async ({ params: { id } }) => {
-        const user = await this.#userService.findUserById(id);
-        return new SuccessResponse({ data: user });
-    });
-    #updateOne = asyncWrapper(async ({ params: { id }, body }) => {
-        const updatedUser = await this.#userService.updateUserById(id, body);
-        return new SuccessResponse(
-            { data: updatedUser },
-            HttpStatusCodes.ACCEPTED,
-        );
-    });
-    #removeOne = asyncWrapper(async ({ params: { id } }) => {
-        await this.#userService.removeUserById(id);
-        return new SuccessResponse(null, HttpStatusCodes.NO_CONTENT);
-    });
 
     constructor() {
         this.#userService = new UserService();
@@ -62,4 +43,29 @@ module.exports = class UserController {
             this.#taskController.router,
         );
     }
-};
+
+    #findAll = asyncWrapper(async ({ pagination }) => {
+        const users = await this.#userService.findAllUsers(pagination);
+        return new SuccessResponse(users);
+    });
+
+    #findOne = asyncWrapper(async ({ params: { id } }) => {
+        const user = await this.#userService.findUserById(id);
+        return new SuccessResponse({ data: user });
+    });
+
+    #updateOne = asyncWrapper(async ({ params: { id }, body }) => {
+        const updatedUser = await this.#userService.updateUserById(id, body);
+        return new SuccessResponse(
+            { data: updatedUser },
+            HttpStatusCodes.ACCEPTED,
+        );
+    });
+
+    #removeOne = asyncWrapper(async ({ params: { id } }) => {
+        await this.#userService.removeUserById(id);
+        return new SuccessResponse(null, HttpStatusCodes.NO_CONTENT);
+    });
+}
+
+module.exports = { UserController };

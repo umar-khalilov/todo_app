@@ -1,9 +1,9 @@
 'use strict';
 const { ApplicationException } = require('../exceptions');
-const Logger = require('../utils/Logger');
+const { Logger } = require('../utils/Logger');
 const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
-module.exports = class ErrorHandler {
+class ErrorHandler {
     static #logger = new Logger(ErrorHandler.name);
 
     static errorHandler = async (err, req, res, next) => {
@@ -46,4 +46,6 @@ module.exports = class ErrorHandler {
             process.exit(1);
         });
     };
-};
+}
+
+module.exports = { ErrorHandler };
