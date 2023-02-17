@@ -1,15 +1,15 @@
 const { Router } = require('express');
-const UserService = require('./UserService');
-const TaskController = require('../tasks/TaskController');
-const SuccessResponse = require('../common/utils/SuccessResponse');
+const { UserService } = require('./UserService');
+const { TaskController } = require('../tasks/TaskController');
+const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
-const { asyncWrapper } = require('../common/utils/asyncWrapper');
+const { asyncWrapper } = require('../common/utils/helpers');
 const { updateUserDtoSchema } = require('./userDtoSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
-module.exports = class UserController {
+class UserController {
     #userService;
     #taskController;
     #router;
@@ -66,4 +66,6 @@ module.exports = class UserController {
         await this.#userService.removeUserById(id);
         return new SuccessResponse(null, HttpStatusCodes.NO_CONTENT);
     });
-};
+}
+
+module.exports = { UserController };

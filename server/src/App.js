@@ -2,12 +2,15 @@ const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
-const Logger = require('./common/utils/Logger');
-const ErrorHandler = require('./common/middlewares/ErrorHandler');
+const swaggerUi = require('swagger-ui-express');
+const { sequelize } = require('./app/database/models');
+const { Logger } = require('./common/utils/Logger');
+const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
 const { PathNotFoundException } = require('./common/exceptions');
+const { docs } = require('./app/docs');
 const { configuration } = require('./configs');
 
-module.exports = class App {
+class App {
     #app;
     #port;
     #logger;
@@ -16,9 +19,25 @@ module.exports = class App {
         this.#app = express();
         this.#port = configuration.serverPort;
         this.#logger = new Logger(App.name);
+        this.#connectToTheDatabase();
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
+    }
+
+    #connectToTheDatabase() {
+        sequelize
+            .authenticate()
+            .then(_ => {
+                this.#logger.log(
+                    'Connection to database has been established successfully!',
+                );
+            })
+            .catch(error => {
+                this.#logger.error(
+                    `Unable to connect to the database: ${error}`,
+                );
+            });
     }
 
     #initializeMiddlewares() {
@@ -40,6 +59,7 @@ module.exports = class App {
         this.#app.use(compression());
         this.#app.use(express.json({ limit: '100mb' }));
         this.#app.use(express.urlencoded({ limit: '50mb', extended: true }));
+        this.#app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(docs));
     }
 
     #initializeControllers(controllers = []) {
@@ -72,4 +92,6 @@ module.exports = class App {
             server.close();
         });
     }
-};
+}
+
+module.exports = { App };

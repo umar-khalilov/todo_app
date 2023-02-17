@@ -1,11 +1,11 @@
 const { User, Role } = require('../app/database/models');
-const { paginateResponse } = require('../common/utils/paginateResponse');
+const { paginateResponse } = require('../common/utils/helpers');
 const {
     UserNotFoundException,
     UsersNotFoundException,
 } = require('../common/exceptions');
 
-module.exports = class UserService {
+class UserService {
     #userRepository;
     #roleRepository;
 
@@ -95,4 +95,6 @@ module.exports = class UserService {
         await foundUser.removeTasks(tasks);
         await foundUser.destroy();
     }
-};
+}
+
+module.exports = { UserService };

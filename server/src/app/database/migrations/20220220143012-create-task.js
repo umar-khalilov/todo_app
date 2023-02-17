@@ -4,15 +4,15 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('tasks', {
             id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
             },
             userId: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 field: 'user_id',
-                type: Sequelize.INTEGER,
                 references: {
                     model: 'users',
                     key: 'id',
@@ -22,31 +22,35 @@ module.exports = {
                 onUpdate: 'restrict',
             },
             title: {
-                allowNull: false,
                 type: Sequelize.STRING(300),
+                allowNull: false,
             },
             body: {
-                allowNull: false,
                 type: Sequelize.TEXT,
+                allowNull: false,
             },
             deadline: {
-                allowNull: false,
                 type: Sequelize.DATE,
+                allowNull: false,
             },
             isDone: {
+                type: Sequelize.BOOLEAN,
                 allowNull: false,
                 field: 'is_done',
-                type: Sequelize.BOOLEAN,
+            },
+            files: {
+                type: Sequelize.ARRAY(Sequelize.STRING(600)),
+                allowNull: true,
             },
             createdAt: {
+                type: Sequelize.DATE,
                 allowNull: false,
                 field: 'created_at',
-                type: Sequelize.DATE,
             },
             updatedAt: {
+                type: Sequelize.DATE,
                 allowNull: false,
                 field: 'updated_at',
-                type: Sequelize.DATE,
             },
         });
     },

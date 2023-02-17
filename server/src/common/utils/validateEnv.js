@@ -7,10 +7,10 @@ const validateEnv = async () => {
         NODE_ENV: str({
             choices: [NODE_ENV.DEVELOPMENT, NODE_ENV.PRODUCTION],
         }),
-        SERVER_PORT: (port().devDefault = 4000),
-        DEBUG_PORT: (port().devDefault = 9229),
+        SERVER_PORT: port(),
+        DEBUG_PORT: port(),
         DEPLOY_HOST: str(),
-        DB_PORT: (port().default = 5432),
+        DB_PORT: port(),
         DB_DIALECT: str(),
         DB_HOST: str(),
         DB_USER: str(),

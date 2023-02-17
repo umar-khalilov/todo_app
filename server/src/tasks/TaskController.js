@@ -1,18 +1,18 @@
 const { Router } = require('express');
-const TaskService = require('./TaskService');
-const SuccessResponse = require('../common/utils/SuccessResponse');
+const { TaskService } = require('./TaskService');
+const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
-const { asyncWrapper } = require('../common/utils/asyncWrapper');
 const { checkUser } = require('../common/middlewares/checkUser');
+const { asyncWrapper } = require('../common/utils/helpers');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const {
     updateTaskDtoSchema,
     createTaskDtoSchema,
 } = require('./taskDtoSchemas');
 
-module.exports = class TaskController {
+class TaskController {
     #taskService;
     #router;
 
@@ -103,4 +103,6 @@ module.exports = class TaskController {
         );
         return new SuccessResponse(response, HttpStatusCodes.NO_CONTENT);
     });
-};
+}
+
+module.exports = { TaskController };

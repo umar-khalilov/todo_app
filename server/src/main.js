@@ -1,17 +1,14 @@
 'use strict';
-const App = require('./App');
-const UserController = require('./users/UserController');
-const AuthController = require('./authentication/AuthController');
-const ErrorHandler = require('./common/middlewares/ErrorHandler');
-const Logger = require('./common/utils/Logger');
-const db = require('./app/database/models');
+const { App } = require('./App');
+const { AuthController } = require('./authentication/AuthController');
+const { UserController } = require('./users/UserController');
+const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
+const { Logger } = require('./common/utils/Logger');
 const { validateEnv } = require('./common/utils/validateEnv');
-const { connectToDatabase } = require('./common/utils/connectToDatabase');
 
 const bootstrap = async () => {
     try {
         await validateEnv();
-        await connectToDatabase(db);
         const controllers = [new AuthController(), new UserController()];
         const app = new App(controllers);
         await app.listen();

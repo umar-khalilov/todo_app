@@ -1,4 +1,6 @@
-exports.HttpStatusCodes = {
+'use strict';
+
+const HttpStatusCodes = Object.freeze({
     OK: 200,
     CREATED: 201,
     ACCEPTED: 202,
@@ -11,4 +13,6 @@ exports.HttpStatusCodes = {
     CONFLICT: 409,
     AUTHENTICATION_TIMEOUT: 419,
     INTERNAL_SERVER_ERROR: 500,
-};
+});
+
+module.exports = { HttpStatusCodes };

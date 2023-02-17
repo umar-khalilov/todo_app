@@ -6,18 +6,18 @@ module.exports = {
             'users_roles',
             {
                 userId: {
+                    type: Sequelize.INTEGER,
                     allowNull: false,
                     field: 'user_id',
-                    type: Sequelize.INTEGER,
                     references: {
                         model: 'users',
                         key: 'id',
                     },
                 },
                 roleId: {
+                    type: Sequelize.INTEGER,
                     allowNull: false,
                     field: 'role_id',
-                    type: Sequelize.INTEGER,
                     references: {
                         model: 'roles',
                         key: 'id',

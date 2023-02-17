@@ -15,7 +15,6 @@ module.exports = {
             min: 0,
             idle: 10000,
         },
-        logging: false,
     },
     test: {},
     production: {},

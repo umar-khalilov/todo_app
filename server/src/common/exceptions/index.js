@@ -13,6 +13,8 @@ const UsersNotFoundException = require('./UsersNotFoundException');
 const UserTasksNotFoundException = require('./UserTasksNotFoundException');
 const PathNotFoundException = require('./PathNotFoundException');
 const ServerException = require('./ServerException');
+const TokenExpiredException = require('./TokenExpiredException');
+const TokenMalformedException = require('./TokenMalformedException');
 
 module.exports = {
     ApplicationException,
@@ -22,6 +24,8 @@ module.exports = {
     TaskNotFoundException,
     TasksNotFoundException,
     TokenException,
+    TokenExpiredException,
+    TokenMalformedException,
     UnauthorizedException,
     UserAlreadyExistException,
     UserNotFoundException,

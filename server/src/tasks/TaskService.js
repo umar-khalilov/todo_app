@@ -1,5 +1,5 @@
 const { Task } = require('../app/database/models');
-const { paginateResponse } = require('../common/utils/paginateResponse');
+const { paginateResponse } = require('../common/utils/helpers');
 const {
     BadRequestException,
     TaskNotFoundException,
@@ -7,7 +7,7 @@ const {
     UserTasksNotFoundException,
 } = require('../common/exceptions');
 
-module.exports = class TaskService {
+class TaskService {
     #taskRepository;
 
     constructor() {
@@ -83,4 +83,6 @@ module.exports = class TaskService {
         }
         return `Task with taskId: ${taskId} was successfully removed`;
     }
-};
+}
+
+module.exports = { TaskService };
