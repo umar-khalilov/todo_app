@@ -3,9 +3,10 @@
 const parseIntPipe =
     (...paramToInt) =>
     async (req, res, next) => {
-        for await (const param of paramToInt) {
+        paramToInt.forEach(async param => {
             req.params[param] = parseInt(req.params[param], 10);
-        }
+        });
+
         next();
     };
 

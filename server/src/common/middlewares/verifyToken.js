@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
         if (!token) {
             throw new RightsException();
         }
-        req.user = new TokenService().verifyAccessToken(token);
+        req.locals.user = new TokenService().verifyAccessToken(token);
         next();
     } catch (error) {
         next(error);
