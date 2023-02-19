@@ -4,7 +4,7 @@ started_at=$(date +"%s")
 
 docker compose ps
 
-web=$(docker compose --file docker-compose.yaml ps | grep main | awk '{print $1}')
+web=$(docker compose --file docker-compose.yaml ps | grep node_server | awk '{print $1}')
 
 # Run Sequelize's migrations.
 echo "-----> Running application migrations"

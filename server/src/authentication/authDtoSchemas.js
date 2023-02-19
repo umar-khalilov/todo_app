@@ -15,7 +15,7 @@ const signUpDtoSchema = new ObjectSchema({
         .required('name is required'),
     surname: new StringSchema()
         .trim()
-        .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid name')
+        .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid surname')
         .required('surname is required'),
     email: new StringSchema()
         .trim()
