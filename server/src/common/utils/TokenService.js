@@ -19,38 +19,38 @@ class TokenService {
     }
 
     async generateAccessToken(payload = {}) {
-        let accessToken;
-        sign(
-            payload,
-            this.#accessTokenSecret,
-            this.#accessTokenOptions,
-            (err, token) => {
-                if (err) {
-                    throw new TokenException();
-                }
-                accessToken = token;
-            },
-        );
-        return accessToken;
+        return new Promise((resolve, reject) => {
+            sign(
+                payload,
+                this.#accessTokenSecret,
+                this.#accessTokenOptions,
+                (err, token) => {
+                    if (err) {
+                        reject(new TokenException());
+                    }
+                    resolve(token);
+                },
+            );
+        });
     }
 
     async verifyAccessToken(token) {
-        let decodedData;
-        verify(
-            token,
-            this.#accessTokenSecret,
-            this.#accessTokenOptions,
-            (err, decoded) => {
-                if (err.name === 'TokenExpiredError') {
-                    throw new TokenExpiredException(err.expiredAt);
-                }
-                if (err.name === 'JsonWebTokenError') {
-                    throw new TokenMalformedException();
-                }
-                decodedData = decoded;
-            },
-        );
-        return decodedData;
+        return new Promise((resolve, reject) => {
+            verify(
+                token,
+                this.#accessTokenSecret,
+                this.#accessTokenOptions,
+                (err, decodedData) => {
+                    if (err.name === 'TokenExpiredError') {
+                        reject(new TokenExpiredException(err.expiredAt));
+                    }
+                    if (err.name === 'JsonWebTokenError') {
+                        reject(new TokenMalformedException());
+                    }
+                    resolve(decodedData);
+                },
+            );
+        });
     }
 }
 

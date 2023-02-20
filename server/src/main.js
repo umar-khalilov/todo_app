@@ -1,5 +1,6 @@
 'use strict';
 const { App } = require('./App');
+const { AppClusterService } = require('./app/AppClusterService');
 const { AuthController } = require('./authentication/AuthController');
 const { UserController } = require('./users/UserController');
 const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
@@ -20,4 +21,7 @@ const bootstrap = async () => {
 
 void bootstrap();
 
+// To run the application on all processor cores, comment bootstrap function
+// and uncomment the following line
+// AppClusterService.runInCluster(bootstrap);
 ErrorHandler.initializeUnhandledException();
