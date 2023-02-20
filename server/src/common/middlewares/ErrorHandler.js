@@ -25,22 +25,23 @@ class ErrorHandler {
 
     static initializeUnhandledException = () => {
         process.on('unhandledRejection', (reason, promise) => {
+            ErrorHandler.#logger.error({
+                name: reason.name,
+                message: reason.message,
+            });
             ErrorHandler.#logger.error(
-                {
-                    name: reason.name,
-                    message: reason.message,
-                },
                 'UNHANDLED REJECTION! 💥 Shutting down...',
             );
             throw reason;
         });
 
         process.on('uncaughtException', err => {
+            ErrorHandler.#logger.error({
+                name: err.name,
+                message: err.message,
+            });
+
             ErrorHandler.#logger.error(
-                {
-                    name: err.name,
-                    message: err.message,
-                },
                 'UNCAUGHT EXCEPTION! 💥 Shutting down...',
             );
 

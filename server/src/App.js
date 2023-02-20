@@ -30,7 +30,7 @@ class App {
             .authenticate()
             .then(_ => {
                 this.#logger.log(
-                    'Connection to database has been established successfully!',
+                    'Connection to the database has been established successfully!',
                 );
             })
             .catch(error => {
@@ -63,15 +63,15 @@ class App {
     }
 
     #initializeControllers(controllers = []) {
-        controllers.forEach(controller =>
-            this.#app.use('/api', controller.router),
-        );
+        controllers.forEach(controller => {
+            this.#app.use('/api', controller.router);
+        });
     }
 
     #initializeErrorHandling() {
-        this.#app.use('*', (req, res, next) =>
-            next(new PathNotFoundException(req.path)),
-        );
+        this.#app.use('*', (req, res, next) => {
+            next(new PathNotFoundException(req.path));
+        });
         this.#app.use(ErrorHandler.errorHandler);
     }
 
@@ -79,8 +79,8 @@ class App {
         const server = createServer(this.#app);
         server.listen(this.#port);
         server.on('listening', () => {
+            this.#logger.log('Application started!');
             this.#logger.log(
-                'Express application started!',
                 `Application documentation is available at http://localhost:${
                     this.#port
                 }/api/docs`,
