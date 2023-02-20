@@ -26,7 +26,7 @@ const signUpDtoSchema = new ObjectSchema({
         .trim()
         .matches(
             /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$/,
-            'Password have to contain an one big letter',
+            'Password have to contain minimum eight characters and maximum 32 characters, at least one upper case English letter, one lower case English letter, one number and one special character',
         )
         .required('password is required'),
     birthday: new DateSchema()
@@ -38,8 +38,8 @@ const signUpDtoSchema = new ObjectSchema({
 
 const signInDtoSchema = new ObjectSchema({
     email: new StringSchema()
-        .email('email must be truly email')
         .trim()
+        .email('email must be truly email')
         .required('email is required'),
     password: new StringSchema().trim().required('password is required'),
 });
