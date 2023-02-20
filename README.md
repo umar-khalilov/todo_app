@@ -62,3 +62,14 @@ Type command in terminal:
 ```bash
  make prune
 ```
+
+### Documentation
+#### Swagger documentation
+```http request
+http://localhost:4000/api/docs
+```
+
+#### Adminer
+```http request
+http://[::]:8080
+```
