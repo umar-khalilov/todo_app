@@ -15,7 +15,7 @@ class AppClusterService {
                 cluster.fork();
             }
             cluster.on('exit', (worker, code, signal) => {
-                AppClusterService.#logger.warn(
+                AppClusterService.#logger.log(
                     `Worker: ${worker.process.pid} died with code: ${code} and signal: ${signal}. Restarting`,
                 );
                 cluster.fork();
