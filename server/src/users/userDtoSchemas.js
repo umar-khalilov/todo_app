@@ -19,7 +19,7 @@ const updateUserDtoSchema = new ObjectSchema({
         .notRequired(),
     surname: new StringSchema()
         .trim()
-        .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid name')
+        .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid surname')
         .notRequired(),
     email: new StringSchema()
         .trim()
