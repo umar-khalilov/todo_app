@@ -1,6 +1,6 @@
 const { UserService } = require('../users/UserService');
 const { HashService } = require('../common/utils/HashService');
-const { TokenService } = require('../common/utils/TokenService');
+const { JWTService } = require('../common/utils/JWTService');
 const {
     BadRequestException,
     TokenException,
@@ -11,12 +11,12 @@ const {
 class AuthService {
     #userService;
     #hashService;
-    #tokenService;
+    #jwtService;
 
     constructor() {
         this.#userService = new UserService();
         this.#hashService = new HashService();
-        this.#tokenService = new TokenService();
+        this.#jwtService = new JWTService();
     }
 
     async #generateToken(user = {}) {
@@ -28,9 +28,7 @@ class AuthService {
             };
 
             return {
-                accessToken: await this.#tokenService.generateAccessToken(
-                    payload,
-                ),
+                accessToken: await this.#jwtService.generateAccessJWT(payload),
             };
         }
         throw new TokenException();

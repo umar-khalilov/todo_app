@@ -6,7 +6,7 @@ const {
     TokenMalformedException,
 } = require('../exceptions');
 
-class TokenService {
+class JWTService {
     #accessTokenSecret;
     #accessTokenOptions;
 
@@ -18,7 +18,7 @@ class TokenService {
         };
     }
 
-    async generateAccessToken(payload = {}) {
+    async generateAccessJWT(payload = {}) {
         return new Promise((resolve, reject) => {
             sign(
                 payload,
@@ -34,7 +34,7 @@ class TokenService {
         });
     }
 
-    async verifyAccessToken(token) {
+    async verifyAccessJWT(token) {
         return new Promise((resolve, reject) => {
             verify(
                 token,
@@ -54,4 +54,4 @@ class TokenService {
     }
 }
 
-module.exports = { TokenService };
+module.exports = { JWTService };

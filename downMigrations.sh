@@ -2,7 +2,7 @@
 
 started_at=$(date +"%s")
 
-web=$(docker compose --file docker-compose.yaml ps | grep node_server | awk '{print $1}')
+web=$(docker compose --file docker-compose.yaml ps | grep node-server | awk '{print $1}')
 
 # Down Sequelize's migrations.
 echo "-----> Downing application migrations"
