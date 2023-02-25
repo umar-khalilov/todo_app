@@ -14,6 +14,7 @@ class App {
     #app;
     #port;
     #logger;
+    #server;
 
     constructor(controllers = []) {
         this.#app = express();
@@ -23,6 +24,8 @@ class App {
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
+        this.#server = createServer(this.#app);
+        this.#gracefullyClose();
     }
 
     #connectToTheDatabase() {
@@ -76,9 +79,8 @@ class App {
     }
 
     async listen() {
-        const server = createServer(this.#app);
-        server.listen(this.#port);
-        server.on('listening', () => {
+        this.#server.listen(this.#port);
+        this.#server.on('listening', () => {
             this.#logger.log('Application started!');
             this.#logger.log(
                 `Application documentation is available at http://localhost:${
@@ -86,10 +88,17 @@ class App {
                 }/api/docs`,
             );
         });
+    }
 
-        process.on('SIGTERM', () => {
-            this.#logger.log('SIGTERM received');
-            server.close();
+    #gracefullyClose() {
+        process.once('SIGTERM', () => {
+            this.#logger.log('SIGTERM signal received.');
+            this.#logger.log('Closing http server.');
+            this.#server.close(async () => {
+                this.#logger.log('Http server closed.');
+                await sequelize.close();
+                process.exit(0);
+            });
         });
     }
 }
