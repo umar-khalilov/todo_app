@@ -3,8 +3,8 @@ const cluster = require('node:cluster');
 const { Logger } = require('../common/utils/Logger');
 
 class AppClusterService {
-    static #numberOfCores = cpus().length;
     static #logger = new Logger(AppClusterService.name);
+    static #numberOfCores = cpus().length;
 
     static runInCluster(callback) {
         if (cluster.isPrimary) {

@@ -29,7 +29,7 @@ const updateUserDtoSchema = new ObjectSchema({
         .trim()
         .matches(
             /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$/,
-            'Password have to contain an one big letter',
+            'Password have to contain minimum eight characters and maximum 32 characters, at least one upper case English letter, one lower case English letter, one number and one special character',
         )
         .optional(),
     birthday: new DateSchema()
