@@ -1,20 +1,12 @@
-const { hash, genSalt, compare } = require('bcryptjs');
-const { configuration } = require('../../configs');
+const { hashPassword, validatePassword } = require('metautil');
 
 class HashService {
-    #saltRounds;
-
-    constructor() {
-        this.#saltRounds = configuration.saltRounds;
-    }
-
     async hashPassword(password) {
-        const salt = await genSalt(this.#saltRounds);
-        return hash(password, salt);
+        return hashPassword(password);
     }
 
     async checkIsMatch(plainPassword, hashedPassword) {
-        return compare(plainPassword, hashedPassword);
+        return validatePassword(plainPassword, hashedPassword);
     }
 }
 

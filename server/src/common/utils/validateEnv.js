@@ -23,7 +23,6 @@ const validateEnv = async () => {
         CACHE_TTL: num(),
         ACCESS_TOKEN_SECRET: str(),
         ACCESS_TOKEN_TIME: str(),
-        SALT_ROUNDS: num(),
     });
 };
 
