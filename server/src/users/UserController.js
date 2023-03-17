@@ -6,7 +6,7 @@ const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
 const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { asyncWrapper } = require('../common/utils/helpers');
-const { updateUserDtoSchema } = require('./userDtoSchemas');
+const { updateUserSchema } = require('./userSchema');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
 class UserController {
@@ -34,7 +34,7 @@ class UserController {
             .get(parseIntPipe('id'), this.#findOne)
             .patch(
                 parseIntPipe('id'),
-                validate(updateUserDtoSchema),
+                validate(updateUserSchema),
                 this.#updateOne,
             )
             .delete(parseIntPipe('id'), this.#removeOne);

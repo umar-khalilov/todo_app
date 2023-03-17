@@ -7,10 +7,7 @@ const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { checkUser } = require('../common/middlewares/checkUser');
 const { asyncWrapper } = require('../common/utils/helpers');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
-const {
-    updateTaskDtoSchema,
-    createTaskDtoSchema,
-} = require('./taskDtoSchemas');
+const { updateTaskSchema, createTaskSchema } = require('./taskSchemas');
 
 class TaskController {
     #taskService;
@@ -31,7 +28,7 @@ class TaskController {
             .route('/')
             .post(
                 parseIntPipe('userId'),
-                validate(createTaskDtoSchema),
+                validate(createTaskSchema),
                 checkUser,
                 this.#createOne,
             )
@@ -46,7 +43,7 @@ class TaskController {
             .get(parseIntPipe('userId', 'taskId'), checkUser, this.#findOne)
             .patch(
                 parseIntPipe('userId', 'taskId'),
-                validate(updateTaskDtoSchema),
+                validate(updateTaskSchema),
                 checkUser,
                 this.#updateOne,
             )

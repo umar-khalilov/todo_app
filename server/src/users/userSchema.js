@@ -12,7 +12,7 @@ const parseDateString = (value, originalValue) =>
         ? originalValue
         : parse(originalValue, 'yyyy-MM-dd', new Date());
 
-const updateUserDtoSchema = new ObjectSchema({
+const updateUserSchema = new ObjectSchema({
     name: new StringSchema()
         .trim()
         .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid name')
@@ -39,4 +39,4 @@ const updateUserDtoSchema = new ObjectSchema({
     isMale: new BooleanSchema().optional(),
 });
 
-module.exports = { updateUserDtoSchema, parseDateString };
+module.exports = { updateUserSchema, parseDateString };

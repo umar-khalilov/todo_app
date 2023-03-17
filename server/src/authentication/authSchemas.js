@@ -6,9 +6,9 @@ const {
     StringSchema,
 } = require('yup');
 
-const { parseDateString } = require('../users/userDtoSchemas');
+const { parseDateString } = require('../users/userSchema');
 
-const signUpDtoSchema = new ObjectSchema({
+const signUpSchema = new ObjectSchema({
     name: new StringSchema()
         .trim()
         .matches(/^[A-ZА-Я][a-zа-я]{3,255}$/, 'Enter a valid name')
@@ -36,7 +36,7 @@ const signUpDtoSchema = new ObjectSchema({
     isMale: new BooleanSchema().optional(),
 });
 
-const signInDtoSchema = new ObjectSchema({
+const signInSchema = new ObjectSchema({
     email: new StringSchema()
         .trim()
         .email('email must be truly email')
@@ -44,4 +44,4 @@ const signInDtoSchema = new ObjectSchema({
     password: new StringSchema().trim().required('password is required'),
 });
 
-module.exports = { signUpDtoSchema, signInDtoSchema };
+module.exports = { signUpSchema, signInSchema };
