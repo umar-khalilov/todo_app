@@ -1,10 +1,10 @@
 'use strict';
 const { ApplicationException } = require('../exceptions');
-const { Logger } = require('../utils/Logger');
+const { LoggerService } = require('../services/LoggerService');
 const { HttpStatusCodes } = require('../utils/httpStatusCodes');
 
 class ErrorHandler {
-    static #logger = new Logger(ErrorHandler.name);
+    static #logger = new LoggerService(ErrorHandler.name);
 
     static errorHandler = async (err, req, res, next) => {
         ErrorHandler.#logger.error(`CAUGHT:===> ${err.stack}`);

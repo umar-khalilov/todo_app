@@ -4,7 +4,7 @@ const cors = require('cors');
 const compression = require('compression');
 const swaggerUi = require('swagger-ui-express');
 const { sequelize } = require('./app/database/models');
-const { Logger } = require('./common/utils/Logger');
+const { LoggerService } = require('./common/services/LoggerService');
 const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
 const { PathNotFoundException } = require('./common/exceptions');
 const { docs } = require('./app/docs');
@@ -19,7 +19,7 @@ class App {
     constructor(controllers = []) {
         this.#app = express();
         this.#port = configuration.serverPort;
-        this.#logger = new Logger(App.name);
+        this.#logger = new LoggerService(App.name);
         this.#connectToTheDatabase();
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);

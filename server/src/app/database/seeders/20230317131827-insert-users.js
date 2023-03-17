@@ -1,5 +1,5 @@
 'use strict';
-const { HashService } = require('../../../common/utils/HashService');
+const { HashService } = require('../../../common/services/HashService');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

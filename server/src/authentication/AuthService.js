@@ -1,6 +1,6 @@
 const { UserService } = require('../users/UserService');
-const { HashService } = require('../common/utils/HashService');
-const { JWTService } = require('../common/utils/JWTService');
+const { HashService } = require('../common/services/HashService');
+const { JWTService } = require('../common/services/JWTService');
 const {
     TokenException,
     UnauthorizedException,

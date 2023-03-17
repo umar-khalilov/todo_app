@@ -1,5 +1,5 @@
 'use strict';
-const { JWTService } = require('../utils/JWTService');
+const { JWTService } = require('../services/JWTService');
 const { RightsException } = require('../exceptions');
 
 const verifyToken = async (req, res, next) => {
