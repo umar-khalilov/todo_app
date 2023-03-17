@@ -7,11 +7,9 @@ const verifyToken = async (req, res, next) => {
         next();
     }
     try {
-        const token =
-            req.headers.authorization.split(' ')[1] ||
-            req.headers['x-access-token'];
-        if (!token) {
-            throw new RightsException();
+        const [bearer, token] = req.headers.authorization.split(' ');
+        if (bearer !== 'Bearer' || !token) {
+            throw new RightsException('User is not authorizated');
         }
         req.locals.user = await new JWTService().verifyAccessJWT(token);
         next();

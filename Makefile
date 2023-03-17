@@ -6,12 +6,16 @@ build:
 	docker compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} build
 up:
 	docker compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} up
-up-migrate:
-	./runMigrationsSeeds.sh
-down-migrate:
-	./downMigrations.sh
 start-one-click:
 	./startDev.sh
+up-migrations:
+	./upMigrations.sh
+down-migrations:
+	./downMigrations.sh
+up-seeds:
+	./upSeeds.sh
+down-seeds:
+	./downSeeds.sh
 stop:
 	docker compose -f ${DOCKERFILE} --project-directory ${DOCKERDIR} stop
 down:

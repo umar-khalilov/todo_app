@@ -36,13 +36,13 @@ class AuthController {
     }
 
     #signUp = asyncWrapper(async ({ body }) => {
-        const token = await this.#authService.signUp(body);
-        return new SuccessResponse({ data: token }, HttpStatusCodes.CREATED);
+        const data = await this.#authService.signUp(body);
+        return new SuccessResponse({ data }, HttpStatusCodes.CREATED);
     });
 
     #signIn = asyncWrapper(async ({ body }) => {
-        const token = await this.#authService.signIn(body);
-        return new SuccessResponse({ data: token }, HttpStatusCodes.OK);
+        const data = await this.#authService.signIn(body);
+        return new SuccessResponse({ data }, HttpStatusCodes.OK);
     });
 }
 

@@ -14,8 +14,23 @@ class UserService {
         this.#roleRepository = Role;
     }
 
-    async findUserByEmail(email) {
-        const user = await this.#userRepository.scope('withPassword').findOne({
+    async createUser(data = {}) {
+        const createdUser = await this.#userRepository.create(data);
+        const roleUser = await this.#roleRepository.findOne({
+            where: { name: 'user' },
+        });
+        await createdUser.addRole(roleUser);
+
+        await createdUser.reload();
+        console.log(createdUser);
+        return {
+            ...createdUser,
+            roles: [roleUser],
+        };
+    }
+
+    async findUserByEmail(email = '') {
+        return this.#userRepository.scope('withPassword').findOne({
             where: { email },
             include: [
                 {
@@ -25,28 +40,6 @@ class UserService {
                 },
             ],
         });
-        return user
-            ? {
-                  id: user.id,
-                  email: user.email,
-                  password: user.password,
-                  roles: user.roles.map(({ name }) => name),
-              }
-            : null;
-    }
-
-    async createUser(data = {}) {
-        const createdUser = await this.#userRepository.create(data);
-        const roleUser = await this.#roleRepository.findOne({
-            where: { name: 'user' },
-        });
-        await createdUser.addRole(roleUser);
-
-        return {
-            id: createdUser.id,
-            email: createdUser.email,
-            roles: [roleUser.name],
-        };
     }
 
     async findAllUsers({ limit, offset, page, sort }) {
@@ -62,7 +55,7 @@ class UserService {
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findUserById(id) {
+    async findUserById(id = 0) {
         const user = await this.#userRepository.findByPk(id);
         if (!user) {
             throw new UserNotFoundException(id);
@@ -70,7 +63,7 @@ class UserService {
         return user;
     }
 
-    async updateUserById(id, data = {}) {
+    async updateUserById(id = 0, data = {}) {
         const [rows, [updatedUser]] = await this.#userRepository.update(data, {
             where: { id },
             returning: true,
@@ -79,11 +72,10 @@ class UserService {
         if (rows === 0) {
             throw new UserNotFoundException(id);
         }
-        // updatedUser.password = undefined;
         return updatedUser;
     }
 
-    async removeUserById(id) {
+    async removeUserById(id = 0) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
             throw new UserNotFoundException(id);
