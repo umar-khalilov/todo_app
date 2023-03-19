@@ -53,7 +53,7 @@ class AuthService {
         }
         const createdUser = await this.#userService.createUser(data);
         const tokens = await this.#generateTokens(createdUser);
-        const cuttedUser = omit(createdUser.dataValues, 'roles');
+        const cuttedUser = omit(createdUser.dataValues, 'password', 'roles');
         return { tokens, user: cuttedUser };
     }
 
