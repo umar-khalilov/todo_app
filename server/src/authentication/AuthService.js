@@ -36,11 +36,11 @@ class AuthService {
 
     async #validateUser(email = '', password = '') {
         const user = await this.#userService.findUserByEmail(email);
-        const isMatch = await this.#hashService.checkIsMatch(
-            password,
-            user?.password,
-        );
-        if (user && isMatch) {
+
+        if (
+            user &&
+            (await this.#hashService.checkIsMatch(password, user?.password))
+        ) {
             return user;
         }
         throw new UnauthorizedException();
@@ -53,14 +53,14 @@ class AuthService {
         }
         const createdUser = await this.#userService.createUser(data);
         const tokens = await this.#generateTokens(createdUser);
-        const cuttedUser = omit(createdUser, 'roles');
+        const cuttedUser = omit(createdUser.dataValues, 'roles');
         return { tokens, user: cuttedUser };
     }
 
     async signIn({ email, password }) {
         const signedUser = await this.#validateUser(email, password);
         const tokens = await this.#generateTokens(signedUser);
-        const cuttedUser = omit(signedUser, 'roles', 'password');
+        const cuttedUser = omit(signedUser.dataValues, 'password', 'roles');
         return { tokens, user: cuttedUser };
     }
 }

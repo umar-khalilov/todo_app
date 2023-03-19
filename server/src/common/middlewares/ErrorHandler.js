@@ -10,13 +10,11 @@ class ErrorHandler {
         ErrorHandler.#logger.error(`CAUGHT:===> ${err.stack}`);
         if (err instanceof ApplicationException) {
             return res.status(err.status).send({
-                name: err.name,
                 message: err.message,
                 status: err.status,
             });
         } else {
             return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({
-                name: err.name,
                 message: err.message,
                 status: err.status,
             });

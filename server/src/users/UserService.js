@@ -1,4 +1,5 @@
 const { User, Role } = require('../app/database/models');
+const { RoleService } = require('../roles/RoleService');
 const { paginateResponse } = require('../common/utils/helpers');
 const {
     UserNotFoundException,
@@ -8,25 +9,19 @@ const {
 class UserService {
     #userRepository;
     #roleRepository;
+    #roleService;
 
     constructor() {
         this.#userRepository = User;
         this.#roleRepository = Role;
+        this.#roleService = new RoleService();
     }
 
     async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
-        const roleUser = await this.#roleRepository.findOne({
-            where: { name: 'user' },
-        });
+        const roleUser = await this.#roleService.getRoleByValue('user');
         await createdUser.addRole(roleUser);
-
-        await createdUser.reload();
-        console.log(createdUser);
-        return {
-            ...createdUser,
-            roles: [roleUser],
-        };
+        return this.findUserByEmail(createdUser.email);
     }
 
     async findUserByEmail(email = '') {
@@ -35,7 +30,7 @@ class UserService {
             include: [
                 {
                     model: this.#roleRepository,
-                    attributes: ['name'],
+                    attributes: ['value'],
                     as: 'roles',
                 },
             ],
@@ -56,7 +51,7 @@ class UserService {
     }
 
     async findUserById(id = 0) {
-        const user = await this.#userRepository.findByPk(id);
+        const user = this.#userRepository.findOne(id);
         if (!user) {
             throw new UserNotFoundException(id);
         }

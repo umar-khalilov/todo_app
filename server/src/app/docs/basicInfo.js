@@ -2,7 +2,7 @@
 const { configuration } = require('../../configs');
 
 const basicInfo = {
-    openapi: '3.0.0',
+    openapi: '3.0.3',
     info: {
         title: 'Todo application REST API',
         version: '1.0.0',

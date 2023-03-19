@@ -48,7 +48,7 @@ const userComponent = {
         format: 'password',
         pattern:
             /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$/,
-        example: 'test1234UeO9',
+        example: 'test1234UeO9P)@',
         writeOnly: true,
     },
     createdAt: {

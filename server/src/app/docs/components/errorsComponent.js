@@ -5,11 +5,6 @@ const errorsComponent = {
     BadRequestException: {
         type: 'object',
         properties: {
-            name: {
-                type: 'string',
-                description: 'Error name',
-                example: 'BadRequestException',
-            },
             message: {
                 type: 'string',
                 description: 'Error message',
@@ -25,11 +20,6 @@ const errorsComponent = {
     UnauthorizedException: {
         type: 'object',
         properties: {
-            name: {
-                type: 'string',
-                description: 'Error name',
-                example: 'UnauthorizedException',
-            },
             message: {
                 type: 'string',
                 description: 'Error message',
@@ -45,15 +35,10 @@ const errorsComponent = {
     UserAlreadyExistException: {
         type: 'object',
         properties: {
-            name: {
-                type: 'string',
-                description: 'Error name',
-                example: 'UserAlreadyExistException',
-            },
             message: {
                 type: 'string',
                 description: 'Error message',
-                example: 'User with this email already exist',
+                example: 'User with that email already exist',
             },
             status: {
                 type: 'integer',
@@ -68,11 +53,11 @@ const errorsComponent = {
             name: {
                 type: 'string',
                 description: 'Error name',
-                example: 'ValidationException',
+                example: 'ValidationError',
             },
-            errors: {
-                type: 'array',
-                description: 'Some errors',
+            message: {
+                type: 'string',
+                description: 'Some error',
                 example: 'Something field to small',
             },
         },
@@ -80,11 +65,6 @@ const errorsComponent = {
     PathNotFoundException: {
         type: 'object',
         properties: {
-            name: {
-                type: 'string',
-                description: 'Error name',
-                example: 'PathNotFoundException',
-            },
             message: {
                 type: 'string',
                 description: 'Error message',
@@ -100,11 +80,6 @@ const errorsComponent = {
     ServerErrorException: {
         type: 'object',
         properties: {
-            name: {
-                type: 'string',
-                description: 'Error name',
-                example: 'ServerErrorException',
-            },
             message: {
                 type: 'string',
                 description: 'Error message',
