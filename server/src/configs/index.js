@@ -27,8 +27,10 @@ const {
         REDIS_USERNAME,
         REDIS_PASSWORD,
         CACHE_TTL,
-        ACCESS_TOKEN_SECRET,
-        ACCESS_TOKEN_TIME,
+        JWT_ACCESS_TOKEN_SECRET,
+        JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+        JWT_REFRESH_TOKEN_SECRET,
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     },
 } = result;
 
@@ -48,8 +50,10 @@ const configuration = Object.freeze({
     redisUsername: REDIS_USERNAME,
     redisPassword: REDIS_PASSWORD,
     cacheTTL: parseInt(CACHE_TTL, 10),
-    accessTokenSecret: ACCESS_TOKEN_SECRET,
-    accessTokenTime: ACCESS_TOKEN_TIME,
+    accessJWTSecret: JWT_ACCESS_TOKEN_SECRET,
+    accessJWTTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    refreshJWTSecret: JWT_REFRESH_TOKEN_SECRET,
+    refreshJWTTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 });
 
 module.exports = { configuration };

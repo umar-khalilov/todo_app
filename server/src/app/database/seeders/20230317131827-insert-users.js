@@ -19,7 +19,7 @@ module.exports = {
                     name: 'Thomas',
                     surname: 'Hanks',
                     email: 'tom@hanks.com',
-                    avatar: 'https://en.wikipedia.org/wiki/Tom_Hanks#/media/File:Tom_Hanks_TIFF_2019.jpg',
+                    avatar: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Tom_Hanks_TIFF_2019.jpg',
                     birthday: '1956/07/09',
                     is_male: true,
                     password_hash: await hashService.hashPassword(
@@ -32,7 +32,7 @@ module.exports = {
                     name: 'Jason',
                     surname: 'Statham',
                     email: 'jason@statham.com',
-                    avatar: 'https://en.wikipedia.org/wiki/Jason_Statham#/media/File:Jason_Statham_2018.jpg',
+                    avatar: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Jason_Statham_2018.jpg',
                     birthday: '1967/07/26',
                     is_male: true,
                     password_hash: await hashService.hashPassword(

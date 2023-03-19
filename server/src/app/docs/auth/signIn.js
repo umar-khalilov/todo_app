@@ -19,12 +19,42 @@ const signIn = {
             },
         },
         responses: {
-            [HttpStatusCodes.CREATED]: {
+            [HttpStatusCodes.OK]: {
                 description: 'A user data',
                 content: {
                     'application/json': {
                         schema: {
                             $ref: '#/components/schemas/GetUserWithToken',
+                        },
+                    },
+                },
+            },
+            [HttpStatusCodes.BAD_REQUEST]: {
+                description: 'Validation exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/ValidationException',
+                        },
+                    },
+                },
+            },
+            [HttpStatusCodes.UNAUTHORIZED]: {
+                description: 'Unauthorized exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/UnauthorizedException',
+                        },
+                    },
+                },
+            },
+            [HttpStatusCodes.NOT_FOUND]: {
+                description: 'The Requested path not found exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/PathNotFoundException',
                         },
                     },
                 },

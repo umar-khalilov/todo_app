@@ -27,7 +27,8 @@ const userComponent = {
     avatar: {
         type: 'string',
         format: 'binary',
-        example: 'http://localhost:4000/images/arnold.jpeg',
+        example:
+            'https://upload.wikimedia.org/wikipedia/commons/a/af/Arnold_Schwarzenegger_by_Gage_Skidmore_4.jpg',
         description: 'The path to the avatar image',
     },
     birthday: {
