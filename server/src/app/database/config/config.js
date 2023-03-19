@@ -10,11 +10,7 @@ module.exports = {
         dialect: configuration.dbDialect,
         migrationStorage: 'json',
         seederStorage: 'json',
-        pool: {
-            max: 5,
-            min: 0,
-            idle: 10000,
-        },
+        logging: false,
     },
     test: {},
     production: {},
