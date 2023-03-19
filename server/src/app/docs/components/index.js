@@ -2,13 +2,15 @@
 const { queryParamsComponent } = require('./queryParamsComponent');
 const { authComponent } = require('./authComponent');
 const { usersComponent } = require('./usersComponent');
+const { errorsComponent } = require('./errorsComponent');
 
 const components = {
     components: {
         schemas: {
-            ...queryParamsComponent,
             ...authComponent,
             ...usersComponent,
+            ...queryParamsComponent,
+            ...errorsComponent,
         },
     },
 };

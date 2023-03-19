@@ -1,10 +1,10 @@
 'use strict';
 const { App } = require('./App');
-const { AppClusterService } = require('./app/AppClusterService');
+const { AppClusterizeService } = require('./app/AppClusterizeService');
 const { AuthController } = require('./authentication/AuthController');
 const { UserController } = require('./users/UserController');
 const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
-const { Logger } = require('./common/utils/Logger');
+const { LoggerService } = require('./common/services/LoggerService');
 const { validateEnv } = require('./common/utils/validateEnv');
 
 const bootstrap = async () => {
@@ -14,19 +14,11 @@ const bootstrap = async () => {
         const app = new App(controllers);
         await app.listen();
     } catch (err) {
-        new Logger(bootstrap.name).error(err);
+        new LoggerService(bootstrap.name).error(err);
         process.exit(1);
     }
 };
 
-void bootstrap();
-
-/* 
-    To run the application on all processor cores, 
-    comment out the call to the bootstrap function
-    and uncomment the following line
-*/
-
-// AppClusterService.runInCluster(bootstrap);
+AppClusterizeService.runInCluster(bootstrap);
 
 ErrorHandler.initializeUnhandledException();

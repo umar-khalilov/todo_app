@@ -1,10 +1,17 @@
 'use strict';
+const { join } = require('node:path');
 const { config } = require('dotenv');
 
-config({ path: `${__dirname}/../../.env.${process.env.NODE_ENV}` });
+const result = config({
+    path: join(__dirname, '..', '..', `.development.env`),
+});
+
+if (result.error) {
+    throw result.error;
+}
 
 const {
-    env: {
+    parsed: {
         NODE_ENV,
         SERVER_PORT,
         DEBUG_PORT,
@@ -20,11 +27,12 @@ const {
         REDIS_USERNAME,
         REDIS_PASSWORD,
         CACHE_TTL,
-        ACCESS_TOKEN_SECRET,
-        ACCESS_TOKEN_TIME,
-        SALT_ROUNDS,
+        JWT_ACCESS_TOKEN_SECRET,
+        JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+        JWT_REFRESH_TOKEN_SECRET,
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     },
-} = process;
+} = result;
 
 const configuration = Object.freeze({
     nodeEnv: NODE_ENV,
@@ -42,9 +50,10 @@ const configuration = Object.freeze({
     redisUsername: REDIS_USERNAME,
     redisPassword: REDIS_PASSWORD,
     cacheTTL: parseInt(CACHE_TTL, 10),
-    accessTokenSecret: ACCESS_TOKEN_SECRET,
-    accessTokenTime: ACCESS_TOKEN_TIME,
-    saltRounds: parseInt(SALT_ROUNDS, 10),
+    accessJWTSecret: JWT_ACCESS_TOKEN_SECRET,
+    accessJWTTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    refreshJWTSecret: JWT_REFRESH_TOKEN_SECRET,
+    refreshJWTTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 });
 
 module.exports = { configuration };

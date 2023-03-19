@@ -1,9 +1,11 @@
 'use strict';
-const { auth } = require('./auth');
+const { signIn } = require('./auth/signIn');
+const { signUp } = require('./auth/signUp');
 
 const paths = {
     paths: {
-        ...auth,
+        '/auth/sign-up': signUp,
+        '/auth/sign-in': signIn,
     },
 };
 

@@ -7,14 +7,21 @@ const {
 } = require('../exceptions');
 
 class JWTService {
-    #accessTokenSecret;
-    #accessTokenOptions;
+    #accessJwtSecret;
+    #refreshJwtSecret;
+    #accessJwtOptions;
+    #refreshJwtOptions;
 
     constructor() {
-        this.#accessTokenSecret = configuration.accessTokenSecret;
-        this.#accessTokenOptions = {
+        this.#accessJwtSecret = configuration.accessJWTSecret;
+        this.#refreshJwtSecret = configuration.refreshJWTSecret;
+        this.#accessJwtOptions = {
             algorithm: 'HS384',
-            expiresIn: configuration.accessTokenTime,
+            expiresIn: configuration.accessJWTTime,
+        };
+        this.#refreshJwtOptions = {
+            algorithm: 'HS384',
+            expiresIn: configuration.refreshJWTTime,
         };
     }
 
@@ -22,8 +29,8 @@ class JWTService {
         return new Promise((resolve, reject) => {
             sign(
                 payload,
-                this.#accessTokenSecret,
-                this.#accessTokenOptions,
+                this.#accessJwtSecret,
+                this.#accessJwtOptions,
                 (err, token) => {
                     if (err) {
                         reject(new TokenException());
@@ -34,12 +41,28 @@ class JWTService {
         });
     }
 
-    async verifyAccessJWT(token) {
+    async generateRefreshJWT(payload = {}) {
+        return new Promise((resolve, reject) => {
+            sign(
+                payload,
+                this.#refreshJwtSecret,
+                this.#refreshJwtOptions,
+                (err, token) => {
+                    if (err) {
+                        reject(new TokenException());
+                    }
+                    resolve(token);
+                },
+            );
+        });
+    }
+
+    async verifyAccessJWT(token = '') {
         return new Promise((resolve, reject) => {
             verify(
                 token,
-                this.#accessTokenSecret,
-                this.#accessTokenOptions,
+                this.#accessJwtSecret,
+                this.#accessJwtOptions,
                 (err, decodedData) => {
                     if (err.name === 'TokenExpiredError') {
                         reject(new TokenExpiredException(err.expiredAt));

@@ -21,9 +21,10 @@ const validateEnv = async () => {
         REDIS_USERNAME: str(),
         REDIS_PASSWORD: str(),
         CACHE_TTL: num(),
-        ACCESS_TOKEN_SECRET: str(),
-        ACCESS_TOKEN_TIME: str(),
-        SALT_ROUNDS: num(),
+        JWT_ACCESS_TOKEN_SECRET: str(),
+        JWT_ACCESS_TOKEN_EXPIRATION_TIME: str(),
+        JWT_REFRESH_TOKEN_SECRET: str(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: str(),
     });
 };
 

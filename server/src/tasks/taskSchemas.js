@@ -6,7 +6,7 @@ const {
     StringSchema,
 } = require('yup');
 
-const createTaskDtoSchema = new ObjectSchema({
+const createTaskSchema = new ObjectSchema({
     title: new StringSchema()
         .trim()
         .matches(/^([a-zA-Z\d _-]+)$/, 'Enter a valid title')
@@ -21,7 +21,7 @@ const createTaskDtoSchema = new ObjectSchema({
     isDone: new BooleanSchema().notRequired(),
 });
 
-const updateTaskDtoSchema = new ObjectSchema({
+const updateTaskSchema = new ObjectSchema({
     title: new StringSchema()
         .trim()
         .matches(/^([a-zA-Z\d _-]+)$/, 'Enter a valid title')
@@ -36,4 +36,4 @@ const updateTaskDtoSchema = new ObjectSchema({
     isDone: new BooleanSchema().optional(),
 });
 
-module.exports = { createTaskDtoSchema, updateTaskDtoSchema };
+module.exports = { createTaskSchema, updateTaskSchema };

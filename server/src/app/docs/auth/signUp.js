@@ -29,36 +29,36 @@ const signUp = {
                     },
                 },
             },
-            /*      [HttpStatusCodes.BAD_REQUEST]: {
-                      description: 'Validation exception',
-                      content: {
-                          'application/json': {
-                              schema: {
-                                  $ref: '#/components/schemas/ValidationException',
-                              },
-                          },
-                      },
-                  },
-                  [HttpStatusCodes.NOT_FOUND]: {
-                      description: 'The Requested path not found exception',
-                      content: {
-                          'application/json': {
-                              schema: {
-                                  $ref: '#/components/schemas/PathNotFoundException',
-                              },
-                          },
-                      },
-                  },
-                  [HttpStatusCodes.CONFLICT]: {
-                      description: 'Conflict resource',
-                      content: {
-                          'application/json': {
-                              schema: {
-                                  $ref: '#/components/schemas/ConflictException',
-                              },
-                          },
-                      },
-                  },*/
+            [HttpStatusCodes.BAD_REQUEST]: {
+                description: 'Validation exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/ValidationException',
+                        },
+                    },
+                },
+            },
+            [HttpStatusCodes.NOT_FOUND]: {
+                description: 'The Requested path not found exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/PathNotFoundException',
+                        },
+                    },
+                },
+            },
+            [HttpStatusCodes.CONFLICT]: {
+                description: 'Conflict resource exception',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/UserAlreadyExistException',
+                        },
+                    },
+                },
+            },
         },
     },
 };

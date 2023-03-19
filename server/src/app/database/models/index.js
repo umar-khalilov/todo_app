@@ -1,5 +1,4 @@
 'use strict';
-require('dotenv').config();
 const { readdirSync } = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');

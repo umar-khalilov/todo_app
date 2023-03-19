@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const { isAfter } = require('date-fns');
-const { HashService } = require('../../../common/utils/HashService');
+const { HashService } = require('../../../common/services/HashService');
 
 module.exports = (sequelize, DataTypes) => {
     const hashService = new HashService();

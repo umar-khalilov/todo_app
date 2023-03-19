@@ -1,4 +1,5 @@
 const { User, Role } = require('../app/database/models');
+const { RoleService } = require('../roles/RoleService');
 const { paginateResponse } = require('../common/utils/helpers');
 const {
     UserNotFoundException,
@@ -8,45 +9,32 @@ const {
 class UserService {
     #userRepository;
     #roleRepository;
+    #roleService;
 
     constructor() {
         this.#userRepository = User;
         this.#roleRepository = Role;
-    }
-
-    async findUserByEmail(email) {
-        const user = await this.#userRepository.scope('withPassword').findOne({
-            where: { email },
-            include: [
-                {
-                    model: this.#roleRepository,
-                    attributes: ['name'],
-                    as: 'roles',
-                },
-            ],
-        });
-        return user
-            ? {
-                  id: user.id,
-                  email: user.email,
-                  password: user.password,
-                  roles: user.roles.map(({ name }) => name),
-              }
-            : null;
+        this.#roleService = new RoleService();
     }
 
     async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
-        const roleUser = await this.#roleRepository.findOne({
-            where: { name: 'user' },
-        });
+        const roleUser = await this.#roleService.getRoleByValue('user');
         await createdUser.addRole(roleUser);
+        return this.findUserByEmail(createdUser.email);
+    }
 
-        return {
-            id: createdUser.id,
-            email: createdUser.email,
-            roles: [roleUser.name],
-        };
+    async findUserByEmail(email = '') {
+        return this.#userRepository.scope('withPassword').findOne({
+            where: { email },
+            include: [
+                {
+                    model: this.#roleRepository,
+                    attributes: ['value'],
+                    as: 'roles',
+                },
+            ],
+        });
     }
 
     async findAllUsers({ limit, offset, page, sort }) {
@@ -62,15 +50,15 @@ class UserService {
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findUserById(id) {
-        const user = await this.#userRepository.findByPk(id);
+    async findUserById(id = 0) {
+        const user = this.#userRepository.findOne(id);
         if (!user) {
             throw new UserNotFoundException(id);
         }
         return user;
     }
 
-    async updateUserById(id, data = {}) {
+    async updateUserById(id = 0, data = {}) {
         const [rows, [updatedUser]] = await this.#userRepository.update(data, {
             where: { id },
             returning: true,
@@ -79,11 +67,10 @@ class UserService {
         if (rows === 0) {
             throw new UserNotFoundException(id);
         }
-        // updatedUser.password = undefined;
         return updatedUser;
     }
 
-    async removeUserById(id) {
+    async removeUserById(id = 0) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
             throw new UserNotFoundException(id);

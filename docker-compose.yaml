@@ -1,29 +1,7 @@
-version: '3.9'
-
 services:
-  node-server:
-    container_name: node-server
-    build:
-      args: 
-      - NODE_ENV=development
-      context: ./server
-      target: development
-      dockerfile: ./Dockerfile
-    command: npm run start:dev
-    ports:
-      - '4000:4000'
-      - '9229:9229'
-    volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - database-todo
-    networks:
-      - todo-net
-    restart: unless-stopped
   database-todo:
     container_name: database-todo
-    image: postgres:14-alpine3.15
+    image: postgres:14-alpine3.16
     environment:
       POSTGRES_PASSWORD: JavaDeveloper
       POSTGRES_USER: postgres
@@ -38,18 +16,37 @@ services:
     tty: true
     restart: always
   adminer:
-    image: adminer
-    container_name: adminer-docker
-    depends_on:
+    image: adminer:4.8.1-standalone
+    container_name: adminer
+    links:
       - database-todo
     ports:
       - '8080:8080'
     networks:
       - todo-net
     restart: on-failure  
+  node-server:
+    container_name: node-server
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+      target: development
+    command: npm run start:dev
+    ports:
+      - '4000:4000'
+      - '9229:9229'
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - database-todo
+    networks:
+      - todo-net
+    restart: unless-stopped  
 
 volumes:
   pgdata:
+    driver: local
   server: {}
 
 networks:

@@ -4,14 +4,13 @@ const { configuration } = require('../../configs');
 const basicInfo = {
     openapi: '3.0.3',
     info: {
-        version: '1.0.0',
         title: 'Todo application REST API',
-        description: 'This documentation API about Todo routes',
-        termsOfService: '',
+        version: '1.0.0',
+        description: 'Todo application for everyone!',
         contact: {
             name: 'Umar Khalilov',
             email: 'ERMASTER100@gmail.com',
-            url: '',
+            url: 'https://umar-khalilov.github.io',
         },
         basePath: '/',
         host:

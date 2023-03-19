@@ -3,7 +3,7 @@ const { AuthService } = require('./AuthService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { validate } = require('../common/middlewares/validate');
 const { asyncWrapper } = require('../common/utils/helpers');
-const { signUpDtoSchema, signInDtoSchema } = require('./authDtoSchemas');
+const { signUpSchema, signInSchema } = require('./authSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 
 class AuthController {
@@ -25,24 +25,24 @@ class AuthController {
     #initializeRoutes() {
         this.router.post(
             `${this.#path}/sign-up`,
-            validate(signUpDtoSchema),
+            validate(signUpSchema),
             this.#signUp,
         );
         this.router.post(
             `${this.#path}/sign-in`,
-            validate(signInDtoSchema),
+            validate(signInSchema),
             this.#signIn,
         );
     }
 
     #signUp = asyncWrapper(async ({ body }) => {
-        const token = await this.#authService.signUp(body);
-        return new SuccessResponse({ data: token }, HttpStatusCodes.CREATED);
+        const data = await this.#authService.signUp(body);
+        return new SuccessResponse({ data }, HttpStatusCodes.CREATED);
     });
 
     #signIn = asyncWrapper(async ({ body }) => {
-        const token = await this.#authService.signIn(body);
-        return new SuccessResponse({ data: token }, HttpStatusCodes.OK);
+        const data = await this.#authService.signIn(body);
+        return new SuccessResponse({ data }, HttpStatusCodes.OK);
     });
 }
 

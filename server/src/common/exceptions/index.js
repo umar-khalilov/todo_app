@@ -11,6 +11,7 @@ const UserAlreadyExistException = require('./UserAlreadyExistException');
 const UserNotFoundException = require('./UserNotFoundException');
 const UsersNotFoundException = require('./UsersNotFoundException');
 const UserTasksNotFoundException = require('./UserTasksNotFoundException');
+const NotFoundException = require('./NotFoundException');
 const PathNotFoundException = require('./PathNotFoundException');
 const ServerException = require('./ServerException');
 const TokenExpiredException = require('./TokenExpiredException');
@@ -31,6 +32,7 @@ module.exports = {
     UserNotFoundException,
     UsersNotFoundException,
     UserTasksNotFoundException,
+    NotFoundException,
     PathNotFoundException,
     ServerException,
 };

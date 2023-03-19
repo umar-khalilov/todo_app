@@ -1,11 +1,11 @@
 const { format, inspect } = require('node:util');
 
-class Logger {
+class LoggerService {
     #name;
     #DATETIME_LENGTH;
     #COLOURS;
 
-    constructor(name = Logger.name) {
+    constructor(name = LoggerService.name) {
         this.#name = name;
         this.#DATETIME_LENGTH = 19;
         this.#COLOURS = {
@@ -62,4 +62,4 @@ class Logger {
     }
 }
 
-module.exports = { Logger };
+module.exports = { LoggerService };
