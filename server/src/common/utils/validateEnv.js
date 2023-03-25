@@ -1,5 +1,5 @@
 'use strict';
-const { cleanEnv, num, port, str } = require('envalid');
+const { cleanEnv, num, port, str, url } = require('envalid');
 const { NODE_ENV } = require('../../app/constants');
 
 const validateEnv = async () => {
@@ -9,7 +9,8 @@ const validateEnv = async () => {
         }),
         SERVER_PORT: port(),
         DEBUG_PORT: port(),
-        DEPLOY_HOST: str(),
+        SERVER_URL: str(),
+        CLIENT_URL: str(),
         DB_PORT: port(),
         DB_DIALECT: str(),
         DB_HOST: str(),
@@ -25,6 +26,11 @@ const validateEnv = async () => {
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: str(),
         JWT_REFRESH_TOKEN_SECRET: str(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: str(),
+        MAX_DEVICES_AMOUNT: num(),
+        SMTP_HOST: str(),
+        SMTP_PORT: port(),
+        SMTP_USERNAME: str(),
+        SMTP_PASSWORD: str(),
     });
 };
 

@@ -14,7 +14,7 @@ services:
     networks:
       - todo-net
     tty: true
-    restart: always
+    restart: unless-stopped
   adminer:
     image: adminer:4.8.1-standalone
     container_name: adminer
@@ -24,7 +24,7 @@ services:
       - '8080:8080'
     networks:
       - todo-net
-    restart: on-failure  
+    restart: unless-stopped  
   node-server:
     container_name: node-server
     build:

@@ -1,37 +1,31 @@
+const { generateUUID } = require('metautil');
 const { UserService } = require('../users/UserService');
 const { HashService } = require('../common/services/HashService');
 const { JWTService } = require('../common/services/JWTService');
+const { MailService } = require('../common/services/MailService');
+const { UserDto } = require('../users/UserDto');
+const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
+const { configuration } = require('../configs');
 const {
-    TokenException,
     UnauthorizedException,
     UserAlreadyExistException,
 } = require('../common/exceptions');
-const { omit } = require('../common/utils/helpers');
 
 class AuthService {
     #userService;
     #hashService;
     #jwtService;
+    #refreshTokenService;
+    #mailService;
+    #config;
 
     constructor() {
         this.#userService = new UserService();
         this.#hashService = new HashService();
         this.#jwtService = new JWTService();
-    }
-
-    async #generateTokens(user = {}) {
-        if (user.id && user.email && user.roles.length) {
-            const payload = {
-                sub: user.id,
-                email: user.email,
-                roles: user.roles.map(({ value }) => value),
-            };
-
-            return {
-                accessToken: await this.#jwtService.generateAccessJWT(payload),
-            };
-        }
-        throw new TokenException();
+        this.#refreshTokenService = new RefreshTokenService();
+        this.#mailService = new MailService();
+        this.#config = configuration;
     }
 
     async #validateUser(email = '', password = '') {
@@ -46,22 +40,60 @@ class AuthService {
         throw new UnauthorizedException();
     }
 
-    async signUp(data = {}) {
+    async signUp(userAgent = '', data = {}) {
         const candidate = await this.#userService.findUserByEmail(data.email);
         if (candidate) {
             throw new UserAlreadyExistException(candidate.email);
         }
-        const createdUser = await this.#userService.createUser(data);
-        const tokens = await this.#generateTokens(createdUser);
-        const cuttedUser = omit(createdUser.dataValues, 'password', 'roles');
-        return { tokens, user: cuttedUser };
+
+        const uuid = generateUUID();
+        const baseLink = `/api/auth/verfication?uuid=${uuid}`;
+        const verificationLink = this.#config.serverUrl
+            ? `${this.#config.serverUrl}${baseLink}`
+            : `http://localhost:${this.#config.serverPort}${baseLink}`;
+
+        const createdUser = await this.#userService.createUser({
+            ...data,
+            verificationLink,
+        });
+
+        await this.#mailService.sendVerificationMail(
+            createdUser.email,
+            verificationLink,
+        );
+        const [access, refresh] = await this.#jwtService.generateTokens(
+            createdUser,
+        );
+        const user = new UserDto(createdUser);
+        await this.#refreshTokenService.saveToken({
+            userId: user.id,
+            value: refresh,
+            userAgent,
+        });
+        return { tokens: { access, refresh }, user };
     }
 
-    async signIn({ email, password }) {
+    async signIn(userAgent = '', { email, password }) {
         const signedUser = await this.#validateUser(email, password);
-        const tokens = await this.#generateTokens(signedUser);
-        const cuttedUser = omit(signedUser.dataValues, 'password', 'roles');
-        return { tokens, user: cuttedUser };
+        const [access, refresh] = await this.#jwtService.generateTokens(
+            signedUser,
+        );
+        const user = new UserDto(signedUser);
+        await this.#refreshTokenService.saveToken({
+            userId: user.id,
+            value: refresh,
+            userAgent,
+        });
+        return { tokens: { access, refresh }, user };
+    }
+
+    async verificate(verificationLink = '') {
+        const user = await this.#userService.findUserByVerificationLink(
+            verificationLink,
+        );
+        user.isVerificated = true;
+        await user.save({ fields: ['isVerificated'] });
+        return 'User verificated successfully';
     }
 }
 

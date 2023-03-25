@@ -15,7 +15,8 @@ const {
         NODE_ENV,
         SERVER_PORT,
         DEBUG_PORT,
-        DEPLOY_HOST,
+        SERVER_URL,
+        CLIENT_URL,
         DB_PORT,
         DB_DIALECT,
         DB_HOST,
@@ -31,6 +32,11 @@ const {
         JWT_ACCESS_TOKEN_EXPIRATION_TIME,
         JWT_REFRESH_TOKEN_SECRET,
         JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+        MAX_DEVICES_AMOUNT,
+        SMTP_HOST,
+        SMTP_PORT,
+        SMTP_USERNAME,
+        SMTP_PASSWORD,
     },
 } = result;
 
@@ -39,7 +45,8 @@ const configuration = Object.freeze({
     serverPort: parseInt(SERVER_PORT, 10),
     dbPort: parseInt(DB_PORT, 10),
     debugPort: parseInt(DEBUG_PORT, 10),
-    deployHost: DEPLOY_HOST,
+    serverUrl: SERVER_URL,
+    clientUrl: CLIENT_URL,
     dbHost: DB_HOST,
     dbDialect: DB_DIALECT,
     dbName: DB_NAME,
@@ -54,6 +61,11 @@ const configuration = Object.freeze({
     accessJWTTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     refreshJWTSecret: JWT_REFRESH_TOKEN_SECRET,
     refreshJWTTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+    maxDevicesAmount: parseInt(MAX_DEVICES_AMOUNT, 10),
+    smtpHost: SMTP_HOST,
+    smtpPort: parseInt(SMTP_PORT, 10),
+    smtpUsername: SMTP_USERNAME,
+    smtpPassword: SMTP_PASSWORD,
 });
 
 module.exports = { configuration };

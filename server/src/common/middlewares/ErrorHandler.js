@@ -7,7 +7,7 @@ class ErrorHandler {
     static #logger = new LoggerService(ErrorHandler.name);
 
     static errorHandler = async (err, req, res, next) => {
-        ErrorHandler.#logger.error(`CAUGHT:===> ${err.stack}`);
+        ErrorHandler.#logger.error(`CAUGHT:==> ${err.stack}`);
         if (err instanceof ApplicationException) {
             return res.status(err.status).send({
                 message: err.message,

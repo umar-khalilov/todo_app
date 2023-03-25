@@ -14,7 +14,7 @@ const basicInfo = {
         },
         basePath: '/',
         host:
-            configuration.deployHost ||
+            configuration.serverUrl ||
             `http://localhost:${configuration.serverPort}/api`,
         schemes: ['http', 'https'],
     },

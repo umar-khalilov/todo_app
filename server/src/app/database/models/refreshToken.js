@@ -1,10 +1,12 @@
 'use strict';
 const { Model } = require('sequelize');
+const { HashService } = require('../../../common/services/HashService');
 
 module.exports = (sequelize, DataTypes) => {
-    class Task extends Model {
+    const hashService = new HashService();
+    class RefreshToken extends Model {
         static associate(models) {
-            Task.belongsTo(models.User, {
+            RefreshToken.belongsTo(models.User, {
                 foreignKey: 'userId',
                 targetKey: 'id',
                 onDelete: 'CASCADE',
@@ -12,8 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
     }
-
-    Task.init(
+    RefreshToken.init(
         {
             userId: {
                 type: DataTypes.INTEGER,
@@ -26,12 +27,7 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: 'CASCADE',
                 onUpdate: 'RESTRICT',
             },
-            title: {
-                type: DataTypes.STRING(300),
-                allowNull: false,
-                validate: { notNull: true, notEmpty: true },
-            },
-            body: {
+            value: {
                 type: DataTypes.TEXT,
                 allowNull: false,
                 validate: {
@@ -39,35 +35,44 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: true,
                 },
             },
-            deadline: {
-                type: DataTypes.DATE,
+            userAgent: {
+                type: DataTypes.STRING(500),
                 allowNull: false,
+                field: 'user_agent',
                 validate: {
                     notNull: true,
                     notEmpty: true,
-                    isDate: true,
                 },
             },
-            isDone: {
-                type: DataTypes.BOOLEAN,
+            expiresIn: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                field: 'is_done',
-                defaultValue: false,
-            },
-            files: {
-                type: DataTypes.ARRAY(DataTypes.STRING(600)),
-                allowNull: true,
+                field: 'expires_in',
                 validate: {
-                    isArray: true,
+                    notNull: true,
+                    notEmpty: true,
+                    isInt: true,
                 },
             },
         },
         {
+            hooks: {
+                beforeCreate: async (data = {}, _options = {}) => {
+                    data.value = await hashService.hashValue(data.value);
+                    return data;
+                },
+                beforeUpdate: async (data = {}, _options = {}) => {
+                    if (data.value) {
+                        data.value = await hashService.hashPassword(data.value);
+                    }
+                    return data;
+                },
+            },
             sequelize,
-            modelName: 'Task',
-            tableName: 'tasks',
+            modelName: 'RefreshToken',
+            tableName: 'refresh_tokens',
             underscored: true,
         },
     );
-    return Task;
+    return RefreshToken;
 };
