@@ -85,10 +85,10 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: false,
                 field: 'is_verificated',
             },
-            verificationLink: {
+            verificationUuid: {
                 type: DataTypes.TEXT,
                 allowNull: true,
-                field: 'verification_link',
+                field: 'verification_uuid',
             },
             password: {
                 type: DataTypes.TEXT,

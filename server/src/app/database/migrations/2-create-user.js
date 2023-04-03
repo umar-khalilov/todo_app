@@ -41,10 +41,10 @@ module.exports = {
                 defaultValue: false,
                 field: 'is_verificated',
             },
-            verificationLink: {
+            verificationUuid: {
                 type: Sequelize.TEXT,
                 allowNull: true,
-                field: 'verification_link',
+                field: 'verification_uuid',
             },
             password: {
                 type: Sequelize.TEXT,

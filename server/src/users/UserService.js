@@ -34,13 +34,13 @@ class UserService {
         });
     }
 
-    async findUserByVerificationLink(verificationLink = '') {
+    async findUserByVerificationUUID(verificationUuid = '') {
         const user = await this.#userRepository.findOne({
-            where: { verificationLink },
+            where: { verificationUuid },
         });
         if (!user) {
             throw new NotFoundException(
-                `User with that verification link: ${verificationLink} not found`,
+                `User with that verification uuid: ${verificationUuid} not found`,
             );
         }
         return user;

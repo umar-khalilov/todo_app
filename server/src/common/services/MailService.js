@@ -1,6 +1,6 @@
-const { createTransport, getTestMessageUrl } = require('nodemailer');
-const { configuration } = require('../../configs');
+const { createTransport } = require('nodemailer');
 const { LoggerService } = require('../services/LoggerService');
+const { configuration } = require('../../configs');
 
 class MailService {
     #logger;
@@ -13,7 +13,7 @@ class MailService {
         this.#transport = createTransport({
             host: this.#config.smtpHost,
             port: this.#config.smtpPort,
-            secure: true,
+            secure: false,
             auth: {
                 user: this.#config.smtpUsername,
                 pass: this.#config.smtpPassword,
@@ -33,13 +33,13 @@ class MailService {
         const message = {
             from: this.#config.smtpUsername,
             to: email,
-            subject: 'Email confirmation',
-            html: `<article><h1>To confirm the email address, please click here: </h1> <a href='${link}'>${link}</a></article>`,
+            subject: 'Email verification',
+            html: `<article><h1>To verificate the email address, please click here: </h1> <a href='${link}'>${link}</a></article>`,
             date: new Date().toUTCString(),
         };
         this.#sendEmail(message)
-            .then(res => this.logger.log(getTestMessageUrl(res)))
-            .catch(err => this.logger.error(err.message));
+            .then(res => res)
+            .catch(err => this.#logger.error(err.message));
     }
 }
 

@@ -9,6 +9,7 @@ const { configuration } = require('../configs');
 const {
     UnauthorizedException,
     UserAlreadyExistException,
+    NotFoundException,
 } = require('../common/exceptions');
 
 class AuthService {
@@ -47,20 +48,21 @@ class AuthService {
         }
 
         const uuid = generateUUID();
-        const baseLink = `/api/auth/verfication?uuid=${uuid}`;
+        const baseLink = `/api/auth/verification/${uuid}`;
         const verificationLink = this.#config.serverUrl
             ? `${this.#config.serverUrl}${baseLink}`
             : `http://localhost:${this.#config.serverPort}${baseLink}`;
 
         const createdUser = await this.#userService.createUser({
             ...data,
-            verificationLink,
+            verificationUuid: uuid,
         });
 
         await this.#mailService.sendVerificationMail(
             createdUser.email,
             verificationLink,
         );
+
         const [access, refresh] = await this.#jwtService.generateTokens(
             createdUser,
         );
@@ -87,13 +89,49 @@ class AuthService {
         return { tokens: { access, refresh }, user };
     }
 
-    async verificate(verificationLink = '') {
-        const user = await this.#userService.findUserByVerificationLink(
-            verificationLink,
+    async verificateUser(verificationUuid = '') {
+        const user = await this.#userService.findUserByVerificationUUID(
+            verificationUuid,
         );
         user.isVerificated = true;
-        await user.save({ fields: ['isVerificated'] });
+        user.verificationUuid = null;
+        await user.save({ fields: ['isVerificated', 'verificationUuid'] });
         return 'User verificated successfully';
+    }
+
+    async refreshSession(refreshToken) {
+        if (!refreshToken) {
+            throw new UnauthorizedException('User is not authorizated');
+        }
+        const userData = await this.#jwtService.verifyRefreshJWT(refreshToken);
+        const tokenFromDb = await this.#refreshTokenService.findToken(
+            refreshToken,
+        );
+
+        if (!userData || !tokenFromDb) {
+            throw new UnauthorizedException('User is not authorizated');
+        }
+
+        const userFromDb = await this.#userService.findUserByEmail(
+            userData.email,
+        );
+        if (!userFromDb) {
+            throw new NotFoundException(
+                `User with that email: ${userData.email} not found`,
+            );
+        }
+
+        const [access, refresh] = await this.#jwtService.generateTokens(
+            userFromDb,
+        );
+
+        const hashedToken = await this.#hashService.hashValue(refresh);
+        await tokenFromDb.update({
+            value: hashedToken,
+        });
+
+        const user = new UserDto(userFromDb);
+        return { tokens: { access, refresh }, user };
     }
 }
 

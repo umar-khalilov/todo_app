@@ -1,9 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
-const { HashService } = require('../../../common/services/HashService');
 
 module.exports = (sequelize, DataTypes) => {
-    const hashService = new HashService();
     class RefreshToken extends Model {
         static associate(models) {
             RefreshToken.belongsTo(models.User, {
@@ -56,18 +54,6 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         {
-            hooks: {
-                beforeCreate: async (data = {}, _options = {}) => {
-                    data.value = await hashService.hashValue(data.value);
-                    return data;
-                },
-                beforeUpdate: async (data = {}, _options = {}) => {
-                    if (data.value) {
-                        data.value = await hashService.hashPassword(data.value);
-                    }
-                    return data;
-                },
-            },
             sequelize,
             modelName: 'RefreshToken',
             tableName: 'refresh_tokens',

@@ -23,7 +23,7 @@ module.exports = {
                     birthday: '1956/07/09',
                     is_male: true,
                     is_verificated: true,
-                    verification_link: null,
+                    verification_uuid: null,
                     password_hash: await hashService.hashPassword(
                         'hanks!00TheBest',
                     ),
@@ -38,7 +38,7 @@ module.exports = {
                     birthday: '1967/07/26',
                     is_male: true,
                     is_verificated: true,
-                    verification_link: null,
+                    verification_uuid: null,
                     password_hash: await hashService.hashPassword(
                         'statham!00TheBest',
                     ),

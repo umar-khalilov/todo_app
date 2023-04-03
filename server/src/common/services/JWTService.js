@@ -69,10 +69,10 @@ class JWTService {
                 this.#accessJwtSecret,
                 this.#accessJwtOptions,
                 (err, decodedData) => {
-                    if (err.name === 'TokenExpiredError') {
+                    if (err?.name === 'TokenExpiredError') {
                         reject(new TokenExpiredException(err.expiredAt));
                     }
-                    if (err.name === 'JsonWebTokenError') {
+                    if (err?.name === 'JsonWebTokenError') {
                         reject(new TokenMalformedException());
                     }
                     resolve(decodedData);
@@ -88,10 +88,10 @@ class JWTService {
                 this.#refreshJwtSecret,
                 this.#refreshJwtOptions,
                 (err, decodedData) => {
-                    if (err.name === 'TokenExpiredError') {
+                    if (err?.name === 'TokenExpiredError') {
                         reject(new TokenExpiredException(err.expiredAt));
                     }
-                    if (err.name === 'JsonWebTokenError') {
+                    if (err?.name === 'JsonWebTokenError') {
                         reject(new TokenMalformedException());
                     }
                     resolve(decodedData);
@@ -107,10 +107,10 @@ class JWTService {
                 email: user.email,
                 roles: user.roles.map(({ value }) => value),
             };
-            return Promise.allSettled(
+            return Promise.all([
                 this.generateAccessJWT(payload),
                 this.generateRefreshJWT(payload),
-            );
+            ]);
         }
         throw new TokenException();
     }

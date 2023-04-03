@@ -1,22 +1,27 @@
 const { Router } = require('express');
 const { AuthService } = require('./AuthService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
-const { validate } = require('../common/middlewares/validate');
-const { asyncWrapper } = require('../common/utils/helpers');
+const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
 const { signUpSchema, signInSchema } = require('./authSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { configuration } = require('../configs');
+const { validate } = require('../common/middlewares/validate');
+const { asyncWrapper } = require('../common/utils/helpers');
+const {
+    verifyAccessToken,
+    verifyRefreshToken,
+} = require('../common/middlewares/verifyTokens');
 
 class AuthController {
     #authService;
+    #refreshTokenService;
     #router;
-    #config;
     #path;
 
     constructor() {
         this.#authService = new AuthService();
+        this.#refreshTokenService = new RefreshTokenService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
-        this.#config = configuration;
         this.#path = '/auth';
         this.#initializeRoutes();
     }
@@ -36,15 +41,14 @@ class AuthController {
             validate(signInSchema),
             this.#signIn,
         );
-        this.router.post(`${this.#path}/sign-out`, this.#signOut);
         this.router.post(
-            `${this.#path}/refreshSession-session`,
-            this.#refreshSession,
+            `${this.#path}/sign-out`,
+            verifyAccessToken,
+            verifyRefreshToken,
+            this.#signOut,
         );
-        this.router.get(
-            `${this.#path}/verification:link`,
-            this.#verificateUser,
-        );
+        this.router.post(`${this.#path}/refresh-session`, this.#refreshSession);
+        this.router.get(`${this.#path}/verification/:uuid`, this.#verificate);
     }
 
     #signUp = asyncWrapper(async ({ headers, body }) => {
@@ -56,16 +60,27 @@ class AuthController {
     #signIn = asyncWrapper(async ({ headers, body }) => {
         const userAgent = headers['user-agent'];
         const data = await this.#authService.signIn(userAgent, body);
-        return new SuccessResponse({ data }, HttpStatusCodes.OK);
+        return new SuccessResponse({ data });
     });
 
-    #signOut = asyncWrapper(async () => {});
+    #verificate = async ({ params: { uuid } }, res, next) => {
+        try {
+            await this.#authService.verificateUser(uuid);
+            return res.redirect(301, configuration.clientUrl);
+        } catch (error) {
+            next(error);
+        }
+    };
 
-    #refreshSession = asyncWrapper(async () => {});
+    #refreshSession = asyncWrapper(async ({ body }) => {
+        const data = await this.#authService.refreshSession(body?.refresh);
+        return new SuccessResponse({ data });
+    });
 
-    #verificateUser = asyncWrapper(async ({ params: { link } }, res) => {
-        await this.#authService.verificate(link);
-        return res.redirect(this.#config.clientUrl);
+    #signOut = asyncWrapper(async req => {
+        req.res.setHeader('Authorization', null);
+        await this.#refreshTokenService.removeToken(req.body?.refresh);
+        return new SuccessResponse({ data: 'You are successfully signed out' });
     });
 }
 
