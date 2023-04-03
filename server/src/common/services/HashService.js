@@ -1,12 +1,19 @@
+const { createHash } = require('node:crypto');
 const { hashPassword, validatePassword } = require('metautil');
 
 class HashService {
-    async hashPassword(password) {
+    async hashPassword(password = '') {
         return hashPassword(password);
     }
 
-    async checkIsMatch(plainPassword, hashedPassword) {
-        return validatePassword(plainPassword, hashedPassword);
+    async checkIsMatch(plainValue = '', hashedValue = '') {
+        return validatePassword(plainValue, hashedValue);
+    }
+
+    async hashValue(value = '') {
+        const hash = createHash('sha256');
+        hash.update(value);
+        return hash.digest('hex');
     }
 }
 

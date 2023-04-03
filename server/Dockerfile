@@ -5,7 +5,7 @@
 FROM node:18-alpine3.17 as development
 WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
-RUN npm install -g sequelize-cli && npm install
+RUN npm install -g sequelize-cli
 RUN npm ci
 COPY --chown=node:node ./ ./
 USER node
@@ -30,5 +30,5 @@ USER node
 
 FROM node:18-alpine3.17 as production
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-# COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 CMD [ "node", "src/main.js" ]

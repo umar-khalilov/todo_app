@@ -22,6 +22,8 @@ module.exports = {
                     avatar: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Tom_Hanks_TIFF_2019.jpg',
                     birthday: '1956/07/09',
                     is_male: true,
+                    is_verificated: true,
+                    verification_uuid: null,
                     password_hash: await hashService.hashPassword(
                         'hanks!00TheBest',
                     ),
@@ -35,6 +37,8 @@ module.exports = {
                     avatar: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Jason_Statham_2018.jpg',
                     birthday: '1967/07/26',
                     is_male: true,
+                    is_verificated: true,
+                    verification_uuid: null,
                     password_hash: await hashService.hashPassword(
                         'statham!00TheBest',
                     ),

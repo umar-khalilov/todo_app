@@ -2,9 +2,7 @@ const { Task } = require('../app/database/models');
 const { paginateResponse } = require('../common/utils/helpers');
 const {
     BadRequestException,
-    TaskNotFoundException,
-    TasksNotFoundException,
-    UserTasksNotFoundException,
+    NotFoundException,
 } = require('../common/exceptions');
 
 class TaskService {
@@ -14,7 +12,7 @@ class TaskService {
         this.#taskRepository = Task;
     }
 
-    async createTask(userId, taskData = {}) {
+    async createTask(userId = 0, taskData = {}) {
         const createdTask = await this.#taskRepository.create({
             userId,
             ...taskData,
@@ -36,7 +34,9 @@ class TaskService {
             offset,
         });
         if (count === 0) {
-            throw new UserTasksNotFoundException(userId);
+            throw new NotFoundException(
+                `No tasks found for user with that userId: ${userId}`,
+            );
         }
         return paginateResponse([count, rows], page, limit);
     }
@@ -48,7 +48,7 @@ class TaskService {
             offset,
         });
         if (count === 0) {
-            throw new TasksNotFoundException();
+            throw new NotFoundException('No found tasks in database');
         }
         return paginateResponse([count, rows], page, limit);
     }
@@ -58,7 +58,9 @@ class TaskService {
             where: { userId, id: taskId },
         });
         if (!foundTask.length) {
-            throw new TaskNotFoundException(taskId);
+            throw new NotFoundException(
+                `Task with that taskId: ${taskId} not found`,
+            );
         }
         return foundTask;
     }
@@ -69,7 +71,9 @@ class TaskService {
             returning: true,
         });
         if (rows === 0) {
-            throw new TaskNotFoundException();
+            throw new NotFoundException(
+                `Task with that taskId: ${taskId} not found`,
+            );
         }
         return foundTask;
     }
@@ -79,9 +83,10 @@ class TaskService {
             where: { userId, id: taskId },
         });
         if (task === 0) {
-            throw new TaskNotFoundException(taskId);
+            throw new NotFoundException(
+                `Task with that taskId: ${taskId} not found`,
+            );
         }
-        return `Task with taskId: ${taskId} was successfully removed`;
     }
 }
 

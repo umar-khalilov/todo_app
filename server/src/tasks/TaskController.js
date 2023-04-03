@@ -94,11 +94,8 @@ class TaskController {
     });
 
     #removeOne = asyncWrapper(async ({ params: { userId, taskId } }) => {
-        const response = await this.#taskService.removeTaskByIds(
-            userId,
-            taskId,
-        );
-        return new SuccessResponse(response, HttpStatusCodes.NO_CONTENT);
+        await this.#taskService.removeTaskByIds(userId, taskId);
+        return new SuccessResponse(null, HttpStatusCodes.NO_CONTENT);
     });
 }
 

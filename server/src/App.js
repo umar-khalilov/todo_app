@@ -6,9 +6,9 @@ const swaggerUi = require('swagger-ui-express');
 const { sequelize } = require('./app/database/models');
 const { LoggerService } = require('./common/services/LoggerService');
 const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
-const { PathNotFoundException } = require('./common/exceptions');
 const { docs } = require('./app/docs');
 const { configuration } = require('./configs');
+const { NotFoundException } = require('./common/exceptions');
 
 class App {
     #app;
@@ -73,7 +73,11 @@ class App {
 
     #initializeErrorHandling() {
         this.#app.use('*', (req, res, next) => {
-            next(new PathNotFoundException(req.path));
+            next(
+                new NotFoundException(
+                    `The requested path: ${req.path} not found`,
+                ),
+            );
         });
         this.#app.use(ErrorHandler.errorHandler);
     }

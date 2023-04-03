@@ -9,7 +9,6 @@ const validate =
             return next();
         } catch (error) {
             return res.status(HttpStatusCodes.BAD_REQUEST).send({
-                name: error.name,
                 message: error.message,
                 status: error.status,
             });

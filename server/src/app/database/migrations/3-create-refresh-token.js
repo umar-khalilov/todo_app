@@ -1,8 +1,8 @@
 'use strict';
-
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('tasks', {
+        await queryInterface.createTable('refresh_tokens', {
             id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -13,34 +13,26 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 field: 'user_id',
-                references: {
+                referencies: {
                     model: 'users',
                     key: 'id',
-                    as: 'userId',
                 },
-                onDelete: 'cascade',
-                onUpdate: 'restrict',
+                onDelete: 'CASCADE',
+                onUpdate: 'RESTRICT',
             },
-            title: {
-                type: Sequelize.STRING(300),
-                allowNull: false,
-            },
-            body: {
+            value: {
                 type: Sequelize.TEXT,
                 allowNull: false,
             },
-            deadline: {
-                type: Sequelize.DATE,
+            userAgent: {
+                type: Sequelize.STRING(500),
                 allowNull: false,
+                field: 'user_agent',
             },
-            isDone: {
-                type: Sequelize.BOOLEAN,
+            expiresIn: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
-                field: 'is_done',
-            },
-            files: {
-                type: Sequelize.ARRAY(Sequelize.STRING(600)),
-                allowNull: true,
+                field: 'expires_in',
             },
             createdAt: {
                 type: Sequelize.DATE,
@@ -55,6 +47,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('tasks');
+        await queryInterface.dropTable('refresh_tokens');
     },
 };

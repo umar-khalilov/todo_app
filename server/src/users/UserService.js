@@ -1,10 +1,7 @@
 const { User, Role } = require('../app/database/models');
 const { RoleService } = require('../roles/RoleService');
 const { paginateResponse } = require('../common/utils/helpers');
-const {
-    UserNotFoundException,
-    UsersNotFoundException,
-} = require('../common/exceptions');
+const { NotFoundException } = require('../common/exceptions');
 
 class UserService {
     #userRepository;
@@ -37,6 +34,18 @@ class UserService {
         });
     }
 
+    async findUserByVerificationUUID(verificationUuid = '') {
+        const user = await this.#userRepository.findOne({
+            where: { verificationUuid },
+        });
+        if (!user) {
+            throw new NotFoundException(
+                `User with that verification uuid: ${verificationUuid} not found`,
+            );
+        }
+        return user;
+    }
+
     async findAllUsers({ limit, offset, page, sort }) {
         const { count, rows } = await this.#userRepository.findAndCountAll({
             order: [['name', sort]],
@@ -45,7 +54,7 @@ class UserService {
             distinct: true,
         });
         if (count === 0) {
-            throw new UsersNotFoundException();
+            throw new NotFoundException('No found users in database');
         }
         return paginateResponse([count, rows], page, limit);
     }
@@ -53,7 +62,7 @@ class UserService {
     async findUserById(id = 0) {
         const user = this.#userRepository.findOne(id);
         if (!user) {
-            throw new UserNotFoundException(id);
+            throw new NotFoundException(`User with that id: ${id} not found`);
         }
         return user;
     }
@@ -65,7 +74,7 @@ class UserService {
             individualHooks: true,
         });
         if (rows === 0) {
-            throw new UserNotFoundException(id);
+            throw new NotFoundException(`User with that id: ${id} not found`);
         }
         return updatedUser;
     }
@@ -73,7 +82,7 @@ class UserService {
     async removeUserById(id = 0) {
         const foundUser = await this.#userRepository.findByPk(id);
         if (!foundUser) {
-            throw new UserNotFoundException(id);
+            throw new NotFoundException(`User with that id: ${id} not found`);
         }
 
         const roles = await foundUser.getRoles();

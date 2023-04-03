@@ -1,5 +1,6 @@
 const { Role } = require('../app/database/models');
 const { NotFoundException } = require('../common/exceptions');
+const { RoleTypes } = require('./RoleTypes');
 
 class RoleService {
     #roleRepository;
@@ -19,7 +20,7 @@ class RoleService {
         return roles;
     }
 
-    async getRoleByValue(value = '') {
+    async getRoleByValue(value = RoleTypes) {
         const foundRole = await this.#roleRepository.findOne({
             where: { value },
         });

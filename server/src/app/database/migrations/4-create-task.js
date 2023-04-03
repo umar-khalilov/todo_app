@@ -1,44 +1,45 @@
 'use strict';
-
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('users', {
+        await queryInterface.createTable('tasks', {
             id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
             },
-            name: {
-                type: Sequelize.STRING,
+            userId: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                field: 'user_id',
+                references: {
+                    model: 'users',
+                    key: 'id',
+                },
+                onDelete: 'CASCADE',
+                onUpdate: 'RESTRICT',
+            },
+            title: {
+                type: Sequelize.STRING(300),
                 allowNull: false,
             },
-            surname: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            email: {
-                type: Sequelize.STRING,
-                allowNull: false,
-                unique: true,
-            },
-            avatar: {
+            body: {
                 type: Sequelize.TEXT,
-                allowNull: true,
+                allowNull: false,
             },
-            birthday: {
-                type: Sequelize.DATEONLY,
-                allowNull: true,
+            deadline: {
+                type: Sequelize.DATE,
+                allowNull: false,
             },
-            isMale: {
+            isDone: {
                 type: Sequelize.BOOLEAN,
-                allowNull: true,
-                field: 'is_male',
-            },
-            password: {
-                type: Sequelize.TEXT,
                 allowNull: false,
-                field: 'password_hash',
+                field: 'is_done',
+            },
+            files: {
+                type: Sequelize.ARRAY(Sequelize.STRING(600)),
+                allowNull: true,
             },
             createdAt: {
                 type: Sequelize.DATE,
@@ -53,6 +54,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('users');
+        await queryInterface.dropTable('tasks');
     },
 };

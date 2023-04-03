@@ -12,12 +12,18 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'userId',
                 as: 'tasks',
             });
+            User.hasMany(models.RefreshToken, {
+                foreignKey: 'userId',
+                as: 'tokens',
+            });
             User.belongsToMany(models.Role, {
                 through: 'users_roles',
                 foreignKey: 'userId',
                 otherKey: 'roleId',
-                timestamps: false,
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
                 as: 'roles',
+                timestamps: false,
             });
         }
     }
@@ -73,6 +79,17 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
                 field: 'is_male',
             },
+            isVerificated: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+                field: 'is_verificated',
+            },
+            verificationUuid: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+                field: 'verification_uuid',
+            },
             password: {
                 type: DataTypes.TEXT,
                 allowNull: false,
@@ -89,14 +106,14 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             hooks: {
-                beforeCreate: async (user = {}, options = {}) => {
+                beforeCreate: async (user = {}, _options = {}) => {
                     user.password = await hashService.hashPassword(
                         user.password,
                     );
                     user.email = user.email.toLowerCase();
                     return user;
                 },
-                beforeUpdate: async (user = {}, options = {}) => {
+                beforeUpdate: async (user = {}, _options = {}) => {
                     if (user.password) {
                         user.password = await hashService.hashPassword(
                             user.password,
