@@ -25,7 +25,7 @@ class MailService {
         try {
             return this.#transport.sendMail(options);
         } catch (error) {
-            this.#logger(error);
+            this.#logger.error(error.message);
         }
     }
 
@@ -37,9 +37,7 @@ class MailService {
             html: `<article><h1>To verificate the email address, please click here: </h1> <a href='${link}'>${link}</a></article>`,
             date: new Date().toUTCString(),
         };
-        this.#sendEmail(message)
-            .then(res => res)
-            .catch(err => this.#logger.error(err.message));
+        this.#sendEmail(message);
     }
 }
 
