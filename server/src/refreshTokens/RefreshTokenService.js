@@ -62,7 +62,7 @@ class RefreshTokenService {
 
     async removeExpiredTokens() {
         const currentSecond = parseInt(String(Date.now() / 1000), 10);
-        await this.#tokenRepository.destroy({
+        return this.#tokenRepository.destroy({
             where: {
                 expiresIn: { [Op.lt]: currentSecond },
             },

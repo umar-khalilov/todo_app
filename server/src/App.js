@@ -9,12 +9,14 @@ const { ErrorHandler } = require('./common/middlewares/ErrorHandler');
 const { docs } = require('./app/docs');
 const { configuration } = require('./configs');
 const { NotFoundException } = require('./common/exceptions');
+const { CronService } = require('./common/services/CronService');
 
 class App {
     #app;
     #port;
     #logger;
     #server;
+    #cronService;
 
     constructor(controllers = []) {
         this.#app = express();
@@ -25,6 +27,7 @@ class App {
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
         this.#server = createServer(this.#app);
+        this.#cronService = new CronService();
         this.#gracefullyClose();
     }
 
@@ -91,6 +94,8 @@ class App {
                     this.#port
                 }/api/docs`,
             );
+            this.#cronService.removeExpiredTokens();
+            this.#cronService.gracefullyShutdown();
         });
     }
 
