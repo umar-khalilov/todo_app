@@ -1,8 +1,9 @@
-const { LoggerService } = require('./LoggerService');
+const schedule = require('node-schedule');
 const {
     RefreshTokenService,
 } = require('../../refreshTokens/RefreshTokenService');
-const schedule = require('node-schedule');
+const { LoggerService } = require('./LoggerService');
+const { CronExpression } = require('../utils/CronExpression');
 
 class CronService {
     #refreshTokenService;
@@ -15,21 +16,24 @@ class CronService {
         this.#cron = schedule;
     }
 
-    /**
-     * Running EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT
-     */
-    removeExpiredTokens() {
-        this.#cron.scheduleJob('Removing tokens', '0 0 0 1 * *', async () => {
-            const results =
-                await this.#refreshTokenService.removeExpiredTokens();
-            this.#logger.debug(`${results || 0} tokens was deleted`);
-        });
-    }
+    initializeTasks() {
+        /**
+         * Running EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT
+         */
+        this.#cron.scheduleJob(
+            'Removing tokens',
+            CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT,
+            () => this.#removeExpiredTokens(),
+        );
 
-    gracefullyShutdown() {
         process.on('SIGINT', () => {
             this.#cron.gracefulShutdown().then(() => process.exit(0));
         });
+    }
+
+    async #removeExpiredTokens() {
+        const results = await this.#refreshTokenService.removeExpiredTokens();
+        this.#logger.system(`${results || 0} tokens was deleted`);
     }
 }
 
