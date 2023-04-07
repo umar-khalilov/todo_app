@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "start": "node ./src/main.js",
-        "start:dev": "nodemon ./src/main.js",
+        "start:dev": "nodemon -q ./src/main.js",
         "start:debug": "nodemon --inspect=0.0.0.0:9229 ./src/main.js",
         "lint:fix": "eslint \"src/**/*.js\" --fix",
         "prettier:check": "prettier --check ./",
@@ -33,6 +33,7 @@
         "express": "^4.18.2",
         "jsonwebtoken": "^9.0.0",
         "metautil": "^3.7.1",
+        "node-schedule": "^2.1.1",
         "nodemailer": "^6.9.1",
         "pg": "^8.10.0",
         "pg-hstore": "^2.3.4",

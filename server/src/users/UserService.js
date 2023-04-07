@@ -1,5 +1,6 @@
 const { User, Role } = require('../app/database/models');
 const { RoleService } = require('../roles/RoleService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { paginateResponse } = require('../common/utils/helpers');
 const { NotFoundException } = require('../common/exceptions');
 
@@ -7,11 +8,14 @@ class UserService {
     #userRepository;
     #roleRepository;
     #roleService;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(UserService.name);
         this.#userRepository = User;
         this.#roleRepository = Role;
         this.#roleService = new RoleService();
+        this.#logger.log('Initialized');
     }
 
     async createUser(data = {}) {

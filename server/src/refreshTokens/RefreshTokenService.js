@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { RefreshToken } = require('../app/database/models');
 const { HashService } = require('../common/services/HashService');
 const { JWTService } = require('../common/services/JWTService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { UnauthorizedException } = require('../common/exceptions');
 const { configuration } = require('../configs');
 
@@ -10,12 +11,15 @@ class RefreshTokenService {
     #jwtService;
     #hashService;
     #maxAmountDevices;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(RefreshTokenService.name);
         this.#tokenRepository = RefreshToken;
         this.#jwtService = new JWTService();
         this.#hashService = new HashService();
         this.#maxAmountDevices = configuration.maxDevicesAmount;
+        this.#logger.log('Initialized');
     }
 
     async saveToken(payload = {}) {
@@ -62,7 +66,7 @@ class RefreshTokenService {
 
     async removeExpiredTokens() {
         const currentSecond = parseInt(String(Date.now() / 1000), 10);
-        await this.#tokenRepository.destroy({
+        return this.#tokenRepository.destroy({
             where: {
                 expiresIn: { [Op.lt]: currentSecond },
             },

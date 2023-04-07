@@ -6,6 +6,7 @@ const { MailService } = require('../common/services/MailService');
 const { UserDto } = require('../users/UserDto');
 const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
 const { configuration } = require('../configs');
+const { LoggerService } = require('../common/services/LoggerService');
 const {
     UnauthorizedException,
     UserAlreadyExistException,
@@ -19,14 +20,17 @@ class AuthService {
     #refreshTokenService;
     #mailService;
     #config;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(AuthService.name);
         this.#userService = new UserService();
         this.#hashService = new HashService();
         this.#jwtService = new JWTService();
         this.#refreshTokenService = new RefreshTokenService();
         this.#mailService = new MailService();
         this.#config = configuration;
+        this.#logger.log('Initialized');
     }
 
     async #validateUser(email = '', password = '') {

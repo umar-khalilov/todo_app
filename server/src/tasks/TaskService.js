@@ -1,4 +1,5 @@
 const { Task } = require('../app/database/models');
+const { LoggerService } = require('../common/services/LoggerService');
 const { paginateResponse } = require('../common/utils/helpers');
 const {
     BadRequestException,
@@ -7,9 +8,12 @@ const {
 
 class TaskService {
     #taskRepository;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(TaskService.name);
         this.#taskRepository = Task;
+        this.#logger.log('Initialized');
     }
 
     async createTask(userId = 0, taskData = {}) {

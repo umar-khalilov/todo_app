@@ -1,12 +1,16 @@
 const { Role } = require('../app/database/models');
+const { LoggerService } = require('../common/services/LoggerService');
 const { NotFoundException } = require('../common/exceptions');
 const { RoleTypes } = require('./RoleTypes');
 
 class RoleService {
     #roleRepository;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(RoleService.name);
         this.#roleRepository = Role;
+        this.#logger.log('Initialized');
     }
 
     async getAllRoles() {

@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { AuthService } = require('./AuthService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { signUpSchema, signInSchema } = require('./authSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { configuration } = require('../configs');
@@ -17,13 +18,16 @@ class AuthController {
     #refreshTokenService;
     #router;
     #path;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(AuthController.name);
         this.#authService = new AuthService();
         this.#refreshTokenService = new RefreshTokenService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/auth';
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {

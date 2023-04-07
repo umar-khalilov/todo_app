@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { TaskService } = require('./TaskService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
@@ -12,11 +13,14 @@ const { updateTaskSchema, createTaskSchema } = require('./taskSchemas');
 class TaskController {
     #taskService;
     #router;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(TaskController.name);
         this.#taskService = new TaskService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {

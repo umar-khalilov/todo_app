@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { UserService } = require('./UserService');
 const { TaskController } = require('../tasks/TaskController');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
@@ -14,13 +15,16 @@ class UserController {
     #taskController;
     #router;
     #path;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(UserController.name);
         this.#userService = new UserService();
         this.#taskController = new TaskController();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/users';
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {

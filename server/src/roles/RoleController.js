@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { RoleService } = require('./RoleService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { asyncWrapper } = require('../common/utils/helpers');
 
@@ -7,12 +8,15 @@ class RoleController {
     #roleService;
     #router;
     #path;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(RoleController.name);
         this.#roleService = new RoleService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/roles';
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {
