@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "start": "node ./src/main.js",
-        "start:dev": "nodemon ./src/main.js",
+        "start:dev": "nodemon -q ./src/main.js",
         "start:debug": "nodemon --inspect=0.0.0.0:9229 ./src/main.js",
         "lint:fix": "eslint \"src/**/*.js\" --fix",
         "prettier:check": "prettier --check ./",

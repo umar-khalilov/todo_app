@@ -8,15 +8,19 @@ const { checkUser } = require('../common/middlewares/checkUser');
 const { asyncWrapper } = require('../common/utils/helpers');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { updateTaskSchema, createTaskSchema } = require('./taskSchemas');
+const { LoggerService } = require('../common/services/LoggerService');
 
 class TaskController {
     #taskService;
     #router;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(TaskController.name);
         this.#taskService = new TaskService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {

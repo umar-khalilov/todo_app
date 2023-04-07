@@ -4,18 +4,22 @@ const { HashService } = require('../common/services/HashService');
 const { JWTService } = require('../common/services/JWTService');
 const { UnauthorizedException } = require('../common/exceptions');
 const { configuration } = require('../configs');
+const { LoggerService } = require('../common/services/LoggerService');
 
 class RefreshTokenService {
     #tokenRepository;
     #jwtService;
     #hashService;
     #maxAmountDevices;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(RefreshTokenService.name);
         this.#tokenRepository = RefreshToken;
         this.#jwtService = new JWTService();
         this.#hashService = new HashService();
         this.#maxAmountDevices = configuration.maxDevicesAmount;
+        this.#logger.log('Initialized');
     }
 
     async saveToken(payload = {}) {

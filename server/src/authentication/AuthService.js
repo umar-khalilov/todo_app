@@ -11,6 +11,7 @@ const {
     UserAlreadyExistException,
     NotFoundException,
 } = require('../common/exceptions');
+const { LoggerService } = require('../common/services/LoggerService');
 
 class AuthService {
     #userService;
@@ -19,14 +20,17 @@ class AuthService {
     #refreshTokenService;
     #mailService;
     #config;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(AuthService.name);
         this.#userService = new UserService();
         this.#hashService = new HashService();
         this.#jwtService = new JWTService();
         this.#refreshTokenService = new RefreshTokenService();
         this.#mailService = new MailService();
         this.#config = configuration;
+        this.#logger.log('Initialized');
     }
 
     async #validateUser(email = '', password = '') {

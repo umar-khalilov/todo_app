@@ -19,6 +19,7 @@ class MailService {
                 pass: this.#config.smtpPassword,
             },
         });
+        this.#logger.log('Initialized');
     }
 
     async #sendEmail(options = {}) {

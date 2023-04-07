@@ -14,12 +14,10 @@ class CronService {
         this.#logger = new LoggerService(CronService.name);
         this.#refreshTokenService = new RefreshTokenService();
         this.#cron = schedule;
+        this.#logger.log('Initialized');
     }
 
-    initializeTasks() {
-        /**
-         * Running EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT
-         */
+    initialize() {
         this.#cron.scheduleJob(
             'Removing tokens',
             CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT,
@@ -31,6 +29,9 @@ class CronService {
         });
     }
 
+    /**
+     * Running EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT
+     */
     async #removeExpiredTokens() {
         const results = await this.#refreshTokenService.removeExpiredTokens();
         this.#logger.system(`${results || 0} tokens was deleted`);

@@ -18,15 +18,17 @@ class App {
     #server;
 
     constructor(controllers = []) {
-        this.#app = express();
-        this.#port = configuration.serverPort;
         this.#logger = new LoggerService(App.name);
+        this.#app = express();
+        new CronService().initialize();
+        this.#port = configuration.serverPort;
         this.#connectToTheDatabase();
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
         this.#server = createServer(this.#app);
         this.#gracefullyClose();
+        this.#logger.log('Initialized');
     }
 
     #connectToTheDatabase() {
@@ -92,7 +94,6 @@ class App {
                     this.#port
                 }/api/docs`,
             );
-            new CronService().initializeTasks();
         });
     }
 

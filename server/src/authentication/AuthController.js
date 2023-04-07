@@ -11,19 +11,23 @@ const {
     verifyAccessToken,
     verifyRefreshToken,
 } = require('../common/middlewares/verifyTokens');
+const { LoggerService } = require('../common/services/LoggerService');
 
 class AuthController {
     #authService;
     #refreshTokenService;
     #router;
     #path;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(AuthController.name);
         this.#authService = new AuthService();
         this.#refreshTokenService = new RefreshTokenService();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/auth';
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {

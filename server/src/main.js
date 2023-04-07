@@ -12,9 +12,9 @@ const bootstrap = async () => {
     try {
         await validateEnv();
         const controllers = [
-            new AuthController(),
             new UserController(),
             new RoleController(),
+            new AuthController(),
         ];
         const app = new App(controllers);
         await app.listen();
@@ -25,5 +25,4 @@ const bootstrap = async () => {
 };
 
 AppClusterizeService.runInCluster(bootstrap);
-
 ErrorHandler.initializeUnhandledException();

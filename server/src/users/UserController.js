@@ -8,19 +8,23 @@ const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { asyncWrapper } = require('../common/utils/helpers');
 const { updateUserSchema } = require('./userSchema');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
+const { LoggerService } = require('../common/services/LoggerService');
 
 class UserController {
     #userService;
     #taskController;
     #router;
     #path;
+    #logger;
 
     constructor() {
+        this.#logger = new LoggerService(UserController.name);
         this.#userService = new UserService();
         this.#taskController = new TaskController();
         this.#router = new Router({ mergeParams: true, caseSensitive: true });
         this.#path = '/users';
         this.#initializeRoutes();
+        this.#logger.log('Initialized');
     }
 
     get router() {
