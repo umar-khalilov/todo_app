@@ -1,8 +1,8 @@
 const { Router } = require('express');
 const { RoleService } = require('./RoleService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { asyncWrapper } = require('../common/utils/helpers');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class RoleController {
     #roleService;

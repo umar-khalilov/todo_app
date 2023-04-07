@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { TaskService } = require('./TaskService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
@@ -8,7 +9,6 @@ const { checkUser } = require('../common/middlewares/checkUser');
 const { asyncWrapper } = require('../common/utils/helpers');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { updateTaskSchema, createTaskSchema } = require('./taskSchemas');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class TaskController {
     #taskService;

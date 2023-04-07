@@ -6,12 +6,12 @@ const { MailService } = require('../common/services/MailService');
 const { UserDto } = require('../users/UserDto');
 const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
 const { configuration } = require('../configs');
+const { LoggerService } = require('../common/services/LoggerService');
 const {
     UnauthorizedException,
     UserAlreadyExistException,
     NotFoundException,
 } = require('../common/exceptions');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class AuthService {
     #userService;

@@ -1,6 +1,6 @@
 const { Role } = require('../app/database/models');
-const { NotFoundException } = require('../common/exceptions');
 const { LoggerService } = require('../common/services/LoggerService');
+const { NotFoundException } = require('../common/exceptions');
 const { RoleTypes } = require('./RoleTypes');
 
 class RoleService {

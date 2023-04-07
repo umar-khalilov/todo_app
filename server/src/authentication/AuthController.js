@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { AuthService } = require('./AuthService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { RefreshTokenService } = require('../refreshTokens/RefreshTokenService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { signUpSchema, signInSchema } = require('./authSchemas');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
 const { configuration } = require('../configs');
@@ -11,7 +12,6 @@ const {
     verifyAccessToken,
     verifyRefreshToken,
 } = require('../common/middlewares/verifyTokens');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class AuthController {
     #authService;

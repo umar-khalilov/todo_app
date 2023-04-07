@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { UserService } = require('./UserService');
 const { TaskController } = require('../tasks/TaskController');
+const { LoggerService } = require('../common/services/LoggerService');
 const { SuccessResponse } = require('../common/utils/SuccessResponse');
 const { paginate } = require('../common/middlewares/paginate');
 const { validate } = require('../common/middlewares/validate');
@@ -8,7 +9,6 @@ const { parseIntPipe } = require('../common/middlewares/parseIntPipe');
 const { asyncWrapper } = require('../common/utils/helpers');
 const { updateUserSchema } = require('./userSchema');
 const { HttpStatusCodes } = require('../common/utils/httpStatusCodes');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class UserController {
     #userService;

@@ -1,8 +1,8 @@
 const { User, Role } = require('../app/database/models');
 const { RoleService } = require('../roles/RoleService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { paginateResponse } = require('../common/utils/helpers');
 const { NotFoundException } = require('../common/exceptions');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class UserService {
     #userRepository;

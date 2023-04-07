@@ -2,9 +2,9 @@ const { Op } = require('sequelize');
 const { RefreshToken } = require('../app/database/models');
 const { HashService } = require('../common/services/HashService');
 const { JWTService } = require('../common/services/JWTService');
+const { LoggerService } = require('../common/services/LoggerService');
 const { UnauthorizedException } = require('../common/exceptions');
 const { configuration } = require('../configs');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class RefreshTokenService {
     #tokenRepository;

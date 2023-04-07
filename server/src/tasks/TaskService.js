@@ -1,10 +1,10 @@
 const { Task } = require('../app/database/models');
+const { LoggerService } = require('../common/services/LoggerService');
 const { paginateResponse } = require('../common/utils/helpers');
 const {
     BadRequestException,
     NotFoundException,
 } = require('../common/exceptions');
-const { LoggerService } = require('../common/services/LoggerService');
 
 class TaskService {
     #taskRepository;
