@@ -20,12 +20,12 @@ class App {
     constructor(controllers = []) {
         this.#logger = new LoggerService(App.name);
         this.#app = express();
-        new CronService().initialize();
         this.#port = configuration.serverPort;
         this.#connectToTheDatabase();
         this.#initializeMiddlewares();
         this.#initializeControllers(controllers);
         this.#initializeErrorHandling();
+        new CronService().initialize();
         this.#server = createServer(this.#app);
         this.#gracefullyClose();
         this.#logger.log('Initialized');

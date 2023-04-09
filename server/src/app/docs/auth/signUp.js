@@ -24,7 +24,7 @@ const signUp = {
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/GetUserWithToken',
+                            $ref: '#/components/schemas/GetUserWithTokens',
                         },
                     },
                 },
@@ -40,7 +40,7 @@ const signUp = {
                 },
             },
             [HttpStatusCodes.NOT_FOUND]: {
-                description: 'The Requested path not found exception',
+                description: 'Path exception',
                 content: {
                     'application/json': {
                         schema: {

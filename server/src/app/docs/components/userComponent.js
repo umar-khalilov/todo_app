@@ -51,20 +51,6 @@ const userComponent = {
         example: 'test1234UeO9P)@',
         writeOnly: true,
     },
-    createdAt: {
-        type: 'string',
-        format: 'date-time',
-        readOnly: true,
-        description: 'The created date of instance',
-        example: new Date().toISOString(),
-    },
-    updatedAt: {
-        type: 'string',
-        format: 'date-time',
-        readOnly: true,
-        description: 'The updated date of instance',
-        example: new Date().toISOString(),
-    },
 };
 
 module.exports = { userComponent };

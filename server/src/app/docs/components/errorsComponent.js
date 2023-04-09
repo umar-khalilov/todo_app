@@ -17,21 +17,6 @@ const errorsComponent = {
             },
         },
     },
-    UnauthorizedException: {
-        type: 'object',
-        properties: {
-            message: {
-                type: 'string',
-                description: 'Error message',
-                example: 'Wrong email or password',
-            },
-            status: {
-                type: 'integer',
-                description: 'Error status code',
-                example: HttpStatusCodes.UNAUTHORIZED,
-            },
-        },
-    },
     UserAlreadyExistException: {
         type: 'object',
         properties: {
@@ -44,6 +29,21 @@ const errorsComponent = {
                 type: 'integer',
                 description: 'Error status code',
                 example: HttpStatusCodes.CONFLICT,
+            },
+        },
+    },
+    UnauthorizedException: {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string',
+                description: 'Error message',
+                example: 'Wrong email or password, or User is not authorized',
+            },
+            status: {
+                type: 'integer',
+                description: 'Error status code',
+                example: HttpStatusCodes.UNAUTHORIZED,
             },
         },
     },
@@ -62,13 +62,58 @@ const errorsComponent = {
             },
         },
     },
+    TokenExpiredException: {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string',
+                description: 'Error message',
+                example: 'jwt expired: ***',
+            },
+            status: {
+                type: 'integer',
+                description: 'Error status code',
+                example: HttpStatusCodes.BAD_REQUEST,
+            },
+        },
+    },
+    TokenMalformedException: {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string',
+                description: 'Error message',
+                example: 'jwt malforted',
+            },
+            status: {
+                type: 'integer',
+                description: 'Error status code',
+                example: HttpStatusCodes.BAD_REQUEST,
+            },
+        },
+    },
+    TokenNotBeforeException: {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string',
+                description: 'Error message',
+                example: 'jwt not active: ***',
+            },
+            status: {
+                type: 'integer',
+                description: 'Error status code',
+                example: HttpStatusCodes.BAD_REQUEST,
+            },
+        },
+    },
     PathNotFoundException: {
         type: 'object',
         properties: {
             message: {
                 type: 'string',
                 description: 'Error message',
-                example: 'The Requested path: *** not found',
+                example: 'The requested path: *** not found',
             },
             status: {
                 type: 'integer',

@@ -1,40 +1,50 @@
 'use strict';
-const { ListTags } = require('../listTags');
 const { HttpStatusCodes } = require('../../../common/utils/httpStatusCodes');
+const { tokensComponent } = require('../components/tokensComponent');
+const { ListTags } = require('../listTags');
 
-const signIn = {
+const signOut = {
     post: {
         tags: [ListTags.Auth],
-        summary: 'Sign in a user',
-        description: 'Sign in a user with some data.',
-        operationId: 'signInUser',
+        summary: 'Sign out a user',
+        description: 'Sign out a user from application',
+        operationId: 'signOutUser',
         requestBody: {
             required: true,
             content: {
                 'application/json': {
                     schema: {
-                        $ref: '#/components/schemas/SignInUser',
+                        type: 'object',
+                        properties: {
+                            refresh: tokensComponent.refresh,
+                        },
                     },
                 },
             },
         },
         responses: {
             [HttpStatusCodes.OK]: {
-                description: 'A user data',
+                description: 'Info message',
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/GetUserWithTokens',
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'string',
+                                    example: 'You are successfully signed out',
+                                },
+                            },
                         },
                     },
                 },
             },
             [HttpStatusCodes.BAD_REQUEST]: {
-                description: 'Validation exception',
+                description: 'Token exception',
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/ValidationException',
+                            $ref: '#/components/schemas/TokenExpiredException',
                         },
                     },
                 },
@@ -63,4 +73,4 @@ const signIn = {
     },
 };
 
-module.exports = { signIn };
+module.exports = { signOut };

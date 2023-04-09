@@ -5,7 +5,7 @@ const servers = {
     servers: [
         {
             url:
-                configuration.deployHost ||
+                configuration.serverUrl ||
                 `http://localhost:${configuration.serverPort}/api`,
             description: 'Server',
         },
