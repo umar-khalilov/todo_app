@@ -107,6 +107,21 @@ const errorsComponent = {
             },
         },
     },
+    NotFoundException: {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string',
+                description: 'Error message',
+                example: 'Something not found',
+            },
+            status: {
+                type: 'integer',
+                description: 'Error status code',
+                example: HttpStatusCodes.NOT_FOUND,
+            },
+        },
+    },
     PathNotFoundException: {
         type: 'object',
         properties: {

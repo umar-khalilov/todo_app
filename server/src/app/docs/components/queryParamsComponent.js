@@ -2,7 +2,7 @@
 const { SortOrders } = require('../../../common/utils/sortOrders');
 
 const queryParamsComponent = {
-    sortParam: {
+    sort: {
         type: 'string',
         enum: [SortOrders.ASC, SortOrders.DESC],
         default: SortOrders.ASC,
@@ -10,7 +10,7 @@ const queryParamsComponent = {
         required: false,
         description: 'Sort order',
     },
-    pageParam: {
+    page: {
         type: 'integer',
         format: 'int32',
         required: false,
@@ -19,7 +19,7 @@ const queryParamsComponent = {
         example: 1,
         description: 'A number of page',
     },
-    limitParam: {
+    limit: {
         type: 'integer',
         format: 'int32',
         required: false,
