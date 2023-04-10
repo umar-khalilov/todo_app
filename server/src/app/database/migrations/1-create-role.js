@@ -1,4 +1,6 @@
 'use strict';
+const { RoleTypes } = require('../../../roles/RoleTypes');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
@@ -10,7 +12,11 @@ module.exports = {
                 primaryKey: true,
             },
             value: {
-                type: Sequelize.ENUM('admin', 'manager', 'user'),
+                type: Sequelize.ENUM(
+                    RoleTypes.ADMIN,
+                    RoleTypes.MANAGER,
+                    RoleTypes.USER,
+                ),
                 allowNull: false,
                 unique: true,
             },

@@ -1,4 +1,5 @@
 'use strict';
+const { RoleTypes } = require('../../../roles/RoleTypes');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,17 +8,17 @@ module.exports = {
             'roles',
             [
                 {
-                    value: 'admin',
+                    value: RoleTypes.ADMIN,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
                 {
-                    value: 'manager',
+                    value: RoleTypes.MANAGER,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
                 {
-                    value: 'user',
+                    value: RoleTypes.USER,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },

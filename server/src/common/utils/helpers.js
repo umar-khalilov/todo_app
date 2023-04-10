@@ -5,7 +5,7 @@ const asyncWrapper = handler => (req, res, next) =>
         .then(response => res.status(response.status).send(response.data))
         .catch(err => next(err));
 
-const paginateResponse = async (data = [], page, limit) => {
+const paginateResponse = async (data = [], page = 1, limit = 10) => {
     const [itemCount, result] = data;
     const pageCount = Math.ceil(itemCount / limit);
     const hasPreviousPage = page > 1;

@@ -100,7 +100,7 @@ class AuthService {
         user.isVerificated = true;
         user.verificationUuid = null;
         await user.save({ fields: ['isVerificated', 'verificationUuid'] });
-        return 'User verificated successfully';
+        return user.isVerificated === true;
     }
 
     async refreshSession(refreshToken) {
