@@ -3,6 +3,7 @@ const { RoleService } = require('../roles/RoleService');
 const { LoggerService } = require('../common/services/LoggerService');
 const { paginateResponse } = require('../common/utils/helpers');
 const { NotFoundException } = require('../common/exceptions');
+const { RoleTypes } = require('../roles/RoleTypes');
 
 class UserService {
     #userRepository;
@@ -20,7 +21,7 @@ class UserService {
 
     async createUser(data = {}) {
         const createdUser = await this.#userRepository.create(data);
-        const roleUser = await this.#roleService.getRoleByValue('user');
+        const roleUser = await this.#roleService.getRoleByValue(RoleTypes.USER);
         await createdUser.addRole(roleUser);
         return this.findUserByEmail(createdUser.email);
     }

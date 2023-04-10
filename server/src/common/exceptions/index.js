@@ -8,6 +8,7 @@ const UserAlreadyExistException = require('./UserAlreadyExistException');
 const NotFoundException = require('./NotFoundException');
 const TokenExpiredException = require('./TokenExpiredException');
 const TokenMalformedException = require('./TokenMalformedException');
+const TokenNotBeforeException = require('./TokenNotBeforeException');
 
 module.exports = {
     ApplicationException,
@@ -16,6 +17,7 @@ module.exports = {
     TokenException,
     TokenExpiredException,
     TokenMalformedException,
+    TokenNotBeforeException,
     UnauthorizedException,
     UserAlreadyExistException,
     NotFoundException,

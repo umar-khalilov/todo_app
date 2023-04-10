@@ -67,6 +67,17 @@ class AuthController {
         return new SuccessResponse({ data });
     });
 
+    #signOut = asyncWrapper(async req => {
+        req.res.setHeader('Authorization', null);
+        await this.#refreshTokenService.removeToken(req.body?.refresh);
+        return new SuccessResponse({ data: 'You are successfully signed out' });
+    });
+
+    #refreshSession = asyncWrapper(async ({ body }) => {
+        const data = await this.#authService.refreshSession(body?.refresh);
+        return new SuccessResponse({ data });
+    });
+
     #verificate = async ({ params: { uuid } }, res, next) => {
         try {
             await this.#authService.verificateUser(uuid);
@@ -75,17 +86,6 @@ class AuthController {
             next(error);
         }
     };
-
-    #refreshSession = asyncWrapper(async ({ body }) => {
-        const data = await this.#authService.refreshSession(body?.refresh);
-        return new SuccessResponse({ data });
-    });
-
-    #signOut = asyncWrapper(async req => {
-        req.res.setHeader('Authorization', null);
-        await this.#refreshTokenService.removeToken(req.body?.refresh);
-        return new SuccessResponse({ data: 'You are successfully signed out' });
-    });
 }
 
 module.exports = { AuthController };

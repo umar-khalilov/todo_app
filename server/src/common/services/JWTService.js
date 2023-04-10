@@ -4,6 +4,7 @@ const {
     TokenException,
     TokenExpiredException,
     TokenMalformedException,
+    TokenNotBeforeException,
 } = require('../exceptions');
 
 class JWTService {
@@ -75,6 +76,9 @@ class JWTService {
                     if (err?.name === 'JsonWebTokenError') {
                         reject(new TokenMalformedException());
                     }
+                    if (err?.name === 'NotBeforeError') {
+                        reject(new TokenNotBeforeException(err.date));
+                    }
                     resolve(decodedData);
                 },
             );
@@ -93,6 +97,9 @@ class JWTService {
                     }
                     if (err?.name === 'JsonWebTokenError') {
                         reject(new TokenMalformedException());
+                    }
+                    if (err?.name === 'NotBeforeError') {
+                        reject(new TokenNotBeforeException(err.date));
                     }
                     resolve(decodedData);
                 },

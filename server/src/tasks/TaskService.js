@@ -27,7 +27,7 @@ class TaskService {
         return createdTask;
     }
 
-    async findUserTasks(userId, pagination = {}) {
+    async findUserTasks(userId = 0, pagination = {}) {
         const { limit, offset, page, sort } = pagination;
         const { count, rows } = await this.#taskRepository.findAndCountAll({
             where: {
@@ -45,9 +45,9 @@ class TaskService {
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findAllTasks({ limit, offset, page }) {
+    async findAllTasks({ limit, offset, page, sort }) {
         const { count, rows } = await this.#taskRepository.findAndCountAll({
-            order: [['updatedAt', 'DESC']],
+            order: [['updatedAt', sort]],
             limit,
             offset,
         });
@@ -57,7 +57,7 @@ class TaskService {
         return paginateResponse([count, rows], page, limit);
     }
 
-    async findTaskByIds(userId, taskId) {
+    async findTaskByIds(userId = 0, taskId = 0) {
         const foundTask = await this.#taskRepository.findAll({
             where: { userId, id: taskId },
         });
@@ -69,7 +69,7 @@ class TaskService {
         return foundTask;
     }
 
-    async updateTaskByIds(userId, taskId, data = {}) {
+    async updateTaskByIds(userId = 0, taskId = 0, data = {}) {
         const [rows, [foundTask]] = await this.#taskRepository.update(data, {
             where: { userId, id: taskId },
             returning: true,
@@ -82,7 +82,7 @@ class TaskService {
         return foundTask;
     }
 
-    async removeTaskByIds(userId, taskId) {
+    async removeTaskByIds(userId = 0, taskId = 0) {
         const task = await this.#taskRepository.destroy({
             where: { userId, id: taskId },
         });

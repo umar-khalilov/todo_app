@@ -1,26 +1,30 @@
 'use strict';
 const { ListTags } = require('../listTags');
+const { tokensComponent } = require('../components/tokensComponent');
 const { HttpStatusCodes } = require('../../../common/utils/httpStatusCodes');
 
-const signUp = {
+const refreshSession = {
     post: {
         tags: [ListTags.Auth],
-        summary: 'Sign up a user',
-        description: 'Sign up a user with some data.',
-        operationId: 'signUpUser',
+        summary: 'Refresh session',
+        description: 'Refresh session for a user',
+        operationId: 'refreshSession',
         requestBody: {
             required: true,
             content: {
                 'application/json': {
                     schema: {
-                        $ref: '#/components/schemas/SignUpUser',
+                        type: 'object',
+                        properties: {
+                            refresh: tokensComponent.refresh,
+                        },
                     },
                 },
             },
         },
         responses: {
-            [HttpStatusCodes.CREATED]: {
-                description: 'A created user data',
+            [HttpStatusCodes.OK]: {
+                description: 'A user data',
                 content: {
                     'application/json': {
                         schema: {
@@ -29,32 +33,22 @@ const signUp = {
                     },
                 },
             },
-            [HttpStatusCodes.BAD_REQUEST]: {
-                description: 'Validation exception',
+            [HttpStatusCodes.UNAUTHORIZED]: {
+                description: 'Unauthorized exception',
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/ValidationException',
+                            $ref: '#/components/schemas/UnauthorizedException',
                         },
                     },
                 },
             },
             [HttpStatusCodes.NOT_FOUND]: {
-                description: 'Path exception',
+                description: 'Not found exception',
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/PathNotFoundException',
-                        },
-                    },
-                },
-            },
-            [HttpStatusCodes.CONFLICT]: {
-                description: 'Conflict resource exception',
-                content: {
-                    'application/json': {
-                        schema: {
-                            $ref: '#/components/schemas/UserAlreadyExistException',
+                            $ref: '#/components/schemas/NotFoundException',
                         },
                     },
                 },
@@ -63,4 +57,4 @@ const signUp = {
     },
 };
 
-module.exports = { signUp };
+module.exports = { refreshSession };
