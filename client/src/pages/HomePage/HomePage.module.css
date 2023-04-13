@@ -1,0 +1,14 @@
+.baseContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 200px;
+}
+
+.linkStyles {
+    text-decoration: none;
+    color: #9c6441;
+    font-size: 20px;
+    padding: 15px 20px;
+    margin: 20px;
+}

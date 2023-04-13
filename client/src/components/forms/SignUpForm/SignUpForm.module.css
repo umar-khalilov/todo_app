@@ -1,0 +1,53 @@
+.baseContainer {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    flex-basis: content;
+    width: 700px;
+}
+
+.btnStyles {
+    padding: 21px 227px;
+    background-color: #28d2d0;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.radioBtnStyles {
+    max-width: 598px;
+    width: 100%;
+    padding: 20px 20px 0px;
+    color: white;
+}
+
+.joinAsStyles {
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.joinHeadingStyles {
+    text-transform: capitalize;
+    padding-left: 15px;
+    font-size: x-large;
+    font-weight: 400;
+}
+
+.joinTextStyles {
+    padding-left: 30px;
+    font-weight: 300;
+    font-size: small;
+}
+
+.checkboxStyles {
+    padding: 0 20px 15px 20px;
+    color: white;
+    font-weight: 300;
+    font-size: 15px;
+}
