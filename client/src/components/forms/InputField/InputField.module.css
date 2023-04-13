@@ -1,0 +1,47 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 3px 6px 3px 6px;
+}
+
+.input {
+    max-width: 600px;
+    width: 100%;
+    padding: 23px 80px 23px 15px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 3px;
+}
+
+.validInput {
+    border: 2px solid green;
+}
+
+.invalidInput {
+    border: 2px solid red;
+}
+
+.arrowStyles {
+    position: absolute;
+    top: 100%;
+    z-index: 5;
+    padding: 15px 20px;
+    width: 90%;
+    font-size: 15px;
+    text-transform: capitalize;
+    color: white;
+    background-color: red;
+    border-radius: 3px;
+}
+
+.arrowStyles::after {
+    content: '';
+    position: absolute;
+    border: solid transparent;
+    left: 12px;
+    bottom: 100%;
+    border-bottom-color: red;
+    border-width: 10px;
+    margin-left: 10px;
+}
