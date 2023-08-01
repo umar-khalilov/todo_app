@@ -1,19 +1,21 @@
-import PropTypes from 'prop-types';
 import { Field, Form, Formik } from 'formik';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import InputField from '../InputField/InputField';
+import { authActions } from '../../../store/authentication/authActions';
 import { SIGN_IN_SCHEMA } from '../../../utils/authValidationSchemas';
 import styles from './SignInForm.module.css';
 
-const SignInForm = ({ signIn }) => {
+export const SignInForm = () => {
+    const dispatch = useDispatch();
+
+    const handleSubmit = (values, formikBag) => {
+        dispatch(authActions.authSignInRequest({ authData: values }));
+        formikBag.resetForm();
+    };
     const values = {
         email: '',
         password: '',
         'remember me': false,
-    };
-    const handleSubmit = (values, formikBag) => {
-        signIn(values);
-        formikBag.resetForm();
     };
 
     return (
@@ -37,13 +39,3 @@ const SignInForm = ({ signIn }) => {
         </Formik>
     );
 };
-
-SignInForm.propTypes = {
-    signIn: PropTypes.func.isRequired,
-};
-
-const mapDispatchToProps = dispatch => ({
-    signIn: values => dispatch(values),
-});
-
-export default connect(null, mapDispatchToProps)(SignInForm);

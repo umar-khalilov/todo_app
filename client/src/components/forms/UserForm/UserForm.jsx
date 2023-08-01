@@ -1,34 +1,34 @@
-import PropTypes from 'prop-types';
 import { Field, Form, Formik } from 'formik';
+import { useDispatch } from 'react-redux';
+import { userActions } from '../../../store/users/userActions';
 
-export const UserForm = ({ submitHandler }) => {
-    const onSubmit = (values, formikBag) => {
-        submitHandler(values);
+export const UserForm = () => {
+    const dispatch = useDispatch();
+    const handleSubmit = (values, formikBag) => {
+        // dispatch(userActions.updateUserRequest({,values}));
         formikBag.resetForm();
     };
-
     const values = {
         name: '',
         surname: '',
         email: '',
-        isMale: undefined,
+        avatar: '',
+        birthday: '',
+        isMale: false,
         password: '',
     };
 
     return (
-        <Formik initialValues={values} onSubmit={onSubmit}>
+        <Formik initialValues={values} onSubmit={handleSubmit}>
             <Form>
-                <Field name='name' placeholder='name' />
-                <Field name='surname' placeholder='surname' />
-                <Field name='email' placeholder='email' />
-                <Field name='isMail' placeholder='is male' />
-                <Field name='password' placeholder='password' />
+                <Field name='name' placeholder='Name' />
+                <Field name='surname' placeholder='Surname' />
+                <Field name='email' placeholder='Email' />
+                <Field name='avatar' placeholder='Avatar' />
+                <Field name='isMail' placeholder='Is male' />
+                <Field name='password' placeholder='Password' />
                 <Field type='submit'>Update</Field>
             </Form>
         </Formik>
     );
-};
-
-UserForm.propTypes = {
-    submitHandler: PropTypes.func.isRequired,
 };

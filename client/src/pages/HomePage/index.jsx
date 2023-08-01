@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './HomePage.module.css';
 
-export const HomePage = () => {
+const HomePage = () => {
     return (
         <main className={styles.baseContainer}>
             <a href='#' target='_blank' rel='noreferrer' className={styles.linkStyles}>
@@ -19,3 +19,5 @@ export const HomePage = () => {
         </main>
     );
 };
+
+export default HomePage;

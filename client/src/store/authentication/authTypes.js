@@ -1,4 +1,4 @@
-export const ACTION_AUTH_TYPES = Object.freeze({
+export const AUTH_TYPES = Object.freeze({
     AUTH_SIGNUP_REQUEST: 'auth/signUpRequest',
     AUTH_SIGNUP_SUCCESS: 'auth/signUpSuccess',
     AUTH_SIGNUP_ERROR: 'auth/signUpError',

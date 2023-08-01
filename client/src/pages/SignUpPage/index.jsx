@@ -2,7 +2,7 @@ import { Header } from '../../components/Header/Header';
 import { SignUpForm } from '../../components/forms';
 import styles from './SignUpPage.module.css';
 
-export const SignUpPage = () => {
+const SignUpPage = () => {
     const onSubmit = values => console.log(values);
 
     return (
@@ -18,3 +18,5 @@ export const SignUpPage = () => {
         </>
     );
 };
+
+export default SignUpPage;

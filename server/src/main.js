@@ -24,5 +24,6 @@ const bootstrap = async () => {
     }
 };
 
-AppClusterizeService.runInCluster(bootstrap);
+// AppClusterizeService.runInCluster(bootstrap);
+void bootstrap();
 ErrorHandler.initializeUnhandledException();

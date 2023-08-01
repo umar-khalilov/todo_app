@@ -1,10 +1,11 @@
-import PropTypes from 'prop-types';
 import { Field, Form, Formik } from 'formik';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { taskActions } from '../../../store/tasks/taskActions';
 
-const TaskForm = ({ createTaskRequest }) => {
-    const onSubmit = (values, formikBag) => {
-        createTaskRequest(values);
+export const TaskForm = () => {
+    const dispatch = useDispatch();
+    const handleSubmit = (values, formikBag) => {
+        dispatch(taskActions.createTaskRequest({ task: values }));
         formikBag.resetForm();
     };
 
@@ -12,28 +13,20 @@ const TaskForm = ({ createTaskRequest }) => {
         title: '',
         body: '',
         deadline: new Date(),
+        files: [],
         isDone: false,
     };
 
     return (
-        <Formik initialValues={values} onSubmit={onSubmit}>
+        <Formik initialValues={values} onSubmit={handleSubmit}>
             <Form>
-                <Field name='title' placeholder='title' />
-                <Field name='body' placeholder='body' />
-                <Field name='deadline' placeholder='deadline' />
-                <Field name='isDone' placeholder='isDone' />
+                <Field name='title' placeholder='Title' />
+                <Field name='body' placeholder='Body' />
+                <Field name='deadline' type='date' placeholder='Deadline' />
+                <Field name='files' placeholder='Files' />
+                <Field name='isDone' placeholder='Is Done' />
                 <Field type='submit'>Create task</Field>
             </Form>
         </Formik>
     );
 };
-
-TaskForm.propTypes = {
-    createTaskRequest: PropTypes.func.isRequired,
-};
-
-// const mapDispatchToProps = dispatch => ({
-//     createTaskRequest: data => dispatch(tasksActions.createTaskRequest(data)),
-// });
-
-// export default connect(null, mapDispatchToProps)(TaskForm);

@@ -1,10 +1,17 @@
-import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
+import { useDispatch } from 'react-redux';
 import InputField from '../InputField/InputField';
+import { authActions } from '../../../store/authentication/authActions';
 import { SIGN_UP_SCHEMA } from '../../../utils/authValidationSchemas';
 import styles from './SignUpForm.module.css';
 
-const SignUpForm = props => {
+export const SignUpForm = () => {
+    const dispatch = useDispatch();
+
+    const handleSubmit = (values, formikBag) => {
+        dispatch(authActions.authSignUpRequest({ authData: values }));
+        formikBag.resetForm();
+    };
     const values = {
         name: '',
         surname: '',
@@ -16,7 +23,7 @@ const SignUpForm = props => {
     };
 
     return (
-        <Formik initialValues={values} onSubmit={props.onSubmit} validationSchema={SIGN_UP_SCHEMA}>
+        <Formik initialValues={values} onSubmit={handleSubmit} validationSchema={SIGN_UP_SCHEMA}>
             <Form className={styles.baseContainer}>
                 <Field name='name'>{fieldProps => <InputField {...fieldProps} placeholder='Name' />}</Field>
                 <Field name='surname'>{fieldProps => <InputField {...fieldProps} placeholder='Surname' />}</Field>
@@ -32,9 +39,3 @@ const SignUpForm = props => {
         </Formik>
     );
 };
-
-SignUpForm.propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-};
-
-export default SignUpForm;

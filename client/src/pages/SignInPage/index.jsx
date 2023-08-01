@@ -2,7 +2,7 @@ import { Header } from '../../components/Header/Header';
 import { SignInForm } from '../../components/forms';
 import styles from './SignInPage.module.css';
 
-export const SignInPage = () => {
+const SignInPage = () => {
     const onSubmit = values => console.log(values);
 
     return (
@@ -15,3 +15,5 @@ export const SignInPage = () => {
         </>
     );
 };
+
+export default SignInPage;

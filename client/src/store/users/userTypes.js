@@ -1,4 +1,4 @@
-export const userTypes = Object.freeze({
+export const USER_TYPES = Object.freeze({
     GET_USER_REQUEST: 'get/userRequest',
     GET_USER_SUCCESS: 'get/userSuccess',
     GET_USER_ERROR: 'get/userError',
@@ -8,4 +8,5 @@ export const userTypes = Object.freeze({
     DELETE_USER_REQUEST: 'delete/userRequest',
     DELETE_USER_SUCCESS: 'delete/userSuccess',
     DELETE_USER_ERROR: 'delete/userError',
+    CLEAR_USER_ERROR: 'clear/userError',
 });

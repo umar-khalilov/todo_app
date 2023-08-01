@@ -12,22 +12,23 @@ export class HttpProvider {
 
     async #handleResponse(response) {
         if (!response.ok) {
-            return response.json().then(data => {
-                return Promise.reject({
+            return response.json().then(data =>
+                Promise.reject({
                     status: response.status,
                     ok: false,
                     message: response.message,
                     body: data,
-                });
-            });
+                }),
+            );
         }
         return response.json();
     }
 
-    async get({ restUrl = '', headers = {}, queryParams = null }) {
+    async get(restUrl = '', headers = {}, queryParams = null) {
         const requestOptions = {
             method: HttpMethods.GET,
             headers: new Headers({ ...this.#baseHeaders, ...headers }),
+            mode: 'cors',
         };
 
         if (queryParams) {
@@ -41,6 +42,7 @@ export class HttpProvider {
         const requestOptions = {
             method: HttpMethods.POST,
             headers: new Headers({ ...this.#baseHeaders, ...headers }),
+            mode: 'cors',
             body: JSON.stringify(body),
         };
         return fetch(`${this.#baseURL}/${restUrl}`, requestOptions).then(this.#handleResponse);
@@ -50,6 +52,7 @@ export class HttpProvider {
         const requestOptions = {
             method: HttpMethods.PUT,
             headers: new Headers({ ...this.#baseHeaders, ...headers }),
+            mode: 'cors',
             body: JSON.stringify(body),
         };
         return fetch(`${this.#baseURL}/${restUrl}`, requestOptions).then(this.#handleResponse);
@@ -59,6 +62,7 @@ export class HttpProvider {
         const requestOptions = {
             method: HttpMethods.PATCH,
             headers: new Headers({ ...this.#baseHeaders, ...headers }),
+            mode: 'cors',
             body: JSON.stringify(body),
         };
         return fetch(`${this.#baseURL}/${restUrl}`, requestOptions).then(this.#handleResponse);
@@ -67,6 +71,7 @@ export class HttpProvider {
     async delete(restUrl = '', headers = {}) {
         const requestOptions = {
             method: HttpMethods.DELETE,
+            mode: 'cors',
             headers: new Headers({ ...this.#baseHeaders, ...headers }),
         };
         return fetch(`${this.#baseURL}/${restUrl}`, requestOptions).then(this.#handleResponse);

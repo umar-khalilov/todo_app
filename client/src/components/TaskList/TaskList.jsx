@@ -1,45 +1,25 @@
-import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Task } from './Task';
+import { taskActions } from '../../store/tasks/taskActions';
 
-const TaskList = ({ tasks, isFetching, error, removeTask, updateTask }) => {
+export const TaskList = () => {
+    const { tasks, isFetching, error } = useSelector(({ task }) => task);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(taskActions.getTasksRequest());
+    }, [dispatch]);
+
     return (
         <section>
             {isFetching && 'LOADING'}
             {error && JSON.stringify(error, null, 4)}
             <h1>Task List</h1>
-            <ul>
-                {tasks.map(task => (
-                    <li key={task.id}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <h2>ID: {task.id}</h2>
-                            <p>{task.body}</p>
-                            <input
-                                type='checkbox'
-                                checked={task.isDone}
-                                onChange={({ target: { checked } }) => updateTask({ isDone: checked })}
-                            />
-                        </div>
-                        <button onClick={() => removeTask(task.id)}>Delete task</button>
-                    </li>
-                ))}
-            </ul>
+
+            {tasks.map(task => (
+                <Task {...task} key={task.id} />
+            ))}
         </section>
     );
 };
-
-TaskList.propTypes = {
-    tasks: PropTypes.array.isRequired,
-    isFetching: PropTypes.bool.isRequired,
-    error: PropTypes.object,
-    removeTask: PropTypes.func.isRequired,
-    updateTask: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = ({ tasks }) => ({
-    tasks,
-});
-
-// const mapDispatchToProps = dispatch => ({
-//     removeTask: id => dispatch(tasksActions.removeTask(id)),
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
